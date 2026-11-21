@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from app.api.router import router
 from app.core.config import Settings
 from app.db.session import create_client
+from app.services.analysis import AnalysisService
 
 logger = logging.getLogger(__name__)
 
@@ -27,10 +28,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             await client.close()
 
     app = FastAPI(title="AI Product Review Intelligence Agent", lifespan=lifespan)
+    app.state.analysis_service = AnalysisService(config)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[str(origin).rstrip("/") for origin in config.cors_origins],
-        allow_methods=["GET"],
+        allow_origins=list(
+            {
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
+                *(str(origin).rstrip("/") for origin in config.cors_origins),
+            }
+        ),
+        allow_methods=["GET", "POST"],
+        allow_headers=["Content-Type"],
     )
     app.include_router(router)
 
