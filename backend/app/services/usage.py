@@ -19,6 +19,18 @@ class CostProtectionError(ValueError):
     pass
 
 
+class StorageUnavailableError(RuntimeError):
+    pass
+
+
+def create_usage_store(config: Settings):
+    if config.use_mongo_state:
+        from app.services.mongo_usage import MongoUsageStore
+
+        return MongoUsageStore(config)
+    return UsageStore(config)
+
+
 def credential_fingerprint(config: Settings) -> str:
     key = config.openai_api_key.get_secret_value() if config.openai_api_key else ""
     return hashlib.sha256(key.encode()).hexdigest()
@@ -54,6 +66,9 @@ class UsageStore:
                 yield db
         finally:
             db.close()
+
+    def close(self):
+        pass
 
     def cached(self, key: str) -> AnalysisResponse | None:
         with self.connection() as db:

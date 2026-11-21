@@ -1,11 +1,12 @@
 import json
+from contextlib import ExitStack, closing
 from dataclasses import dataclass
 
 import httpx
 
 from app.core.config import Settings
 from app.schemas.analysis import Judgment, Product, Review
-from app.services.usage import MODEL_PRICES, CostProtectionError, UsageStore
+from app.services.usage import MODEL_PRICES, CostProtectionError, create_usage_store
 
 
 @dataclass
@@ -66,27 +67,35 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
 
 
 async def analyze_reviews(
-    config: Settings, product: Product, reviews: list[Review], charge: AttemptCharge | None = None
+    config: Settings,
+    product: Product,
+    reviews: list[Review],
+    charge: AttemptCharge | None = None,
+    store=None,
 ) -> Judgment:
     if not config.openai_api_key:
         raise CostProtectionError("Configure the OpenAI API key before running AI analysis.")
     payload, amount = prepare_request(config, product, reviews)
-    store = UsageStore(config)
-    store.reject_bad_credential()
-    store.reserve(amount)
-    if charge is not None:
-        charge.reserved = amount
-    # One request, no SDK retries, no automatic model fallback.
-    async with httpx.AsyncClient(timeout=45) as client:
-        response = await client.post(
-            "https://api.openai.com/v1/chat/completions",
-            headers={"Authorization": f"Bearer {config.openai_api_key.get_secret_value()}"},
-            json=payload,
-        )
-        if response.status_code == 401:
-            store.record_auth_failure()
-        response.raise_for_status()
-        judgment = Judgment.model_validate_json(response.json()["choices"][0]["message"]["content"])
+    with ExitStack() as resources:
+        if store is None:
+            store = resources.enter_context(closing(create_usage_store(config)))
+        store.reject_bad_credential()
+        store.reserve(amount)
+        if charge is not None:
+            charge.reserved = amount
+        # One request, no SDK retries, no automatic model fallback.
+        async with httpx.AsyncClient(timeout=45) as client:
+            response = await client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={"Authorization": f"Bearer {config.openai_api_key.get_secret_value()}"},
+                json=payload,
+            )
+            if response.status_code == 401:
+                store.record_auth_failure()
+            response.raise_for_status()
+            judgment = Judgment.model_validate_json(
+                response.json()["choices"][0]["message"]["content"]
+            )
     valid_ids = {review.id for review in reviews}
     if any(not set(reason.review_ids) <= valid_ids for reason in judgment.reasons):
         raise ValueError("Analysis contained unverified review references")

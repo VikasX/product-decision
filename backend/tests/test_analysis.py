@@ -33,12 +33,13 @@ def test_no_reviews_does_not_spend_credit_and_caches():
     )
 
     async def run():
-        async with httpx.AsyncClient(
-            transport=httpx.ASGITransport(app=app), base_url="http://test"
-        ) as client:
-            first = await client.post("/api/v1/analysis", json={"url": product.url + "?th=1"})
-            second = await client.post("/api/v1/analysis", json={"url": product.url})
-            return first, second
+        async with app.router.lifespan_context(app):
+            async with httpx.AsyncClient(
+                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                first = await client.post("/api/v1/analysis", json={"url": product.url + "?th=1"})
+                second = await client.post("/api/v1/analysis", json={"url": product.url})
+                return first, second
 
     with (
         patch(

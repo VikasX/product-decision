@@ -77,7 +77,7 @@ tokens. Oversized inputs and requests exceeding a budget are rejected before the
 network call. Reservations count even after timeout, invalid output or API rejection.
 The usage object reports reservations, which may exceed actual billed usage.
 
-SQLite stores the ledger, cache and worker leases at backend/.data/analysis.sqlite3,
+Local SQLite stores the ledger, cache and worker leases at backend/.data/analysis.sqlite3,
 or AI_STATE_PATH when set. Keep this file to preserve the lifetime cap across restarts.
 Deleting it resets local tracking. These limits cover this application only, not
 other consumers of the API key, and rely on the documented model prices.
@@ -86,12 +86,48 @@ Verified analyses, including uncertain judgments, cache for 24 hours per marketp
 ASIN, model and prompt version. Failures cache for one minute and are keyed to a hash
 of the credential so updating a rejected key can recover immediately. A 401 also
 blocks calls with that credential for five minutes across products. Raw API keys are
-never stored in SQLite. Transactions reserve budgets atomically across workers.
+never stored in either state backend. Atomic reservations enforce budgets across workers.
 A 240-second lease deduplicates concurrent product analyses. After a worker crash,
 its paid reservation remains counted and the lease eventually expires.
 
-This initial flow stores reviews locally in SQLite as part of cached results. MongoDB
-health checks and configuration continue to work independently.
+Local development stores cached review excerpts in SQLite. On Vercel the app automatically
+uses shared MongoDB collections for the ledger, results, leases and credential-failure cache.
+It makes conditional single-document reservations without requiring multi-document transactions.
+All Vercel instances share the same daily and lifetime caps when using the same database.
+Local SQLite and deployed MongoDB maintain separate spending totals. Deleting the shared
+ledger or changing databases resets deployed tracking. Storage outages return HTTP 503
+before a new OpenAI request can be made.
+
+## Vercel deployment
+
+Set the Vercel project root to `backend`. The exported `app.main:app` ASGI application
+is declared in pyproject.toml. Importing it does not initialise storage or require a local
+.env. Runtime clients and required configuration initialise during application startup.
+The function allows 300 seconds, and local environments, state files and tests are excluded
+from the deployment bundle through vercel.json.
+
+Set these exact environment variable names in Vercel's project settings
+
+- MONGODB_URI containing the Atlas connection URI, including its database credentials
+- MONGODB_DATABASE containing the database the Atlas user can read and write
+- OPENAI_API_KEY containing the OpenAI API key
+
+The automatically provided VERCEL=1 selects MongoDB state, including when an old
+AI_STATE_BACKEND=sqlite override exists. AI_STATE_BACKEND=mongodb can also enable it
+locally for verification. Required collections are ai_usage_ledger, ai_analysis_state
+and ai_auth_failures. Atlas network access must allow the deployment's outbound access.
+
+The deployed frontend https://product-decision-ui.vercel.app is allowed by default.
+Additional origins can be supplied in CORS_ORIGINS as a JSON array. Configure the UI's
+NEXT_PUBLIC_API_BASE_URL to https://product-decision.vercel.app and rebuild the UI.
+GET /api/v1/health checks startup and GET /api/v1/health/db checks Atlas access.
+
+Chrome fallback is available locally. Vercel uses HTTP collection only and reports unavailable
+reviews when Amazon returns a challenge or requires sign-in. A reliable deployed review
+source remains to be validated. Public access also means visitors share this application's
+configured spending caps.
+
+[Vercel FastAPI deployment reference](https://vercel.com/docs/frameworks/backend/fastapi)
 
 Sources checked November 22, 2026
 

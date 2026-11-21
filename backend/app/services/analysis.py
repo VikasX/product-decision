@@ -11,7 +11,7 @@ from app.schemas.analysis import AnalysisResponse, Coverage, Product
 from app.services.usage import (
     PROMPT_VERSION,
     CostProtectionError,
-    UsageStore,
+    create_usage_store,
     credential_fingerprint,
 )
 
@@ -19,7 +19,7 @@ from app.services.usage import (
 class AnalysisService:
     def __init__(self, config: Settings):
         self.config = config
-        self.store = UsageStore(config)
+        self.store = create_usage_store(config)
 
     async def analyze(self, url: str) -> AnalysisResponse:
         asin = url.rsplit("/", 1)[-1]
@@ -83,7 +83,7 @@ class AnalysisService:
         verified = False
         if len(reviews) >= 3:
             try:
-                judgment = await analyze_reviews(self.config, product, reviews, charge)
+                judgment = await analyze_reviews(self.config, product, reviews, charge, self.store)
                 result.verdict = judgment.verdict
                 result.status = (
                     "insufficient_evidence"

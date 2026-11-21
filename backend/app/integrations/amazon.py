@@ -1,4 +1,5 @@
 import hashlib
+import os
 import re
 from urllib.parse import urlsplit
 
@@ -105,7 +106,12 @@ async def collect_reviews(product: Product) -> tuple[Product, list[Review], list
                 message = f"{label.capitalize()}: {message}."
                 if message not in limitations:
                     limitations.append(message)
-    if not reviews:
+    if not reviews and os.getenv("VERCEL") == "1":
+        limitations.append(
+            "Browser collection is unavailable on this deployment. "
+            "Amazon did not provide accessible written reviews."
+        )
+    elif not reviews:
         try:
             browser_title, browser_reviews, browser_limits = await collect_browser_reviews(
                 product, urls
