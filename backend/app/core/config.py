@@ -1,20 +1,21 @@
 from typing import Literal
 
-from pydantic import AnyHttpUrl, SecretStr, field_validator
+from pydantic import AnyHttpUrl, Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy.engine import make_url
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    database_url: SecretStr
+    mongodb_uri: SecretStr
+    mongodb_database: str = Field(default="product_reviews", min_length=1)
+    mongodb_timeout_ms: int = Field(default=5000, gt=0, le=60000)
     cors_origins: list[AnyHttpUrl] = []
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
 
-    @field_validator("database_url")
+    @field_validator("mongodb_uri")
     @classmethod
-    def require_async_postgres(cls, value: SecretStr) -> SecretStr:
-        if make_url(value.get_secret_value()).drivername != "postgresql+asyncpg":
-            raise ValueError("DATABASE_URL must use postgresql+asyncpg")
+    def require_mongodb_uri(cls, value: SecretStr) -> SecretStr:
+        if not value.get_secret_value().startswith(("mongodb://", "mongodb+srv://")):
+            raise ValueError("MONGODB_URI must use mongodb:// or mongodb+srv://")
         return value

@@ -5,10 +5,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.api.router import router
 from app.core.config import Settings
+from app.db.session import create_client
 
 logger = logging.getLogger(__name__)
 
@@ -19,12 +19,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         logging.basicConfig(level=config.log_level)
-        engine = create_async_engine(config.database_url.get_secret_value(), pool_pre_ping=True)
-        app.state.session_factory = async_sessionmaker(engine, expire_on_commit=False)
+        client = create_client(config)
+        app.state.database = client[config.mongodb_database]
         try:
             yield
         finally:
-            await engine.dispose()
+            await client.close()
 
     app = FastAPI(title="AI Product Review Intelligence Agent", lifespan=lifespan)
     app.add_middleware(
