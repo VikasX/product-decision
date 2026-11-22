@@ -36,7 +36,7 @@ Updated November 22, 2026. The local URL-to-analysis flow works and the backend 
 - Repeating the request through the UI returned the saved judgment with no new AI call. The ledger remained at one paid attempt with $0.0014562 reserved, a conservative estimate rather than actual billing.
 - Amazon sign-in was verified separately in the browser. Its authenticated session is separate from the backend collector.
 - Vercel deployed the backend successfully after the ASGI entrypoint fix. https://product-decision.vercel.app/api/v1/health returned 200. The database health endpoint returned 503. Atlas currently permits only the local IP address, and its access rules remain unchanged. No OpenAI calls were made during deployment checks.
-- The UI Production environment now sets NEXT_PUBLIC_API_BASE_URL to https://product-decision.vercel.app. A Git-triggered rebuild was started to apply it.
+- The UI Production environment sets NEXT_PUBLIC_API_BASE_URL to https://product-decision.vercel.app. Its Git-triggered rebuild completed and the hosted UI displays API connected. Submitting the product URL returns a handled 503 storage error while Atlas blocks Vercel. No OpenAI request is made before the shared budget store is accessible.
 
 ## Remaining work
 
