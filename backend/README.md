@@ -64,8 +64,8 @@ The result includes source excerpts and validated review references.
 
 ## Phase 1 refinement
 
-Collection reads the listing first, then prioritises 1-star and 2-star text before
-4-star and 5-star comparison pages and recent reviews. Observed pagination links
+Collection reads the listing first, then recent-sorted 1-star, 2-star, 3-star,
+4-star and 5-star pages and unfiltered recent reviews. Observed pagination links
 are followed only within the same Amazon.in ASIN and the page budget. Review IDs
 and normalized body text deduplicate repeated reviews. Variant and raw date text
 are retained, with ISO dates added only when the format can be parsed reliably.
@@ -75,13 +75,36 @@ rating count and displayed star percentages. Missing values stay unavailable.
 Rating percentages describe Amazon's listing, while sample counts describe only
 collected written reviews. Counts of ratings are not counts of written reviews.
 
-AMAZON_MAX_REVIEWS defaults to 30 and AMAZON_MAX_PAGES to 6. Each request has a
+The sample contains up to 7 negative (1–2★), 7 neutral (3★) and 7 positive (4–5★)
+reviews, at most 21 total, newest reliably dated accessible text first per category.
+Missing categories are not filled with extra reviews from another category. Reviews
+without integer star ratings are excluded from the balanced sample. This is an
+investigation sample, not a representative satisfaction poll. Unknown dates stay
+unknown. The listing is still read for metadata and fallback review text.
+
+AMAZON_MAX_REVIEWS defaults to 21 (hard ceiling 21; existing larger overrides remain
+readable but cannot enlarge the sample) and AMAZON_MAX_PAGES defaults to 7. Smaller
+page budgets may leave routes unvisited; limitations report that. Each request has a
 10-second timeout, with at most one retry for transport failures or HTTP
 500/502/503/504. The overall collection deadline is 90 seconds. Sign-in redirects,
 CAPTCHAs and access-denied responses are not retried. Once Amazon restricts the
 review route, sibling filters are skipped and reported as unavailable. Body text
 is bounded to 4,000 characters per review. Local Chrome fallback remains bounded;
 Vercel continues using HTTP collection.
+
+The HTTP client maintains cookies only within one collection request. Local Chrome
+uses a fresh isolated context. Neither reuses a user's signed-in browser session or
+stored Amazon credentials. An incognito-accessible page is not a guarantee of access
+from Vercel. No CAPTCHA solving, stealth, proxies or login workflow is introduced.
+
+Listing-scoped image URL, observed price text and product-overview specifications
+are optional. Unavailable values remain null/empty. No discounts or warranty are
+inferred. Images must use known Amazon image hosts over HTTPS. The analysis adds
+source-verified reliability_findings and a short key_takeaway in the same single nano
+request. Neutral experiences, variants, recency and contradictions are explicitly
+included in the interpretation instructions. These fields are additive in responses;
+old cached records remain readable. New collection/analysis keys use
+review-v4-balanced-777 without resetting any usage ledger or spending caps.
 
 Previous live runs established that recent/filtered pages can redirect to sign-in,
 return HTTP errors or present CAPTCHAs. These are source-access limitations. This
@@ -98,14 +121,15 @@ can be cached. These checks establish traceability, not the correctness of every
 interpretation.
 
 If collected evidence exceeds the input limit, Python selects a bounded subset
-prioritising low-star reviews while retaining positive comparison. The response
+balancing available negative, neutral and positive evidence. The response
 keeps all collected reviews and reports the number actually analysed. GPT-5 nano,
 the 2,000 completion-token default, one-call policy and spending caps remain in use.
-The prompt version is now review-v3, so a product's first refined judgment needs a
+The prompt version is now review-v4-balanced-777, so a product's first judgment needs a
 new guarded call. Old cache records remain readable and the budget ledger persists.
 
 The response adds product rating metadata, review titles and ISO dates,
-positive_findings, negative_findings, recurring_issues and sample_statistics.
+positive_findings, negative_findings, recurring_issues, reliability_findings,
+key_takeaway and sample_statistics, plus optional listing image/price/specifications.
 The existing reasons field is retained for compatibility.
 
 ### One controlled live test

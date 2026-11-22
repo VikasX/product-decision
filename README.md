@@ -1,6 +1,6 @@
 # product-decision
 
-A shopper pastes an Amazon India product URL and gets a buy or skip recommendation with the reviews that explain it. When evidence is insufficient, the app says what is missing.
+A shopper pastes an Amazon India product URL and gets an evidence-backed verdict with its supporting reviews. BuyWise AI returns Worth Considering, Proceed with Caution, Not Recommended or More Evidence Needed and explains missing evidence.
 
 ## First milestone
 

@@ -45,6 +45,8 @@ def response(content=None, status=200):
                 }
             ],
             "recurring_issues": [],
+            "reliability_findings": [],
+            "key_takeaway": "Check the cited evidence before buying.",
         }
     )
     return httpx.Response(
@@ -128,6 +130,8 @@ def test_verified_uncertain_verdict_cached_across_service_restart_even_when_budg
             "positive_findings": [],
             "negative_findings": [],
             "recurring_issues": [],
+            "reliability_findings": [],
+            "key_takeaway": "Check the cited evidence before buying.",
         }
     )
     with (

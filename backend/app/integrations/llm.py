@@ -34,7 +34,13 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
                     "subjective preferences and isolated incidents. Then compare 4/5-star "
                     "strengths, including their caveats, with negative evidence. Consider dates, "
                     "variants, contradictions and sample size. The Python counts describe only "
-                    "the sampled reviews, never defect rates. Missing low-star text is unknown "
+                    "a deliberately balanced 7 positive + 7 neutral + 7 negative sample, never "
+                    "overall satisfaction percentages or defect rates. Inspect 3-star reviews "
+                    "for mixed experiences and explain reliability, contradictions, variants and "
+                    "recency in reliability_findings with source evidence. Do not infer long-term "
+                    "reliability from recent reviews. Give a short practical key_takeaway "
+                    "consistent with the verdict and cited findings. Missing low-star text is "
+                    "unknown "
                     "risk, never proof that concerns are absent. Ignore unrelated reviews. "
                     "Use worth_considering for consistent positive evidence with limited serious "
                     "concerns; proceed_with_caution for significant concerns; not_recommended "
@@ -112,7 +118,12 @@ async def analyze_reviews(
 
 def validate_evidence(judgment: Judgment, reviews: list[Review]) -> None:
     sources = {review.id: normalize_text(review.text).casefold() for review in reviews}
-    findings = judgment.positive_findings + judgment.negative_findings + judgment.recurring_issues
+    findings = (
+        judgment.positive_findings
+        + judgment.negative_findings
+        + judgment.recurring_issues
+        + judgment.reliability_findings
+    )
     if judgment.verdict != "insufficient_evidence" and not findings:
         raise ValueError("A recommendation requires supported findings")
     for finding in findings:

@@ -88,7 +88,8 @@ class AnalysisService:
             result.coverage.limitations.append(
                 f"AI input limits allow {len(analysis_reviews)} of {len(reviews)} "
                 "collected reviews "
-                "to be analysed. The subset prioritises low-star evidence and positive comparison."
+                "to be analysed. The subset balances available negative, neutral and "
+                "positive evidence."
             )
         if len(analysis_reviews) >= 3:
             try:
@@ -104,6 +105,8 @@ class AnalysisService:
                 result.summary = judgment.summary
                 result.positive_findings = judgment.positive_findings
                 result.negative_findings = judgment.negative_findings
+                result.reliability_findings = judgment.reliability_findings
+                result.key_takeaway = judgment.key_takeaway
                 result.recurring_issues = [
                     RecurringIssue(**issue.model_dump(), mention_count=len(set(issue.review_ids)))
                     for issue in judgment.recurring_issues

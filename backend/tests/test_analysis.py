@@ -73,6 +73,8 @@ def test_rejects_invented_review_citations():
                                 "summary": "Bad colours",
                                 "positive_findings": [],
                                 "recurring_issues": [],
+                                "reliability_findings": [],
+                                "key_takeaway": "Check the cited evidence before buying.",
                                 "negative_findings": [
                                     {
                                         "text": "Colour failures",

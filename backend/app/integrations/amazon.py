@@ -23,6 +23,7 @@ MAX_REVIEWS = 100
 STAR_FILTERS = (
     ("1-star reviews", "one_star"),
     ("2-star reviews", "two_star"),
+    ("3-star reviews", "three_star"),
     ("4-star reviews", "four_star"),
     ("5-star reviews", "five_star"),
 )
@@ -36,6 +37,42 @@ def parse_metadata(soup: BeautifulSoup, product: Product) -> None:
     title = soup.select_one("#productTitle")
     if title:
         product.title = normalize_text(title.get_text(" ", strip=True))[:500]
+        # Listing-scoped fields only; review pages and sponsored offers cannot replace them.
+        image = soup.select_one("#landingImage, #imgBlkFront")
+        if image:
+            image_url = image.get("data-old-hires") or image.get("src")
+            if isinstance(image_url, str):
+                parsed = urlsplit(image_url)
+                if (
+                    parsed.scheme == "https"
+                    and parsed.hostname
+                    in {
+                        "m.media-amazon.com",
+                        "images-na.ssl-images-amazon.com",
+                        "images-eu.ssl-images-amazon.com",
+                    }
+                    and not parsed.username
+                    and not parsed.password
+                    and parsed.port in {None, 443}
+                ):
+                    product.image_url = image_url
+        price = soup.select_one(
+            "#corePrice_feature_div .a-price:not(.a-text-price) .a-offscreen, "
+            "#corePriceDisplay_desktop_feature_div .a-price:not(.a-text-price) .a-offscreen, "
+            "#priceblock_ourprice, #priceblock_dealprice"
+        )
+        if price:
+            product.price_text = normalize_text(price.get_text(" ", strip=True))[:100]
+        specs = []
+        for row in soup.select("#productOverview_feature_div tr")[:8]:
+            cells = row.select("td")
+            if len(cells) == 2:
+                label = normalize_text(cells[0].get_text(" ", strip=True))[:100]
+                value = normalize_text(cells[1].get_text(" ", strip=True))[:250]
+                if label and value:
+                    specs.append({"label": label, "value": value})
+        if specs:
+            product.specifications = specs
     rating = soup.select_one(
         "#acrPopover[title], #averageCustomerReviews .a-icon-alt, [data-hook='rating-out-of-text']"
     )
@@ -212,23 +249,23 @@ async def fetch_page(client: httpx.AsyncClient, url: str, retries: int = 0) -> s
 
 def balanced_review_sample(reviews: list[Review], limit: int) -> list[Review]:
     unique = deduplicate_reviews(reviews, MAX_REVIEWS * 10)
-    negative = [review for review in unique if review.stars in (1, 2)]
-    positive = [review for review in unique if review.stars in (4, 5)]
-    other = [review for review in unique if review.stars not in (1, 2, 4, 5)]
-    for group in (negative, positive, other):
+    groups = [
+        [review for review in unique if review.stars in stars] for stars in ((1, 2), (3,), (4, 5))
+    ]
+    for group in groups:
         group.sort(key=lambda review: review.date_iso or "", reverse=True)
-    positive_reserve = min(len(positive), max(1, limit // 3))
-    selected = negative[: limit - positive_reserve] + positive[:positive_reserve]
-    selected_ids = {review.id for review in selected}
-    remaining = [review for review in negative + positive + other if review.id not in selected_ids]
-    return selected + remaining[: limit - len(selected)]
+    # Seven per category, never fill a missing category with extra reviews from another.
+    # Round-robin also preserves comparison when the AI input budget requires a subset.
+    return [group[index] for index in range(7) for group in groups if index < len(group)][
+        : min(limit, 21)
+    ]
 
 
 async def collect_reviews(
     product: Product, config: Settings | None = None
 ) -> tuple[Product, list[Review], list[str]]:
-    max_reviews = config.amazon_max_reviews if config else 30
-    max_pages = config.amazon_max_pages if config else 6
+    max_reviews = min(config.amazon_max_reviews, 21) if config else 21
+    max_pages = config.amazon_max_pages if config else 7
     timeout = config.amazon_timeout_seconds if config else 10
     retries = config.amazon_transient_retries if config else 1
     collection_seconds = 90
@@ -255,6 +292,22 @@ async def collect_reviews(
                             f"{label.capitalize()}: unavailable because Amazon restricted "
                             "the review route."
                         )
+                        continue
+                    category = (
+                        (1, 2)
+                        if label.startswith(("1-star", "2-star"))
+                        else (3,)
+                        if label.startswith("3-star")
+                        else (4, 5)
+                        if label.startswith(("4-star", "5-star"))
+                        else ()
+                    )
+                    if (
+                        "next page" in label
+                        and category
+                        and sum(r.stars in category for r in balanced_review_sample(reviews, 21))
+                        >= 7
+                    ):
                         continue
                     visited.add(url)
                     try:
@@ -299,7 +352,10 @@ async def collect_reviews(
         limitations.append("Collection stopped at its 90-second overall time limit.")
     selected = balanced_review_sample(reviews, max_reviews)
     if len(deduplicate_reviews(reviews, MAX_REVIEWS * 10)) > len(selected):
-        limitations.append(f"Collection was limited to {max_reviews} unique written reviews.")
+        limitations.append(
+            f"Collection retained up to 7 reviews per category and {max_reviews} total; "
+            "unrated reviews were excluded from the balanced sample."
+        )
     if not selected and os.getenv("VERCEL") == "1":
         limitations.append("Browser collection is unavailable on this deployment.")
     if not any(review.stars in (1, 2) for review in selected):
@@ -309,6 +365,13 @@ async def collect_reviews(
         )
     if not any(review.stars in (4, 5) for review in selected):
         limitations.append("No 4-star or 5-star text was accessible for comparison.")
+    for name, stars in (("negative", (1, 2)), ("neutral", (3,)), ("positive", (4, 5))):
+        count = sum(review.stars in stars for review in selected)
+        if count < 7:
+            limitations.append(
+                f"Only {count} of up to 7 {name} reviews were accessible; "
+                "this does not establish how many exist on Amazon."
+            )
     if product.overall_rating is None:
         limitations.append("Overall product rating was unavailable.")
     if product.rating_count is None:
@@ -316,8 +379,10 @@ async def collect_reviews(
     if len(product.rating_distribution) < 5:
         limitations.append("The full 5-star to 1-star rating distribution was unavailable.")
     limitations.append(
-        "Review counts and issue mentions describe the collected sample, not buyer failure rates. "
-        "Accessible reviews may include other variants."
+        "The latest accessible reviews were selected within each category, up to 7+7+7. "
+        "This deliberately balanced sample is not representative of overall satisfaction or "
+        "failure rates. Only Amazon's listing distribution describes overall ratings. "
+        "Accessible reviews may include other variants; missing dates prevent recency verification."
     )
     return product, selected, list(dict.fromkeys(limitations))
 

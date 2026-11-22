@@ -1,63 +1,37 @@
-# Project status
+# BuyWise AI — project status
 
-Updated November 22, 2026. Both Vercel deployments are connected. After moving the backend to Mumbai, a hosted analysis of B0CD1BHXPZ completed using 13 real reviews. Amazon access remains variable and protected review pages can require sign-in. Atlas access is currently temporary.
+Updated November 22, 2026. Backend and UI live in separate repositories, both on main.
 
-## Phase 1 refinement
+## Current implementation
 
-- Added product overall rating, total rating count and displayed 5-star to 1-star percentages when available. Review records now include titles and reliably parsed ISO dates alongside original text, dates, variants and source references.
-- Prioritised 1/2-star text before 4/5-star comparison, with bounded observed pagination, configurable collection limits, one transient retry and a 90-second overall deadline. Restricted routes are skipped after sign-in, CAPTCHA or denied-access responses. Missing data remains explicit.
-- Added four verdicts, positive/negative findings, classified recurring issues and Python sample statistics. Findings require matching quotes and valid IDs. Recurring issues require two distinct source reviews. Strong negative recommendations require recurring product evidence, rather than delivery or preference complaints alone.
-- Preserved GPT-5 nano, spending limits, one paid attempt per analysis, persistent cache and ledger. A bounded balanced subset fits the input limit when needed. Cache prompt version review-v3 invalidates older judgments without resetting spending totals, and legacy payloads remain readable.
-- Refined the existing result section with rating bars, evidence sections, sample counts/date range, accessible review references, unavailable states and cache information. The homepage and navigation are retained.
-- Validation used synthetic stored HTML, mocked provider/LLM responses and a loopback fixture API. Backend has 66 passing tests plus Ruff checks, including the normal API route and cache reuse. UI has 13 passing response-validation tests plus lint, TypeScript and production-build checks. Desktop/narrow-screen, missing data, legacy cache, malformed responses and expandable reference behavior were verified locally.
-- No Amazon or OpenAI requests were made for refinement validation. Actual live coverage and the new model output remain unverified. See backend/README.md for one controlled live-test procedure and collection defaults.
+- Amazon.in URL → canonical ASIN → accessible product/review extraction → one GPT-5 nano call → validated evidence → shared MongoDB cache → Next.js results. Four verdicts: Worth Considering, Proceed with Caution, Not Recommended, More Evidence Needed.
+- Collection attempts the listing plus recent-sorted 1, 2, 3, 4 and 5-star routes and recent reviews. It retains up to 7 negative, 7 neutral and 7 positive unique reviews, at most 21. Dates, titles, stars, variants and source references are preserved. Missing categories are not backfilled. Latest accessible dated reviews are prioritised within each group.
+- Default limits: 7 page fetches, 10 seconds per request, one transient retry, 90 seconds overall. Observed pagination stays within the same ASIN and page budget. Sign-in, CAPTCHA and access denials stop sibling protected routes. Local Chrome fallback is bounded; Vercel uses HTTP only.
+- Product-scoped overall rating, rating count and displayed histogram remain separate from the deliberately balanced written-review sample. Optional observed price, safe Amazon-hosted image and overview specifications are extracted only when available. No price, discount or warranty is invented.
+- The single nano response includes positive/negative findings, classified recurring issues, reliability findings and a key takeaway. Quotes and IDs are verified against the supplied review text; recurring issues require two distinct reviews and strong negative verdicts require recurring product evidence. Python computes sample counts and date range. Model interpretation itself still needs human evaluation.
+- Cost protections remain: $0.02/day, $0.10 lifetime, 20 paid attempts/day by default, conservative reservations before requests, no model retries/fallbacks, bounded input/output, concurrency leases and 24-hour verified cache. Failures cache briefly. Prompt/collection version is review-v4-balanced-777; existing ledgers are preserved.
+- UI implements the approved Stitch light/dark screens with one responsive layout: ivory/forest/gold or midnight/emerald/gold, persistent local theme choice, product + verdict row, three analytics cards, three insight cards, limitations, expandable reviews and a plain-text export using the current response. The only overall percentages come from the Amazon histogram; missing components stay unavailable. The sentiment ring shows actual collected rating counts and identifies the sampling bias. AI-analyzed and collected counts remain distinct.
 
-## Repositories
+## Verification for this release
 
-- [Backend](https://github.com/VikasX/product-decision) uses FastAPI, MongoDB for deployed analysis state and usage limits, and SQLite for local analysis state.
-- [UI](https://github.com/VikasX/product-decision-ui) uses Next.js, React, TypeScript and Tailwind CSS.
+- Backend: 73 mocked tests, Ruff lint and formatting. Coverage includes category caps/latest dates/deduplication, shortages, neutral star routes, bounded failures, metadata, quotes, structured analysis, API/cache compatibility and existing budget/storage protections.
+- UI: 17 tests, ESLint, TypeScript and production build. Covers nested payload validation, source URLs/quotes, histogram aggregates with missing buckets, actual sample counts and report content for all four verdicts.
+- Browser verification uses a loopback fixture API, not production analysis: desktop/mobile themes, persisted preference after reload, all verdicts, empty/partial data, malformed response/503 errors, nested evidence links and downloaded report. No horizontal overflow at 390px.
+- No Amazon or OpenAI calls were made for this release's validation. The 7+7+7 strategy works against mocked pages; obtaining all 21 live reviews is not guaranteed. New live model output is unverified.
 
-## Completed backend work
+## Source and infrastructure limitations
 
-- `POST /api/v1/analysis` accepts an Amazon.in product URL, validates its host and ASIN, and removes tracking parameters.
-- Collects accessible listing, recent and critical review pages. An isolated headless Chrome session provides a fallback when direct requests collect no reviews.
-- Extracts review IDs, text, stars, dates, variants and source links, with bounded collection and duplicate removal.
-- Makes one OpenAI request with GPT-5 nano and minimal reasoning. Validates the returned structure and that cited review IDs exist.
-- Returns buy, skip or insufficient evidence, reasons, review excerpts, coverage limitations and usage information.
-- SQLite locally and shared MongoDB on Vercel cache verified judgments for 24 hours, including uncertain judgments. Cache keys include marketplace, ASIN, model and prompt version.
-- Atomic reservations enforce default limits of $0.02 per India calendar day, $0.10 total and 20 paid attempts per day. Reservations and cache survive restarts.
-- Bounds input and output, deduplicates concurrent requests, retains reservations after failed calls and makes no automatic retry or model fallback.
-- Preserves database health routes and adds frontend CORS support. Credentials and local usage/cache files are ignored by Git.
+- Prior hosted requests established sign-in redirects, CAPTCHAs and HTTP failures. A prior Mumbai-hosted UGREEN run collected 13 real reviews and reused the cache; that does not establish coverage for other products or this revised strategy.
+- The HTTP collector has an anonymous per-request cookie jar; isolated local Chrome does not inherit the user's authenticated browser. No credentials, session-sharing, anti-bot bypass, paid source or new auth system was added.
+- Public users share the configured spending caps. Storage outages fail closed before a new AI request. Local SQLite and deployed MongoDB have separate ledgers.
+- Atlas network access was explicitly approved temporarily for 6 hours, expiring November 22 at approximately 18:25 IST. A durable permitted network path still needs to be arranged. This release does not extend the rule or modify network access.
+- GPT-5 nano remains the sole model, with the existing verified price allowlist. Review availability/pricing before any model change. No LangChain/LangGraph, app MCP, RAG, agent orchestration, database migration or extra provider was introduced.
 
-## Completed UI work
+## Repositories and operation
 
-- Amazon.in URL form submits to the backend with input validation, loading and error states.
-- Shows the verdict, explanation, collected and analysed review counts, and collection limitations.
-- Reasons link to expandable source reviews with stars, dates, variants and Amazon links.
-- Shows the selected model, cache reuse and conservative cost reservations. Backend budget-limit messages remain visible.
-- Retains API health status and prevents overlapping submissions from the form.
+- Backend: https://github.com/VikasX/product-decision — deployment https://product-decision.vercel.app.
+- UI: https://github.com/VikasX/product-decision-ui — deployment https://product-decision-ui.vercel.app.
+- Setup, configuration, budget details and one controlled live-test procedure: [backend guide](backend/README.md).
+- For one live test, refresh the hosted UI, submit one product URL once and inspect counts, quotes and limitations. First access under the new cache version can make one budget-guarded paid request when at least three reviews fit. Repeat access should reuse the verified cache. No live test is run automatically.
 
-## Validation completed
-
-- Backend has 66 passing tests plus Ruff lint and formatting checks. Tests cover collection parsing and access limits, source quote/verdict validation, persistent caching, budget enforcement before network calls, concurrent duplicate requests, atomic reservations, credential failure handling and midnight India budget reset. Deployment tests cover import without storage initialisation, Vercel state selection, shared MongoDB conditional budget updates and fail-closed storage errors. Diagnostics tests confirm that database credentials and exception text do not appear in connection-failure logs.
-- Real Atlas verification passed against temporary collections inside the configured database, covering concurrent reservations, India day rollover, shared cache, lease ownership and credential-failure sharing. The exact QA collections were removed. No OpenAI requests were made for this deployment verification.
-- UI lint and production build passed.
-- A live run for ASIN `B0D5Q7RWF6` collected and analysed eight real reviews, returning an uncertain judgment with source references.
-- Repeating the request through the UI returned the saved judgment with no new AI call. The ledger remained at one paid attempt with $0.0014562 reserved, a conservative estimate rather than actual billing.
-- Amazon sign-in was verified separately in the browser. Its authenticated session is separate from the backend collector.
-- Vercel deployed the backend successfully after the ASGI entrypoint fix. Application and database health endpoints returned 200 after an explicitly approved temporary Atlas access change. This access expires November 22, 2026 at approximately 18:25 India time. A durable permitted network path remains necessary.
-- The UI Production environment sets NEXT_PUBLIC_API_BASE_URL to https://product-decision.vercel.app. Its Git-triggered rebuild completed and the hosted UI displays API connected. The former storage 503 is resolved. A hosted test for B0D5Q7RWF6 returned insufficient evidence because Amazon challenged collection with CAPTCHAs. Zero reviews were collected and no OpenAI call was made.
-- The backend now runs in Vercel's Mumbai region (`bom1`), near its Atlas database and Amazon India. A subsequent hosted test of UGREEN hub B0CD1BHXPZ collected and analysed 13 reviews and returned a buy judgment. Repeated UI and API requests returned the cached judgment. The deployed ledger recorded one paid attempt with $0.00148395 conservatively reserved. HTTP collection failures now expose status codes without response contents or credentials. All 36 tests and Ruff lint passed after the change.
-
-## Remaining work
-
-- Establish a reliable signed-in collection flow for the backend. Recent and critical pages can require sign-in or return access challenges.
-- Evaluate recommendations against manually reviewed products. Reference validation confirms that IDs exist, but does not prove every generated claim accurately interprets the source review.
-- Improve variant handling and balanced review sampling. Current accessible samples can be small and biased.
-- Add the bounded agent step that requests more evidence to resolve a specific uncertainty. The current implementation follows a fixed collection and analysis flow.
-- Arrange a durable permitted network path from Vercel to Atlas before the temporary access expires. Hosted listing collection has succeeded, but Amazon requests may still encounter CAPTCHAs or sign-in restrictions. Chrome fallback remains local-only. Broader source reliability, user authentication and public-access controls remain pending.
-- Review GPT-5 nano availability and pricing before changing the model. It is deprecated but was available during the live test. Cost limits use the documented prices and cover this app's tracked requests.
-
-## Maintaining this record
-
-Update this file when a feature is completed or a limitation changes. Record validation performed and keep backend setup in `backend/README.md` and UI setup in its own README.
+Maintain this file with each completed change and record actual validation separately from intended or live-unverified behavior.

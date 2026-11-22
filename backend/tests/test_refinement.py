@@ -65,6 +65,8 @@ def judgment(**overrides):
                 ],
             }
         ],
+        "reliability_findings": [],
+        "key_takeaway": "Check installation requirements before buying.",
     }
     data.update(overrides)
     return Judgment.model_validate(data)
@@ -156,15 +158,16 @@ def test_python_sample_counts_are_distinct_from_listing_rating_distribution():
     assert listing.rating_count == 373
 
 
-def test_balanced_collection_prioritises_negative_evidence_and_keeps_positive_comparison():
+def test_balanced_collection_does_not_backfill_missing_category():
     source = product().url
     reviews = [
         Review(id=f"RNEG{i}", text=f"Defect {i}", stars=1, source_url=source) for i in range(20)
     ] + [Review(id=f"RPOS{i}", text=f"Useful {i}", stars=5, source_url=source) for i in range(20)]
     selected = balanced_review_sample(reviews, 12)
     assert len(selected) == 12
-    assert sum(review.stars == 1 for review in selected) == 8
-    assert sum(review.stars == 5 for review in selected) == 4
+    assert sum(review.stars == 1 for review in selected) == 6
+    assert sum(review.stars == 5 for review in selected) == 6
+    assert len(balanced_review_sample(reviews, 30)) == 14
 
 
 @pytest.mark.parametrize(
@@ -235,12 +238,13 @@ def test_collection_requests_low_stars_before_positive_stars_and_bounds_pages(mo
         return original_client(**kwargs, transport=httpx.MockTransport(handler))
 
     with patch("app.integrations.amazon.httpx.AsyncClient", side_effect=client):
-        listing, reviews, _ = asyncio.run(collect_reviews(product(), settings(amazon_max_pages=7)))
-    assert len(requests) == 7
-    assert [request.url.params.get("filterByStar") for request in requests[:5]] == [
+        listing, reviews, _ = asyncio.run(collect_reviews(product(), settings(amazon_max_pages=8)))
+    assert len(requests) == 8
+    assert [request.url.params.get("filterByStar") for request in requests[:6]] == [
         None,
         "one_star",
         "two_star",
+        "three_star",
         "four_star",
         "five_star",
     ]

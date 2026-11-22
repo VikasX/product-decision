@@ -45,6 +45,9 @@ class Product(BaseModel):
     overall_rating: float | None = Field(default=None, ge=1, le=5)
     rating_count: int | None = Field(default=None, ge=0)
     rating_distribution: list[RatingBucket] = Field(default_factory=list, max_length=5)
+    image_url: str | None = None
+    price_text: str | None = None
+    specifications: list[dict[str, str]] = Field(default_factory=list)
 
 
 class Review(BaseModel):
@@ -94,6 +97,8 @@ class Judgment(BaseModel):
     positive_findings: list[Finding] = Field(max_length=3)
     negative_findings: list[Finding] = Field(max_length=3)
     recurring_issues: list[IssueFinding] = Field(max_length=3)
+    reliability_findings: list[Finding] = Field(max_length=2)
+    key_takeaway: str = Field(min_length=1, max_length=500)
 
 
 class SampleStatistics(BaseModel):
@@ -136,6 +141,8 @@ class AnalysisResponse(BaseModel):
     negative_findings: list[Finding] = Field(default_factory=list)
     recurring_issues: list[RecurringIssue] = Field(default_factory=list)
     sample_statistics: SampleStatistics = Field(default_factory=SampleStatistics)
+    reliability_findings: list[Finding] = Field(default_factory=list)
+    key_takeaway: str | None = None
 
     @field_validator("verdict", mode="before")
     @classmethod

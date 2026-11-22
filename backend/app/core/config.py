@@ -26,8 +26,8 @@ class Settings(CorsSettings):
     ai_state_path: Path = Path(__file__).resolve().parents[2] / ".data" / "analysis.sqlite3"
     ai_state_backend: Literal["auto", "sqlite", "mongodb"] = "auto"
     vercel: bool = False
-    amazon_max_reviews: int = Field(default=30, ge=3, le=100)
-    amazon_max_pages: int = Field(default=6, ge=1, le=10)
+    amazon_max_reviews: int = Field(default=21, ge=3, le=100)
+    amazon_max_pages: int = Field(default=7, ge=1, le=10)
     amazon_timeout_seconds: float = Field(default=10, ge=1, le=20)
     amazon_transient_retries: int = Field(default=1, ge=0, le=1)
 
