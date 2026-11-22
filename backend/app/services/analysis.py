@@ -5,10 +5,10 @@ import uuid
 import httpx
 
 from app.core.config import Settings
-from app.integrations.amazon import balanced_review_sample, collect_reviews
+from app.integrations.amazon import collect_reviews
 from app.integrations.llm import AttemptCharge, analyze_reviews, prepare_request
 from app.schemas.analysis import AnalysisResponse, Coverage, Product, Reason, RecurringIssue, Review
-from app.services.review_evidence import sample_statistics
+from app.services.review_evidence import sample_statistics, select_page_reviews, usable_summary
 from app.services.usage import (
     PROMPT_VERSION,
     CostProtectionError,
@@ -75,7 +75,7 @@ class AnalysisService:
             status="insufficient_evidence",
             product=product,
             verdict="insufficient_evidence",
-            summary="Could not collect enough written reviews to support a buying decision.",
+            summary="Could not collect enough product-page evidence to support a buying decision.",
             reasons=[],
             reviews=reviews,
             coverage=Coverage(reviews_analyzed=0, limitations=limitations),
@@ -88,10 +88,10 @@ class AnalysisService:
             result.coverage.limitations.append(
                 f"AI input limits allow {len(analysis_reviews)} of {len(reviews)} "
                 "collected reviews "
-                "to be analysed. The subset balances available negative, neutral and "
+                "to be analysed. The subset prioritises negative evidence and "
                 "positive evidence."
             )
-        if len(analysis_reviews) >= 3:
+        if len(analysis_reviews) >= 3 or usable_summary(product):
             try:
                 judgment = await self.judge_reviews(product, analysis_reviews, charge)
                 result.verdict = judgment.verdict
@@ -105,6 +105,7 @@ class AnalysisService:
                 result.negative_findings = judgment.negative_findings
                 result.reliability_findings = judgment.reliability_findings
                 result.key_takeaway = judgment.key_takeaway
+                result.amazon_findings = judgment.amazon_findings
                 result.recurring_issues = [
                     RecurringIssue(**issue.model_dump(), mention_count=len(set(issue.review_ids)))
                     for issue in judgment.recurring_issues
@@ -143,16 +144,16 @@ class AnalysisService:
                 )
         else:
             result.coverage.limitations.append(
-                "At least three written reviews are required before spending API credit."
+                "Analysis needs at least three written reviews or a usable Amazon summary "
+                "with the full rating distribution."
             )
         result.usage = self.store.usage(reserved=charge.reserved)
         return result, verified
 
     def fit_review_sample(self, product: Product, reviews: list[Review]) -> list[Review]:
-        if len(reviews) < 3:
-            return reviews
-        for count in range(len(reviews), 2, -1):
-            selected = balanced_review_sample(reviews, count)
+        minimum = 0 if usable_summary(product) else 3
+        for count in range(min(len(reviews), 8), minimum - 1, -1):
+            selected = select_page_reviews(reviews, count) if count else []
             try:
                 self.prepare_llm_request(product, selected)
                 return selected

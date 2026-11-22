@@ -2,6 +2,7 @@ from app.integrations.langchain_llm import analyze_reviews_langchain, prepare_la
 from app.integrations.llm import AttemptCharge
 from app.schemas.analysis import Product, Review
 from app.services.analysis import AnalysisService
+from app.services.review_evidence import usable_summary
 from app.services.usage import PROMPT_VERSION
 
 
@@ -13,7 +14,7 @@ class LangChainAnalysisService(AnalysisService):
     async def collect_evidence(self, url: str, asin: str):
         http_key = f"amazon.in:{asin}:{self.config.openai_model}:{PROMPT_VERSION}"
         cached_http = self.store.cached(http_key)
-        if cached_http is not None and cached_http.reviews:
+        if cached_http is not None and (cached_http.reviews or usable_summary(cached_http.product)):
             return (
                 cached_http.product.model_copy(deep=True),
                 [review.model_copy(deep=True) for review in cached_http.reviews],

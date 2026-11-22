@@ -2,6 +2,26 @@
 
 Updated November 22, 2026. Backend and UI live in separate repositories, both on main.
 
+## Current product-page simplification
+
+- The active collector requests only the product listing, no filtered/recent/paginated
+  review pages and no browser fallback. It retains up to 8 unique accessible written
+  reviews and available overall ratings, Customers say text and feedback topics/counts.
+- Both nano integrations use the same compact evidence JSON, default 10,000 UTF-8
+  bytes, up to 1,000 characters per review. Negative/mixed evidence is prioritized.
+  Existing transports, spending caps, separate workflow caches and API fields remain.
+- A usable Amazon summary + all five histogram buckets can support analysis with
+  fewer than three reviews. Summary/topic findings cite their own source quotes;
+  written-review IDs and recurring-review validation remain separate and intact.
+- Customers say/topics appear in the existing product card; source findings augment
+  existing insight cards. Missing source data stays unavailable and repetitive
+  filtered-page warnings are removed. Cache version: review-v5-product-page.
+- Validation uses stored synthetic HTML and mocked HTTP/SDK transports only. No new
+  live Amazon/OpenAI requests or spending-limit changes. Live markup coverage and
+  native model output remain unverified; the underlying listing can still be blocked.
+
+The sections below record earlier releases and are historical where superseded above.
+
 ## Current implementation
 
 - Amazon.in URL → canonical ASIN → accessible product/review extraction → one GPT-5 nano call → validated evidence → shared MongoDB cache → Next.js results. Four verdicts: Worth Considering, Proceed with Caution, Not Recommended, More Evidence Needed.

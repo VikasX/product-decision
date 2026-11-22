@@ -1,9 +1,6 @@
 import asyncio
 import hashlib
-import os
 import re
-import time
-from collections import deque
 from urllib.parse import urlsplit
 
 import httpx
@@ -12,11 +9,12 @@ from playwright.async_api import Error as BrowserError
 from playwright.async_api import async_playwright
 
 from app.core.config import Settings
-from app.schemas.analysis import Product, RatingBucket, Review
+from app.schemas.analysis import FeedbackTopic, Product, RatingBucket, Review
 from app.services.review_evidence import (
     deduplicate_reviews,
     normalize_text,
     parse_review_date,
+    select_page_reviews,
 )
 
 MAX_REVIEWS = 100
@@ -83,6 +81,7 @@ def parse_metadata(soup: BeautifulSoup, product: Product) -> None:
             parsed_rating = float(match.group(1).replace(",", "."))
             if 1 <= parsed_rating <= 5:
                 product.overall_rating = parsed_rating
+    parse_customer_feedback(soup, product)
     histogram = soup.select_one("#histogramTable, #cm_cr_dp_d_rating_histogram")
     if histogram:
         count = re.search(
@@ -118,6 +117,57 @@ def parse_metadata(soup: BeautifulSoup, product: Product) -> None:
             )
             if count:
                 product.rating_count = int(count.group(1).replace(",", ""))
+
+
+def parse_customer_feedback(soup: BeautifulSoup, product: Product) -> None:
+    section = soup.select_one("#product-summary, [data-hook='cr-product-insights-summary']")
+    if section:
+        summary = section.select_one("[data-hook='product-summary'], .a-spacing-small .a-size-base")
+        if summary:
+            product.customers_say = normalize_text(summary.get_text(" ", strip=True))[:1800] or None
+    topics = []
+    seen = set()
+    for element in soup.select(
+        "[data-hook='cr-insights-widget-aspects'] [data-csa-c-item-id], "
+        "#cr-product-insights-cards [data-csa-c-item-id]"
+    ):
+        name_element = element.select_one("[data-hook='cr-insights-widget-aspects-title']")
+        if not name_element:
+            continue
+        name = normalize_text(name_element.get_text(" ", strip=True))[:80]
+        if not name or name.casefold() in seen:
+            continue
+        seen.add(name.casefold())
+        label = normalize_text(str(element.get("aria-label") or element.get_text(" ", strip=True)))
+        indicator = str(element.get("data-csa-c-item-id", "")).lower()
+        explicit = str(element.get("data-sentiment", "")).lower()
+        sentiment = explicit if explicit in {"positive", "negative", "mixed"} else None
+        if sentiment is None:
+            for value in ("mixed", "negative", "positive"):
+                if re.search(rf"(?:^|[_ -]){value}(?:$|[_ -])", indicator):
+                    sentiment = value
+                    break
+
+        def count(pattern, label=label):
+            match = re.search(pattern, label, re.I)
+            return int(match.group(1).replace(",", "")) if match else None
+
+        detail = element.select_one("[data-hook='cr-insights-widget-aspects-summary']")
+        topics.append(
+            FeedbackTopic(
+                name=name,
+                sentiment=sentiment,
+                mention_count=count(r"([\d,]+)\s+(?:customers?\s+)?mentions?"),
+                positive_count=count(r"([\d,]+)\s+positive"),
+                negative_count=count(r"([\d,]+)\s+negative"),
+                text=normalize_text(detail.get_text(" ", strip=True))[:500] if detail else None,
+            )
+        )
+        if len(topics) == 64:
+            break
+    product.feedback_topics = sorted(
+        topics, key=lambda t: {"negative": 0, "mixed": 1, "positive": 2, None: 3}[t.sentiment]
+    )[:8]
 
 
 def parse_page(html: str, product: Product) -> tuple[str | None, list[Review]]:
@@ -264,127 +314,37 @@ def balanced_review_sample(reviews: list[Review], limit: int) -> list[Review]:
 async def collect_reviews(
     product: Product, config: Settings | None = None
 ) -> tuple[Product, list[Review], list[str]]:
-    max_reviews = min(config.amazon_max_reviews, 21) if config else 21
-    max_pages = config.amazon_max_pages if config else 7
+    max_reviews = min(config.amazon_max_reviews, 8) if config else 8
     timeout = config.amazon_timeout_seconds if config else 10
     retries = config.amazon_transient_retries if config else 1
-    collection_seconds = 90
-    urls = review_page_urls(product)
     reviews: list[Review] = []
     limitations: list[str] = []
-    blocked_review_route = False
-    visited: set[str] = set()
-    queue = deque(urls)
-    deadline = time.monotonic() + collection_seconds
     try:
-        async with asyncio.timeout(collection_seconds):
+        async with asyncio.timeout(30):
             async with httpx.AsyncClient(
                 timeout=timeout,
                 follow_redirects=False,
                 headers={"User-Agent": "Mozilla/5.0", "Accept-Language": "en-IN,en;q=0.9"},
             ) as client:
-                while queue and len(visited) < max_pages:
-                    label, url = queue.popleft()
-                    if url in visited:
-                        continue
-                    if blocked_review_route and label != "listing":
-                        limitations.append(
-                            f"{label.capitalize()}: unavailable because Amazon restricted "
-                            "the review route."
-                        )
-                        continue
-                    category = (
-                        (1, 2)
-                        if label.startswith(("1-star", "2-star"))
-                        else (3,)
-                        if label.startswith("3-star")
-                        else (4, 5)
-                        if label.startswith(("4-star", "5-star"))
-                        else ()
-                    )
-                    if (
-                        "next page" in label
-                        and category
-                        and sum(r.stars in category for r in balanced_review_sample(reviews, 21))
-                        >= 7
-                    ):
-                        continue
-                    visited.add(url)
-                    try:
-                        html = await fetch_page(client, url, retries=retries)
-                        _, page_reviews = parse_page(html, product)
-                        reviews.extend(page_reviews)
-                        next_page = next_review_page(html, url, product.asin)
-                        if next_page and next_page not in visited:
-                            queue.append((f"{label} next page", next_page))
-                    except AccessRestrictedError as exc:
-                        limitations.append(f"{label.capitalize()}: {exc}.")
-                        if label != "listing":
-                            blocked_review_route = True
-                    except httpx.HTTPStatusError as exc:
-                        limitations.append(
-                            f"{label.capitalize()}: Amazon returned "
-                            f"HTTP {exc.response.status_code}."
-                        )
-                        if label != "listing" and exc.response.status_code in {401, 403, 429}:
-                            blocked_review_route = True
-                    except (httpx.HTTPError, ValueError):
-                        limitations.append(f"{label.capitalize()}: Amazon request failed.")
-                if queue:
-                    limitations.append(
-                        f"Collection reached its {max_pages}-page limit; additional pages "
-                        "were not requested."
-                    )
-            if not reviews and os.getenv("VERCEL") != "1":
-                browser_urls = [url for _, url in urls[:max_pages]]
-                try:
-                    async with asyncio.timeout(min(30, max(0.1, deadline - time.monotonic()))):
-                        title, browser_reviews, browser_limits = await collect_browser_reviews(
-                            product, browser_urls
-                        )
-                        if title:
-                            product.title = title
-                        reviews.extend(browser_reviews)
-                        limitations.extend(browser_limits)
-                except (TimeoutError, BrowserError):
-                    limitations.append("Local browser collection was unavailable or timed out.")
-    except TimeoutError:
-        limitations.append("Collection stopped at its 90-second overall time limit.")
-    selected = balanced_review_sample(reviews, max_reviews)
-    if len(deduplicate_reviews(reviews, MAX_REVIEWS * 10)) > len(selected):
-        limitations.append(
-            f"Collection retained up to 7 reviews per category and {max_reviews} total; "
-            "unrated reviews were excluded from the balanced sample."
-        )
-    if not selected and os.getenv("VERCEL") == "1":
-        limitations.append("Browser collection is unavailable on this deployment.")
-    if not any(review.stars in (1, 2) for review in selected):
-        limitations.append(
-            "No 1-star or 2-star text was accessible in this sample. "
-            "This does not establish that serious product concerns are absent."
-        )
-    if not any(review.stars in (4, 5) for review in selected):
-        limitations.append("No 4-star or 5-star text was accessible for comparison.")
-    for name, stars in (("negative", (1, 2)), ("neutral", (3,)), ("positive", (4, 5))):
-        count = sum(review.stars in stars for review in selected)
-        if count < 7:
-            limitations.append(
-                f"Only {count} of up to 7 {name} reviews were accessible; "
-                "this does not establish how many exist on Amazon."
-            )
-    if product.overall_rating is None:
-        limitations.append("Overall product rating was unavailable.")
-    if product.rating_count is None:
-        limitations.append("Total product rating count was unavailable.")
+                html = await fetch_page(client, product.url, retries=retries)
+                _, reviews = parse_page(html, product)
+    except AccessRestrictedError as exc:
+        limitations.append(f"Product page: {exc}.")
+    except httpx.HTTPStatusError as exc:
+        limitations.append(f"Product page: Amazon returned HTTP {exc.response.status_code}.")
+    except (httpx.HTTPError, ValueError, TimeoutError):
+        limitations.append("Product page could not be retrieved within collection limits.")
+    selected = select_page_reviews(reviews, max_reviews)
+    if not product.customers_say:
+        limitations.append("Amazon's Customers say summary was unavailable.")
     if len(product.rating_distribution) < 5:
-        limitations.append("The full 5-star to 1-star rating distribution was unavailable.")
+        limitations.append("Some overall rating percentages were unavailable.")
     limitations.append(
-        "The latest accessible reviews were selected within each category, up to 7+7+7. "
-        "This deliberately balanced sample is not representative of overall satisfaction or "
-        "failure rates. Only Amazon's listing distribution describes overall ratings. "
-        "Accessible reviews may include other variants; missing dates prevent recency verification."
+        "Evidence is limited to the accessible product page and may include other variants. "
+        "Amazon's AI-generated summary/topics are secondary evidence; topic mentions and "
+        "written-review samples are not failure rates."
     )
-    return product, selected, list(dict.fromkeys(limitations))
+    return product, selected, limitations
 
 
 async def collect_browser_reviews(

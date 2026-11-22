@@ -1,8 +1,53 @@
+import json
 import re
 import unicodedata
 from datetime import date, datetime
 
-from app.schemas.analysis import Review, SampleStatistics
+from app.schemas.analysis import Product, Review, SampleStatistics
+
+
+def select_page_reviews(reviews: list[Review], limit: int) -> list[Review]:
+    unique = deduplicate_reviews(reviews, 1000)
+    negative = sorted(
+        [r for r in unique if r.stars in (1, 2)], key=lambda r: r.date_iso or "", reverse=True
+    )
+    others = sorted(
+        [r for r in unique if r.stars not in (1, 2)], key=lambda r: r.date_iso or "", reverse=True
+    )
+    reserve = min(2, len(others), max(0, limit - 1))
+    selected = negative[: limit - reserve] + others[: limit - len(negative[: limit - reserve])]
+    return selected[:limit]
+
+
+def usable_summary(product: Product) -> bool:
+    return bool(
+        product.customers_say
+        and len(product.customers_say.strip()) >= 40
+        and {b.stars for b in product.rating_distribution if b.percentage is not None}
+        == {1, 2, 3, 4, 5}
+    )
+
+
+def compact_evidence(product: Product, reviews: list[Review], limit: int) -> dict:
+    evidence = {
+        "title": product.title[:180],
+        "overall_rating": product.overall_rating,
+        "rating_count": product.rating_count,
+        "rating_distribution": [b.model_dump() for b in product.rating_distribution],
+        "amazon_ai_summary": product.customers_say,
+        "amazon_feedback_topics": [
+            t.model_dump(exclude_none=True) for t in product.feedback_topics
+        ],
+        "written_reviews": [
+            {"id": r.id, "stars": r.stars, "text": r.text[:1000], "date": r.date_iso or r.date}
+            for r in select_page_reviews(reviews, 8)
+        ],
+    }
+    if len(json.dumps(evidence, ensure_ascii=False).encode()) > limit:
+        from app.services.usage import CostProtectionError
+
+        raise CostProtectionError("Product evidence exceeds the compact input size limit.")
+    return evidence
 
 
 def normalize_text(text: str) -> str:

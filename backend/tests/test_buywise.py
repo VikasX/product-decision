@@ -41,7 +41,7 @@ def test_missing_categories_are_not_backfilled_or_claimed_absent(stars):
     assert all(r.stars == stars for r in selected)
 
 
-def test_all_star_routes_include_recent_sort_and_neutral_even_when_listing_is_full(monkeypatch):
+def test_product_page_only_collection_keeps_listing_reviews(monkeypatch):
     monkeypatch.setenv("VERCEL", "1")
     requests = []
     original = httpx.AsyncClient
@@ -55,18 +55,10 @@ def test_all_star_routes_include_recent_sort_and_neutral_even_when_listing_is_fu
         side_effect=lambda **kw: original(**kw, transport=httpx.MockTransport(handler)),
     ):
         _, selected, limitations = asyncio.run(collect_reviews(product(), settings()))
-    assert len(requests) == 7
-    assert {r.url.params.get("filterByStar") for r in requests[1:6]} == {
-        "one_star",
-        "two_star",
-        "three_star",
-        "four_star",
-        "five_star",
-    }
-    assert all(r.url.params.get("sortBy") == "recent" for r in requests[1:])
+    assert len(requests) == 1
+    assert requests[0].url.path.startswith("/dp/")
     assert len(selected) == 4
-    assert any("0 of up to 7 neutral" in line for line in limitations)
-    assert any("not representative" in line for line in limitations)
+    assert not any("star reviews" in line for line in limitations)
 
 
 def test_listing_scoped_product_details_and_untrusted_image_hosts():
@@ -97,5 +89,5 @@ def test_reliability_findings_require_exact_source_evidence_and_prompt_is_single
         validate_evidence(value, source)
     payload, _ = prepare_request(settings(), product(), source)
     assert payload["model"] == "gpt-5-nano"
-    assert "balanced 7 positive" in payload["messages"][0]["content"]
+    assert "compact Amazon product-page" in payload["messages"][0]["content"]
     assert "reliability_findings" in payload["response_format"]["json_schema"]["schema"]["required"]

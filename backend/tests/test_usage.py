@@ -35,6 +35,7 @@ def response(content=None, status=200):
             "verdict": "proceed_with_caution",
             "summary": "Repeated adhesive complaints in this limited sample.",
             "positive_findings": [],
+            "amazon_findings": [],
             "negative_findings": [
                 {
                     "text": "Weak adhesive",
@@ -128,6 +129,7 @@ def test_verified_uncertain_verdict_cached_across_service_restart_even_when_budg
             "verdict": "insufficient_evidence",
             "summary": "Need more reviews.",
             "positive_findings": [],
+            "amazon_findings": [],
             "negative_findings": [],
             "recurring_issues": [],
             "reliability_findings": [],

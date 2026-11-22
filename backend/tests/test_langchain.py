@@ -79,8 +79,10 @@ def test_real_langchain_chain_returns_pydantic_and_sends_one_bounded_nano_reques
     assert payload["response_format"]["json_schema"]["strict"] is True
     assert "tools" not in payload
     assert len(payload["messages"]) == 2
-    assert "balanced 7 positive" in payload["messages"][0]["content"]
-    assert json.loads(payload["messages"][1]["content"])["reviews"][0]["id"] == reviews[0].id
+    assert "compact Amazon product-page" in payload["messages"][0]["content"]
+    assert (
+        json.loads(payload["messages"][1]["content"])["written_reviews"][0]["id"] == reviews[0].id
+    )
     actual_bound = len(json.dumps(payload, ensure_ascii=False).encode()) + 8192
     assert charge.reserved >= actual_bound * 50 + 2000 * 400
     assert UsageStore(config).usage().paid_attempts_today == 1
@@ -222,6 +224,23 @@ def test_insufficient_reviews_do_not_call_langchain(wire):
         result = asyncio.run(service.analyze(listing.url))
     assert result.status == "insufficient_evidence" and not requests
     assert result.usage.paid_attempts_today == 0
+
+
+def test_langchain_analyzes_summary_without_written_reviews(wire):
+    from tests.test_product_page import data, summary_judgment
+
+    requests, state = wire
+    listing, _ = data()
+    state["content"] = summary_judgment().model_dump_json()
+    with patch(
+        "app.services.analysis.collect_reviews", AsyncMock(return_value=(listing, [], []))
+    ) as collect:
+        config = settings(openai_api_key="test")
+        first = asyncio.run(AnalysisService(config).analyze(listing.url))
+        result = asyncio.run(LangChainAnalysisService(config).analyze(listing.url))
+    assert first.status == result.status == "completed" and len(requests) == 2
+    assert collect.await_count == 1
+    assert result.coverage.reviews_analyzed == 0 and result.amazon_findings
 
 
 @pytest.mark.parametrize(

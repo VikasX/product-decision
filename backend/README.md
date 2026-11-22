@@ -62,75 +62,43 @@ The model is deprecated but currently available. There are no automatic retries 
 fallbacks to another model. At least three written reviews are required for a call.
 The result includes source excerpts and validated review references.
 
-## Phase 1 refinement
+## Product-page evidence (current flow)
 
-Collection reads the listing first, then recent-sorted 1-star, 2-star, 3-star,
-4-star and 5-star pages and unfiltered recent reviews. Observed pagination links
-are followed only within the same Amazon.in ASIN and the page budget. Review IDs
-and normalized body text deduplicate repeated reviews. Variant and raw date text
-are retained, with ISO dates added only when the format can be parsed reliably.
+Only the main /dp/ASIN page is requested. No star-filtered, recent-review or
+pagination route is fetched, and no browser fallback runs. Existing bounded
+HTTP transport retries remain (one transient retry, no retry for sign-in/CAPTCHA).
+The collection deadline is 30 seconds, per-request timeout defaults to 10 seconds.
+AMAZON_MAX_REVIEWS defaults to 8 and is capped at 8 even with older larger overrides;
+AMAZON_MAX_PAGES is retained for config compatibility but unused by this collector.
 
-When present in product-scoped markup, the parser reads the overall rating, total
-rating count and displayed star percentages. Missing values stay unavailable.
-Rating percentages describe Amazon's listing, while sample counts describe only
-collected written reviews. Counts of ratings are not counts of written reviews.
+Product metadata adds optional customers_say and feedback_topics (sentiment, total/
+positive/negative mentions and source text when explicitly present). Missing fields
+stay null/empty. Recognized product-summary/insights markup is required; this release
+uses stored synthetic fixtures and does not establish coverage of every live layout.
+The parser prioritizes negative/mixed topics and low-star written reviews, deduplicates
+and retains dates. Only listing-level percentages describe overall ratings.
 
-The sample contains up to 7 negative (1–2★), 7 neutral (3★) and 7 positive (4–5★)
-reviews, at most 21 total, newest reliably dated accessible text first per category.
-Missing categories are not filled with extra reviews from another category. Reviews
-without integer star ratings are excluded from the balanced sample. This is an
-investigation sample, not a representative satisfaction poll. Unknown dates stay
-unknown. The listing is still read for metadata and fallback review text.
+Both HTTP and LangChain use the same compact JSON: short title, rating metadata,
+Amazon AI summary/topics, and at most 8 reviews with IDs, stars, dates and up to
+1,000 text characters each. ANALYSIS_EVIDENCE_MAX_BYTES defaults to 10000 (UTF-8),
+in addition to existing conservative request bounds. If needed, the service fits a
+smaller sample retaining negative evidence and positive comparison. No HTML, image,
+price/spec metadata or source URLs are sent to the model. No additional model call
+or provider is introduced. Source text may be truncated by extraction/input limits.
 
-AMAZON_MAX_REVIEWS defaults to 21 (hard ceiling 21; existing larger overrides remain
-readable but cannot enlarge the sample) and AMAZON_MAX_PAGES defaults to 7. Smaller
-page budgets may leave routes unvisited; limitations report that. Each request has a
-10-second timeout, with at most one retry for transport failures or HTTP
-500/502/503/504. The overall collection deadline is 90 seconds. Sign-in redirects,
-CAPTCHAs and access-denied responses are not retried. Once Amazon restricts the
-review route, sibling filters are skipped and reported as unavailable. Body text
-is bounded to 4,000 characters per review. Local Chrome fallback remains bounded;
-Vercel continues using HTTP collection.
+A summary of at least 40 characters plus all five rating buckets permits a guarded
+analysis with zero/one/two reviews. Without that combination, three written reviews
+are required; ratings alone do not trigger spending. Amazon findings have their own
+source, exact source quote and optional topic name; they never invent review IDs.
+Existing review findings still require valid IDs/exact body quotes and recurring
+issues require two distinct reviews. Topic counts are never treated as failure rates.
 
-The HTTP client maintains cookies only within one collection request. Local Chrome
-uses a fresh isolated context. Neither reuses a user's signed-in browser session or
-stored Amazon credentials. An incognito-accessible page is not a guarantee of access
-from Vercel. No CAPTCHA solving, stealth, proxies or login workflow is introduced.
-
-Listing-scoped image URL, observed price text and product-overview specifications
-are optional. Unavailable values remain null/empty. No discounts or warranty are
-inferred. Images must use known Amazon image hosts over HTTPS. The analysis adds
-source-verified reliability_findings and a short key_takeaway in the same single nano
-request. Neutral experiences, variants, recency and contradictions are explicitly
-included in the interpretation instructions. These fields are additive in responses;
-old cached records remain readable. New collection/analysis keys use
-review-v4-balanced-777 without resetting any usage ledger or spending caps.
-
-Previous live runs established that recent/filtered pages can redirect to sign-in,
-return HTTP errors or present CAPTCHAs. These are source-access limitations. This
-refinement was tested with stored synthetic HTML and mocked responses, not fresh
-Amazon requests, so greater live coverage has not been established.
-
-Structured judgments now use worth_considering, proceed_with_caution,
-not_recommended or insufficient_evidence. Positive and negative findings include
-matching source excerpts. Recurring issues require at least two distinct supporting
-reviews and distinguish defects, missing features, usability, delivery, preferences
-and other concerns. Python calculates dates, star counts and supporting-review
-counts. Quotes and IDs are checked against the selected evidence before a result
-can be cached. These checks establish traceability, not the correctness of every
-interpretation.
-
-If collected evidence exceeds the input limit, Python selects a bounded subset
-balancing available negative, neutral and positive evidence. The response
-keeps all collected reviews and reports the number actually analysed. GPT-5 nano,
-the 2,000 completion-token default, one-call policy and spending caps remain in use.
-The prompt version is now review-v4-balanced-777, so a product's first judgment needs a
-new guarded call. Old cache records remain readable and the budget ledger persists.
-
-The response adds product rating metadata, review titles and ISO dates,
-positive_findings, negative_findings, recurring_issues, reliability_findings,
-key_takeaway and sample_statistics, plus optional listing image/price/specifications.
-The existing reasons field is retained for compatibility.
+The HTTP/SDK transports, nano model, output limit, spending ledger and separate
+workflow cache namespaces are preserved. The shared version is review-v5-product-page,
+so previous 7+7+7 judgments cannot be reused. Response additions have defaults for
+legacy cache readability; new structured output includes amazon_findings. UI changes
+stay inside the existing product/insight cards, with Amazon AI evidence explicitly
+labelled. Export includes summary, topics and source findings.
 
 ### One controlled live test
 
@@ -175,7 +143,7 @@ key, so HTTP judgments are never returned as LangChain judgments. Both workflows
 share the exact same usage store, MongoDB ledger, daily/lifetime caps and credential
 failure lockout. LangChain first reuses reviews/metadata from a still-valid HTTP
 cache entry, while producing its own judgment; otherwise it runs the existing
-bounded 7+7+7 collector once. It caches its own result for the existing 24-hour TTL.
+bounded product-page collector once. It caches its own result for the existing 24-hour TTL.
 An additional conservative serialization allowance is reserved before the call.
 
 Mocked transport tests exercise real LangChain/SDK serialization, structured parsing,

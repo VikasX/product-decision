@@ -81,5 +81,5 @@ async def analyze_reviews_langchain(
             except (APIError, ModelError):
                 raise ValueError("LangChain model response was unavailable or refused") from None
     judgment = Judgment.model_validate(judgment)
-    validate_evidence(judgment, reviews)
+    validate_evidence(judgment, reviews, product)
     return judgment

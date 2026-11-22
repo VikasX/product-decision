@@ -38,6 +38,15 @@ class RatingBucket(BaseModel):
     percentage: float | None = Field(default=None, ge=0, le=100)
 
 
+class FeedbackTopic(BaseModel):
+    name: str
+    sentiment: Literal["positive", "negative", "mixed"] | None = None
+    mention_count: int | None = Field(default=None, ge=0)
+    positive_count: int | None = Field(default=None, ge=0)
+    negative_count: int | None = Field(default=None, ge=0)
+    text: str | None = None
+
+
 class Product(BaseModel):
     asin: str
     title: str
@@ -48,6 +57,8 @@ class Product(BaseModel):
     image_url: str | None = None
     price_text: str | None = None
     specifications: list[dict[str, str]] = Field(default_factory=list)
+    customers_say: str | None = None
+    feedback_topics: list[FeedbackTopic] = Field(default_factory=list)
 
 
 class Review(BaseModel):
@@ -90,6 +101,15 @@ class RecurringIssue(IssueFinding):
     mention_count: int = Field(ge=2)
 
 
+class AmazonFinding(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    text: str = Field(min_length=1, max_length=500)
+    sentiment: Literal["positive", "negative", "mixed"]
+    source: Literal["customers_say", "topic"]
+    topic: str | None
+    quote: str = Field(min_length=1, max_length=240)
+
+
 class Judgment(BaseModel):
     model_config = ConfigDict(extra="forbid")
     verdict: Verdict
@@ -99,6 +119,7 @@ class Judgment(BaseModel):
     recurring_issues: list[IssueFinding] = Field(max_length=3)
     reliability_findings: list[Finding] = Field(max_length=2)
     key_takeaway: str = Field(min_length=1, max_length=500)
+    amazon_findings: list[AmazonFinding] = Field(max_length=3)
 
 
 class SampleStatistics(BaseModel):
@@ -143,6 +164,7 @@ class AnalysisResponse(BaseModel):
     sample_statistics: SampleStatistics = Field(default_factory=SampleStatistics)
     reliability_findings: list[Finding] = Field(default_factory=list)
     key_takeaway: str | None = None
+    amazon_findings: list[AmazonFinding] = Field(default_factory=list)
 
     @field_validator("verdict", mode="before")
     @classmethod

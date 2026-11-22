@@ -44,6 +44,7 @@ def judgment(**overrides):
         "verdict": "proceed_with_caution",
         "summary": "Repeated adhesive concerns in this sample.",
         "positive_findings": [],
+        "amazon_findings": [],
         "negative_findings": [
             {
                 "text": "Adhesive problems",
@@ -225,7 +226,7 @@ def test_captcha_and_signin_are_never_retried():
     assert len(calls) == 1
 
 
-def test_collection_requests_low_stars_before_positive_stars_and_bounds_pages(monkeypatch):
+def test_collection_requests_listing_only_even_with_large_page_budget(monkeypatch):
     monkeypatch.setenv("VERCEL", "1")
     requests = []
     original_client = httpx.AsyncClient
@@ -239,16 +240,9 @@ def test_collection_requests_low_stars_before_positive_stars_and_bounds_pages(mo
 
     with patch("app.integrations.amazon.httpx.AsyncClient", side_effect=client):
         listing, reviews, _ = asyncio.run(collect_reviews(product(), settings(amazon_max_pages=8)))
-    assert len(requests) == 8
-    assert [request.url.params.get("filterByStar") for request in requests[:6]] == [
-        None,
-        "one_star",
-        "two_star",
-        "three_star",
-        "four_star",
-        "five_star",
-    ]
-    assert requests[-1].url.params.get("pageNumber") == "2"
+    assert len(requests) == 1
+    assert requests[0].url.path.startswith("/dp/")
+    assert not requests[0].url.params
     assert len(reviews) == 4
     assert listing.rating_count == 373
 
@@ -269,9 +263,9 @@ def test_collection_stops_repeating_restricted_review_route(monkeypatch):
 
     with patch("app.integrations.amazon.httpx.AsyncClient", side_effect=client):
         _, reviews, limits = asyncio.run(collect_reviews(product(), settings()))
-    assert len(requests) == 2
+    assert len(requests) == 1
     assert len(reviews) == 4
-    assert any("2-star reviews" in value and "restricted" in value for value in limits)
+    assert not any("star reviews" in value for value in limits)
 
 
 def test_strict_verdicts_accept_new_values_and_reject_legacy_ai_output():
