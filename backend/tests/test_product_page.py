@@ -87,7 +87,7 @@ def test_missing_summary_and_unrelated_text_are_not_guessed():
 
 def test_new_product_widget_summary_aspect_labels_and_review_title():
     # Reduced markup matching the public FLYNGO product widget, not a live API test.
-    html = '''<div data-testid="overall-summary">Unrelated recommendation</div>
+    html = """<div data-testid="overall-summary">Unrelated recommendation</div>
     <div id="customerReviews">
       <div data-testid="overall-summary">Customers appreciate the colors but report
       mixed reliability and app connectivity.</div>
@@ -101,7 +101,7 @@ def test_new_product_widget_summary_aspect_labels_and_review_title():
         <i data-hook="review-star-rating">1 out of 5 stars</i>
         <div data-hook="reviewRichContentContainer"><p>The app does not connect.</p></div>
       </div>
-    </div>'''
+    </div>"""
     listing = product()
     _, reviews = parse_page(html, listing)
     assert listing.customers_say.startswith("Customers appreciate")
