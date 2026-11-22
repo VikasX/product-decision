@@ -18,13 +18,15 @@ from app.services.usage import (
 
 
 class AnalysisService:
-    def __init__(self, config: Settings):
+    cache_namespace = ""
+
+    def __init__(self, config: Settings, *, store=None):
         self.config = config
-        self.store = create_usage_store(config)
+        self.store = store if store is not None else create_usage_store(config)
 
     async def analyze(self, url: str) -> AnalysisResponse:
         asin = url.rsplit("/", 1)[-1]
-        key = f"amazon.in:{asin}:{self.config.openai_model}:{PROMPT_VERSION}"
+        key = f"amazon.in:{asin}:{self.config.openai_model}:{PROMPT_VERSION}{self.cache_namespace}"
         failure_key = f"{key}:failure:{credential_fingerprint(self.config)}"
         owner = uuid.uuid4().hex
         deadline = time.monotonic() + 210
@@ -68,9 +70,7 @@ class AnalysisService:
             self.store.release(key, owner)
 
     async def run_analysis(self, url: str, asin: str) -> tuple[AnalysisResponse, bool]:
-        product, reviews, limitations = await collect_reviews(
-            Product(asin=asin, title=f"Amazon product {asin}", url=url), self.config
-        )
+        product, reviews, limitations = await self.collect_evidence(url, asin)
         result = AnalysisResponse(
             status="insufficient_evidence",
             product=product,
@@ -93,9 +93,7 @@ class AnalysisService:
             )
         if len(analysis_reviews) >= 3:
             try:
-                judgment = await analyze_reviews(
-                    self.config, product, analysis_reviews, charge, self.store
-                )
+                judgment = await self.judge_reviews(product, analysis_reviews, charge)
                 result.verdict = judgment.verdict
                 result.status = (
                     "insufficient_evidence"
@@ -156,8 +154,19 @@ class AnalysisService:
         for count in range(len(reviews), 2, -1):
             selected = balanced_review_sample(reviews, count)
             try:
-                prepare_request(self.config, product, selected)
+                self.prepare_llm_request(product, selected)
                 return selected
             except CostProtectionError:
                 continue
         return []
+
+    async def collect_evidence(self, url: str, asin: str):
+        return await collect_reviews(
+            Product(asin=asin, title=f"Amazon product {asin}", url=url), self.config
+        )
+
+    def prepare_llm_request(self, product: Product, reviews: list[Review]):
+        return prepare_request(self.config, product, reviews)
+
+    async def judge_reviews(self, product: Product, reviews: list[Review], charge: AttemptCharge):
+        return await analyze_reviews(self.config, product, reviews, charge, self.store)

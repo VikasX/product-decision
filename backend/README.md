@@ -140,6 +140,52 @@ limitations and excerpts behind each finding. Expect a More Evidence Needed resu
 if Amazon restricts access. Do not repeatedly retry a failed paid judgment. A
 verified result is cached for 24 hours. No live test was run for this refinement.
 
+## Separate LangChain Lab (local only)
+
+The original `/api/v1/analysis` HTTPX adapter is unchanged. The independent
+`POST /api/v1/analysis/langchain` endpoint uses ChatPromptTemplate → ChatOpenAI
+→ native Pydantic `Judgment` output → the same evidence validation and response
+assembly. GPT-5 nano, minimal reasoning, completion cap and single-call policy
+remain in effect. There are no retry, repair, fallback or extra fetching loops.
+
+Dependencies are pinned in pyproject.toml: langchain-openai 1.8.5, langchain-core
+1.8.4 and OpenAI SDK 2.45.0. Install with the existing `pip install -e ".[dev]"`
+setup command. The SDK pin keeps the tested HTTPX client/error interface stable.
+The adapter disables remote tracing and LangChain's global model cache.
+
+To enable local learning/comparison:
+
+1. Set `LANGCHAIN_LAB_ENABLED=true` in the ignored backend `.env`.
+2. Start FastAPI bound to `127.0.0.1` (the existing uvicorn command defaults to it).
+3. In the UI `.env.local`, set `NEXT_PUBLIC_DEV_MODE=true` and point
+   `NEXT_PUBLIC_API_BASE_URL` at `http://127.0.0.1:8000`; restart Next.
+4. Open LangChain Lab below the normal application. Running either analysis can
+   spend API credit; comparing both can require two separately guarded calls.
+
+The backend switch defaults false, returning 404. When enabled, requests must come
+from loopback (`127.0.0.1` or `::1`); other clients return 403. Vercel is always denied,
+independently of the UI flag. This release intentionally does not expose a public
+experimental endpoint or add an authentication system. Do not expose the enabled
+local backend through a loopback reverse proxy/tunnel: that would collapse the
+network boundary and needs separately designed authentication. The public frontend
+flag controls visibility only and grants no backend access.
+
+LangChain keys append `:langchain-v1` to the existing versioned result/failure/lease
+key, so HTTP judgments are never returned as LangChain judgments. Both workflows
+share the exact same usage store, MongoDB ledger, daily/lifetime caps and credential
+failure lockout. LangChain first reuses reviews/metadata from a still-valid HTTP
+cache entry, while producing its own judgment; otherwise it runs the existing
+bounded 7+7+7 collector once. It caches its own result for the existing 24-hour TTL.
+An additional conservative serialization allowance is reserved before the call.
+
+Mocked transport tests exercise real LangChain/SDK serialization, structured parsing,
+provider errors, no retries, source validation, shared limits and distinct caches.
+No live Amazon/OpenAI calls were made for this addition. New native schema behavior
+against a live model is unverified; failures retain the reservation without retrying.
+The Python 3.14 test environment reports upstream LangSmith deprecation warnings.
+
+Reference: [LangChain Pydantic structured output](https://reference.langchain.com/python/langchain-openai/chat_models/base/ChatOpenAI/with_structured_output).
+
 ## Usage protection
 
 The default application limits are $0.02 per day, $0.10 lifetime and 20 paid attempts

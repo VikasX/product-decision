@@ -30,6 +30,7 @@ class Settings(CorsSettings):
     amazon_max_pages: int = Field(default=7, ge=1, le=10)
     amazon_timeout_seconds: float = Field(default=10, ge=1, le=20)
     amazon_transient_retries: int = Field(default=1, ge=0, le=1)
+    langchain_lab_enabled: bool = False
 
     @property
     def use_mongo_state(self) -> bool:

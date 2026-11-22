@@ -14,6 +14,31 @@ Updated November 22, 2026. Backend and UI live in separate repositories, both on
 
 ## Verification for this release
 
+### Independent LangChain workflow
+
+- Added the LangChain adapter/service and `/api/v1/analysis/langchain`. The original
+  HTTP adapter and endpoint remain intact; small default-preserving hooks in the
+  service reuse collection, sample fitting, validation, caching and result assembly.
+- LangChain uses one nano request with ChatPromptTemplate and Pydantic structured
+  output. It reuses a valid HTTP cache's review evidence where available, otherwise
+  the existing 7+7+7 collector. Its judgments/failures/leases have their own namespace;
+  both workflows share the spending ledger and credential lockout. Tracing, SDK
+  retries, model fallbacks and automatic repair calls are disabled.
+- The collapsible LangChain Lab is below the main UI. NEXT_PUBLIC_DEV_MODE must
+  equal true to show it; missing/false hides it. Its own input/request/loading/error
+  state and scoped report anchors leave the original form/report independent.
+- Independently, LANGCHAIN_LAB_ENABLED defaults false; enabled requests are limited
+  to loopback and denied on Vercel. No new public authentication system was added.
+  Local setup and the reverse-proxy boundary are documented in backend/README.md.
+- Validation: 18 new LangChain tests + 25 relevant HTTP/storage regression tests,
+  20 frontend tests, Ruff/ESLint, TypeScript and default-off production build passed.
+  Mocked transports exercise real LangChain and the pinned OpenAI SDK. No paid or
+  fresh Amazon calls were made. Browser checks cover coexistence of both reports,
+  scoped references, isolated errors and the existing themes; native live output
+  remains unverified.
+
+The following verification records the preceding BuyWise theme/7+7+7 release:
+
 - Backend: 73 mocked tests, Ruff lint and formatting. Coverage includes category caps/latest dates/deduplication, shortages, neutral star routes, bounded failures, metadata, quotes, structured analysis, API/cache compatibility and existing budget/storage protections.
 - UI: 17 tests, ESLint, TypeScript and production build. Covers nested payload validation, source URLs/quotes, histogram aggregates with missing buckets, actual sample counts and report content for all four verdicts.
 - Browser verification uses a loopback fixture API, not production analysis: desktop/mobile themes, persisted preference after reload, all verdicts, empty/partial data, malformed response/503 errors, nested evidence links and downloaded report. No horizontal overflow at 390px.

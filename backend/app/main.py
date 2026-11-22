@@ -26,6 +26,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.database = client[config.mongodb_database]
         try:
             app.state.analysis_service = AnalysisService(config)
+            if config.langchain_lab_enabled and not config.vercel:
+                from app.services.langchain_analysis import LangChainAnalysisService
+
+                app.state.langchain_analysis_service = LangChainAnalysisService(
+                    config, store=app.state.analysis_service.store
+                )
             yield
         finally:
             service = getattr(app.state, "analysis_service", None)
