@@ -2,6 +2,32 @@
 
 Updated November 22, 2026. Backend and UI live in separate repositories, both on main.
 
+## Focused demo corrections (local, not deployed)
+
+- Removed the repeated selected-product panel and empty pre-analysis dashboard.
+  Gesto uses one compact selectable card; source summary/topics/snippets stay inside
+  the collapsed View Source Evidence section. One existing premium report renders
+  after Analyze; its raw source block is hidden only for Demo Mode.
+- Local and shared MongoDB records showed technical failures with zero full reviews,
+  but did not retain the provider response or exception. Their exact historical
+  rejection cannot be reconstructed. No additional paid request was made.
+- Fixed a reproducible evidence-validation mismatch: a mixed topic can support a
+  specifically negative/positive quoted finding. Explicit single-sentiment topics,
+  exact source quotes and review citation checks remain enforced on both sides.
+- Made the zero-review prompt explicit. HTTP parsing now distinguishes truncation,
+  refusals, envelope/schema errors and evidence failures, logging only safe metadata
+  and validation field/type information. No raw model/source text or credentials log.
+- Demo technical failures return HTTP 502; pre-call guard failures return 503.
+  Genuine insufficient-evidence judgments remain valid HTTP 200 reports. Cached
+  technical failures still prevent a second paid attempt for 60 seconds. Caps,
+  transports, dataset and store implementations remain unchanged; prompt version v7
+  keeps judgments under the earlier validation rules from masking this correction.
+- Verification: 43 targeted backend tests and 28 frontend tests passed, plus TypeScript,
+  changed-file lint (existing long comment lines excluded in Python), and frontend
+  production build. Browser tested selection, collapsed source evidence, one report,
+  light/dark and 390px layout using an explicitly labelled mock provider response.
+  The real local backend was restored, with no live model/Amazon analysis performed.
+
 ## Saved-product Demo Mode (local implementation)
 
 - Home page now browses the category/product catalog and explicitly analyzes a saved

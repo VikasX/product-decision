@@ -1,13 +1,106 @@
 import json
+import logging
 from contextlib import ExitStack, closing
 from dataclasses import dataclass
 
 import httpx
+from pydantic import ValidationError
 
 from app.core.config import Settings
 from app.schemas.analysis import Judgment, Product, Review
 from app.services.review_evidence import compact_evidence, normalize_text
 from app.services.usage import MODEL_PRICES, CostProtectionError, create_usage_store
+
+logger = logging.getLogger(__name__)
+
+
+class ModelOutputError(ValueError):
+    """A technical model failure, not a judgment about the product's evidence."""
+
+    def __init__(self, code: str, message: str):
+        super().__init__(message)
+        self.code = code
+
+
+def log_schema_failure(error: ValidationError) -> None:
+    # Do not log error input/context/messages: those may contain source or customer text.
+    fields = {
+        "verdict",
+        "summary",
+        "positive_findings",
+        "negative_findings",
+        "recurring_issues",
+        "reliability_findings",
+        "key_takeaway",
+        "amazon_findings",
+        "text",
+        "review_ids",
+        "evidence",
+        "review_id",
+        "quote",
+        "source",
+        "topic",
+        "sentiment",
+        "category",
+    }
+    failures = [
+        {
+            "type": e["type"],
+            "field": ".".join(
+                str(p) if isinstance(p, int) or p in fields else "?" for p in e["loc"]
+            ),
+        }
+        for e in error.errors(include_input=False, include_context=False, include_url=False)[:8]
+    ]
+    logger.warning("LLM output rejected stage=schema exception=ValidationError fields=%s", failures)
+
+
+def parse_http_judgment(response: httpx.Response) -> Judgment:
+    """Parse one provider response and record only safe failure metadata."""
+    try:
+        choice = response.json()["choices"][0]
+        message = choice["message"]
+        finish = choice.get("finish_reason")
+        content = message.get("content")
+        refused = bool(message.get("refusal"))
+    except (ValueError, KeyError, IndexError, TypeError, AttributeError):
+        logger.warning("LLM output rejected stage=envelope http_status=%s", response.status_code)
+        raise ModelOutputError(
+            "response_envelope", "OpenAI returned an invalid response envelope."
+        ) from None
+    safe_finish = (
+        finish
+        if isinstance(finish, str) and finish in {"stop", "length", "content_filter", "tool_calls"}
+        else "unknown"
+    )
+    logger.info(
+        "LLM response http_status=%s finish_reason=%s refusal=%s",
+        response.status_code,
+        safe_finish,
+        refused,
+    )
+    if finish == "length":
+        raise ModelOutputError("output_truncated", "OpenAI output reached the completion limit.")
+    if refused or finish == "content_filter":
+        raise ModelOutputError("output_refused", "OpenAI did not provide an analysis response.")
+    if not isinstance(content, str):
+        raise ModelOutputError("missing_content", "OpenAI response content was missing.")
+    try:
+        return Judgment.model_validate_json(content)
+    except ValidationError as exc:
+        log_schema_failure(exc)
+        raise ModelOutputError(
+            "output_schema", "OpenAI output did not match the analysis schema."
+        ) from None
+
+
+def validate_judgment_evidence(judgment: Judgment, reviews: list[Review], product: Product) -> None:
+    try:
+        validate_evidence(judgment, reviews, product)
+    except ValueError as exc:
+        # Messages originate in our fixed validation checks, never in provider error bodies.
+        logger.warning("LLM output rejected stage=evidence exception=ValueError check=%s", str(exc))
+        raise ModelOutputError("output_evidence", str(exc)) from None
 
 
 # This decorator supplies the small object constructor for our per-attempt cost tracker.
@@ -73,6 +166,18 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
             },
         },
     }
+    if not reviews:
+        # Make the summary-only case explicit without changing the public response schema.
+        payload["messages"][0]["content"] += (
+            " No identifiable written reviews are supplied. Return empty positive_findings, "
+            "negative_findings, reliability_findings and recurring_issues arrays. Use only "
+            "amazon_findings for supported summary/topic claims; never create review IDs."
+        )
+    payload["messages"][0]["content"] += (
+        " A topic labelled mixed may support a specific positive or negative finding quoted "
+        "from that topic's supplied text. The finding sentiment describes the claim, not a "
+        "replacement for Amazon's topic label. Quotes must be exact source excerpts."
+    )
     # Byte-level text tokens cannot exceed UTF-8 bytes. Count the entire serialized
     # request (including schema) and reserve another 8192 tokens for protocol framing.
     # Ignore input-cache discounts so the reservation stays conservative.
@@ -128,11 +233,9 @@ async def analyze_reviews(
             # Raise on a provider HTTP error before reading its body as a successful model response.
             response.raise_for_status()
             # Schema validation checks shape; validate_evidence below checks actual source support.
-            judgment = Judgment.model_validate_json(
-                response.json()["choices"][0]["message"]["content"]
-            )
+            judgment = parse_http_judgment(response)
     # After Pydantic shape validation, verify that the model cited evidence we actually supplied.
-    validate_evidence(judgment, reviews, product)
+    validate_judgment_evidence(judgment, reviews, product)
     # Return the supported typed judgment; service code adds counts, source data and usage metadata.
     return judgment
 
@@ -189,7 +292,7 @@ def validate_evidence(
             if topic and not topic.text and topic.sentiment is None:
                 source = None
             # The model may not reverse a topic sentiment explicitly supplied by Amazon.
-            if topic and topic.sentiment and topic.sentiment != finding.sentiment:
+            if topic and topic.sentiment not in {None, "mixed", finding.sentiment}:
                 raise ValueError("Amazon topic sentiment does not match its source")
         if (
             not source

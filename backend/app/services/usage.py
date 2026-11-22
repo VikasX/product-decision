@@ -7,7 +7,7 @@ from app.core.config import Settings
 from app.schemas.analysis import AnalysisResponse, Usage
 
 # Included in cache keys so changed evidence/prompt rules cannot reuse older judgments.
-PROMPT_VERSION = "review-v6-product-widget"
+PROMPT_VERSION = "review-v7-summary-validation"
 # Store money as integer billionths of a dollar to avoid floating-point rounding during cap checks.
 NANODOLLARS = 1_000_000_000
 # USD per token expressed as integer nanodollars. Reviewed 2026-11-22.

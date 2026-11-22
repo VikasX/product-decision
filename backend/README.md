@@ -15,7 +15,7 @@ Only the verified Gesto dataset is enabled; other screenshot folders are not lis
 - `GET /api/v1/demo/products/{product_id}/image`
 - `POST /api/v1/demo/products/{product_id}/analysis?workflow=httpx`
 
-The analysis POST loads Pydantic-validated local evidence and uses the unchanged
+The analysis POST loads Pydantic-validated local evidence and uses the existing
 HTTP nano adapter, output/source validation, shared store and spending guards.
 `workflow=langchain` uses the existing adapter with the existing local Lab access
 check. Demo Mode never calls Amazon. Cache keys isolate product ID, version, content
@@ -27,6 +27,14 @@ No full review IDs, stars or dates are visible in Gesto's topic screenshots. Par
 excerpts are inspectable separately; compact model input uses the Amazon summary and
 topic descriptions/counts, without inventing direct citations. No verdict is stored
 in the dataset. Development tests mock both LLM adapters and make no paid requests.
+
+Demo error handling distinguishes technical model failures (HTTP 502) and local
+pre-call guards (HTTP 503) from valid insufficient-evidence reports (HTTP 200).
+Failures retain the existing short cache/reservation behavior. Safe server diagnostics
+record response status/finish reason, exception class and schema field/error type,
+without logging model text, source text, credentials or provider error bodies.
+Summary-only inputs explicitly leave review-only findings empty. A quoted concern
+within an Amazon mixed topic does not require relabelling the topic as negative.
 
 ## Setup (PowerShell)
 

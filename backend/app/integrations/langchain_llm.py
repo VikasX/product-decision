@@ -6,9 +6,15 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langsmith import tracing_context
 from openai import APIError, APIStatusError
+from pydantic import ValidationError
 
 from app.core.config import Settings
-from app.integrations.llm import AttemptCharge, prepare_request, validate_evidence
+from app.integrations.llm import (
+    AttemptCharge,
+    log_schema_failure,
+    prepare_request,
+    validate_judgment_evidence,
+)
 from app.schemas.analysis import Judgment, Product, Review
 from app.services.usage import MODEL_PRICES, CostProtectionError
 
@@ -97,10 +103,13 @@ async def analyze_reviews_langchain(
                     response=exc.response,
                 ) from None
             # Convert other SDK/model errors into the service existing invalid-response failure path.
+            except ValidationError as exc:
+                log_schema_failure(exc)
+                raise ValueError("LangChain output did not match the analysis schema") from None
             except (APIError, ModelError):
                 raise ValueError("LangChain model response was unavailable or refused") from None
     # Ensure the returned chain value still satisfies the shared output contract.
     judgment = Judgment.model_validate(judgment)
     # Run the same source checks as HTTP; structured output alone does not verify facts.
-    validate_evidence(judgment, reviews, product)
+    validate_judgment_evidence(judgment, reviews, product)
     return judgment

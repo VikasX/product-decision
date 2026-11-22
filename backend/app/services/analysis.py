@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 import uuid
 
@@ -6,7 +7,7 @@ import httpx
 
 from app.core.config import Settings
 from app.integrations.amazon import collect_reviews
-from app.integrations.llm import AttemptCharge, analyze_reviews, prepare_request
+from app.integrations.llm import AttemptCharge, ModelOutputError, analyze_reviews, prepare_request
 from app.schemas.analysis import AnalysisResponse, Coverage, Product, Reason, RecurringIssue, Review
 from app.services.review_evidence import sample_statistics, select_page_reviews, usable_summary
 from app.services.usage import (
@@ -15,6 +16,9 @@ from app.services.usage import (
     create_usage_store,
     credential_fingerprint,
 )
+
+logger = logging.getLogger(__name__)
+TECHNICAL_FAILURE_PREFIX = "AI analysis failed"
 
 
 # Shared flow: cache -> Amazon -> compact evidence -> one judgment -> report/cache.
@@ -180,6 +184,10 @@ class AnalysisService:
                 result.coverage.limitations.append("No new AI request was made.")
             # OpenAI HTTP errors are separate from Amazon evidence collection failures.
             except httpx.HTTPStatusError as exc:
+                logger.warning(
+                    "LLM request failed exception=HTTPStatusError http_status=%s",
+                    exc.response.status_code,
+                )
                 # Translate common provider status codes into safe, understandable troubleshooting messages.
                 messages = {
                     401: "OpenAI rejected the API key. Update the key and restart the backend.",
@@ -195,8 +203,21 @@ class AnalysisService:
                     "Collected review excerpts remain available below."
                 )
             # Failed/invalid responses may cost tokens; keep the reservation and never retry here.
-            except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError):
-                result.summary = "Reviews were collected, but AI analysis could not be verified."
+            except (httpx.HTTPError, ValueError, KeyError, IndexError, TypeError) as exc:
+                code = (
+                    exc.code
+                    if isinstance(exc, ModelOutputError)
+                    else (
+                        "request_timeout"
+                        if isinstance(exc, httpx.TimeoutException)
+                        else "invalid_response"
+                    )
+                )
+                logger.warning("LLM analysis failed exception=%s code=%s", type(exc).__name__, code)
+                result.summary = (
+                    "AI analysis is temporarily unavailable; the saved evidence was not rejected."
+                )
+                result.coverage.limitations.append(f"{TECHNICAL_FAILURE_PREFIX} ({code}).")
                 result.coverage.limitations.append(
                     "The attempt is counted against the budget. No automatic retry was made."
                 )

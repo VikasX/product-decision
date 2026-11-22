@@ -4,6 +4,7 @@ from fastapi.responses import FileResponse
 from app.api.routes.langchain_analysis import require_local_lab
 from app.schemas.analysis import AnalysisResponse
 from app.schemas.demo import DemoCategory, DemoDataset, DemoProduct
+from app.services.analysis import TECHNICAL_FAILURE_PREFIX
 from app.services.demo import DemoAnalysisService, DemoCatalog, Workflow
 
 router = APIRouter(prefix="/demo", tags=["demo"])
@@ -53,4 +54,11 @@ async def analyze(product_id: str, request: Request, workflow: Workflow = "httpx
     service = DemoAnalysisService(
         original.config, store=original.store, dataset=saved, workflow=workflow
     )
-    return await service.analyze(saved.product.url)
+    result = await service.analyze(saved.product.url)
+    # The service already cached the failure for 60 seconds. Return an error rather than
+    # displaying a technical provider/parser problem as a product verdict in the demo UI.
+    if any(line.startswith(TECHNICAL_FAILURE_PREFIX) for line in result.coverage.limitations):
+        raise HTTPException(status_code=502, detail=result.summary)
+    if "No new AI request was made." in result.coverage.limitations:
+        raise HTTPException(status_code=503, detail=result.summary)
+    return result
