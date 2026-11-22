@@ -19,12 +19,14 @@ class ModelOutputError(ValueError):
     """A technical model failure, not a judgment about the product's evidence."""
 
     def __init__(self, code: str, message: str):
+        # Keep a stable diagnostic code alongside the safe message; neither needs the provider's raw content.
         super().__init__(message)
         self.code = code
 
 
 def log_schema_failure(error: ValidationError) -> None:
     # Do not log error input/context/messages: those may contain source or customer text.
+    # Only known schema field names may appear in logs; unexpected paths are replaced with '?'.
     fields = {
         "verdict",
         "summary",
@@ -44,6 +46,7 @@ def log_schema_failure(error: ValidationError) -> None:
         "sentiment",
         "category",
     }
+    # Record at most eight error locations/types, excluding submitted values and validation context.
     failures = [
         {
             "type": e["type"],
@@ -58,7 +61,9 @@ def log_schema_failure(error: ValidationError) -> None:
 
 def parse_http_judgment(response: httpx.Response) -> Judgment:
     """Parse one provider response and record only safe failure metadata."""
+    # HTTP 200 only confirms transport success. The envelope, completion and JSON still need checks.
     try:
+        # We request one completion, so the first choice contains our expected analysis message.
         choice = response.json()["choices"][0]
         message = choice["message"]
         finish = choice.get("finish_reason")
@@ -69,6 +74,7 @@ def parse_http_judgment(response: httpx.Response) -> Judgment:
         raise ModelOutputError(
             "response_envelope", "OpenAI returned an invalid response envelope."
         ) from None
+    # Allowlist finish reasons before logging; do not print arbitrary provider strings or source text.
     safe_finish = (
         finish
         if isinstance(finish, str) and finish in {"stop", "length", "content_filter", "tool_calls"}
@@ -80,13 +86,17 @@ def parse_http_judgment(response: httpx.Response) -> Judgment:
         safe_finish,
         refused,
     )
+    # Truncated output can look like JSON but is not a complete analysis. Do not repair it with another paid call.
     if finish == "length":
         raise ModelOutputError("output_truncated", "OpenAI output reached the completion limit.")
+    # A refusal is a technical unavailable-result case, not a negative product recommendation.
     if refused or finish == "content_filter":
         raise ModelOutputError("output_refused", "OpenAI did not provide an analysis response.")
+    # The Pydantic JSON parser needs actual message text, not null or another response shape.
     if not isinstance(content, str):
         raise ModelOutputError("missing_content", "OpenAI response content was missing.")
     try:
+        # Parse JSON and enforce field types/verdict choices; exact source checks happen separately afterward.
         return Judgment.model_validate_json(content)
     except ValidationError as exc:
         log_schema_failure(exc)
@@ -96,6 +106,7 @@ def parse_http_judgment(response: httpx.Response) -> Judgment:
 
 
 def validate_judgment_evidence(judgment: Judgment, reviews: list[Review], product: Product) -> None:
+    # Input is an already shape-validated judgment. Return nothing on success; raise a safe error on bad citations.
     try:
         validate_evidence(judgment, reviews, product)
     except ValueError as exc:
@@ -119,19 +130,24 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
     # An unknown model price would make the budget calculation unsafe, so stop before calling OpenAI.
     if prices is None:
         raise CostProtectionError("AI model pricing is unknown. Review the model configuration.")
+    # Both adapters receive the same bounded summary/topics/reviews, never raw scraped HTML.
     evidence = compact_evidence(product, reviews, config.analysis_evidence_max_bytes)
     # Output source labels differ from the input JSON keys. Supply copyable citation
     # triples so the model cannot confuse a topic label with a summary source or quote.
+    # These exact triples are the allowed secondary-source references for this particular product.
     citations = []
     if product.customers_say and normalize_text(product.customers_say):
         citations.append(
             {"source": "customers_say", "topic": None, "quote": product.customers_say[:240]}
         )
+    # A topic may supply descriptive text, or just its name plus an explicit sentiment label.
     for topic in product.feedback_topics:
         source = topic.text or (topic.name if topic.sentiment else None)
         if source and normalize_text(source):
             citations.append({"source": "topic", "topic": topic.name, "quote": source[:240]})
+    # Give the model copyable source identifiers so it does not rename keys or invent review IDs.
     evidence["allowed_amazon_citations"] = citations
+    # Generate a fresh schema dictionary; request-specific constraints do not change the public Pydantic model.
     schema = Judgment.model_json_schema()
     if not reviews:
         # Prompt instructions alone cannot prevent invented review IDs. Constrain
@@ -141,17 +157,22 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
         ):
             schema["properties"][field]["maxItems"] = 0
         if citations:
+            # Each anyOf branch represents one real source/quote pairing the provider is allowed to generate.
             choices = []
+            # Index topics by their exact saved label so explicit sentiment restrictions stay attached to that topic.
             topics = {topic.name: topic for topic in product.feedback_topics}
             for citation in citations:
+                # Copy before narrowing fields so one citation cannot overwrite the next branch or base schema.
                 choice = deepcopy(schema["$defs"]["AmazonFinding"])
                 for field, value in citation.items():
                     choice["properties"][field] = {
                         "type": "null" if value is None else "string", "enum": [value]
                     }
+                # Summary citations have topic=null; named topics can carry an explicit positive/negative label.
                 topic = topics.get(citation["topic"])
                 if topic and topic.sentiment in {"positive", "negative"}:
                     choice["properties"]["sentiment"]["enum"] = [topic.sentiment]
+                # Mixed topics remain eligible for a supported positive or negative claim, checked against its quote.
                 choices.append(choice)
             # Each branch binds the source, topic and quote together. Independent
             # enums would still allow a real quote to be attached to the wrong source.
@@ -224,6 +245,7 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
             "negative_findings, reliability_findings and recurring_issues arrays. Use only "
             "amazon_findings for supported summary/topic claims; never create review IDs."
         )
+    # Explain mixed-topic claims without rewriting the saved Amazon sentiment or weakening exact-quote checks.
     payload["messages"][0]["content"] += (
         " A topic labelled mixed may support a specific positive or negative finding quoted "
         "from that topic's supplied text. The finding sentiment describes the claim, not a "

@@ -74,13 +74,16 @@ async def analyze_reviews_langchain(
             )
             # Pydantic structured output checks shape; shared source validation still runs afterward.
             chain = prompt | model.with_structured_output(
+                # With no full reviews, reuse HTTP's source-constrained JSON schema; otherwise use Judgment directly.
                 payload["response_format"]["json_schema"]["schema"] if not reviews else Judgment,
                 method="json_schema",
                 strict=True,
             )
+            # Respect a recent 401 rejection before reserving money for another request with the same key.
             store.reject_bad_credential()
             # Use the same shared app budget guard as HTTP before invoking the chain.
             store.reserve(amount)
+            # Preserve this reservation in the final usage report even if parsing or source validation later fails.
             charge.reserved = amount
             try:
                 # Do not inherit LangSmith tracing settings or transmit reviews to a tracer.
