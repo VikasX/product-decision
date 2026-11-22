@@ -39,10 +39,16 @@ def supported_judgment():
 def test_verified_dataset_only_lists_real_products_and_explicit_counts():
     catalog = DemoCatalog()
     dataset = catalog.get("prd1")
-    assert [c.id for c in catalog.categories()] == ["led"]
+    assert [c.id for c in catalog.categories()] == ["led", "headphone"]
     assert catalog.categories()[0].product_count == 1
     assert len(catalog.products("led")) == 1
-    assert catalog.products("headphone") == []
+    assert [p.id for p in catalog.products("headphone")] == ["prd2"]
+    headphones = catalog.get("prd2")
+    assert headphones.product.asin == "B0FC2W8WJM"
+    assert headphones.product.url == "https://www.amazon.in/dp/B0FC2W8WJM"
+    assert all(catalog.safe_path(source).is_file() for source in headphones.source_files)
+    assert catalog.safe_path(headphones.image_file).is_file()
+    assert sum(bucket.percentage for bucket in headphones.product.rating_distribution) == 100
     assert not dataset.reviews and len(dataset.topic_excerpts) == 8
     assert dataset.product.rating_count == 374
     assert {b.stars: b.percentage for b in dataset.product.rating_distribution} == {
@@ -92,9 +98,10 @@ def test_demo_endpoints_do_not_scrape_and_cache_real_mocked_model_analysis(wire)
                 image = await client.get("/api/v1/demo/products/prd1/image")
                 assert image.status_code == 200 and image.headers["content-type"] == "image/png"
                 assert (await client.get("/api/v1/demo/products/missing")).status_code == 404
-                assert (
-                    await client.get("/api/v1/demo/categories/headphone/products")
-                ).status_code == 404
+                headphones = await client.get("/api/v1/demo/categories/headphone/products")
+                assert headphones.status_code == 200 and headphones.json()[0]["id"] == "prd2"
+                assert (await client.get("/api/v1/demo/products/prd2")).status_code == 200
+                assert (await client.get("/api/v1/demo/products/prd2/image")).status_code == 200
                 assert not calls  # Browsing/inspection cannot spend model credit.
                 one = await client.post("/api/v1/demo/products/prd1/analysis")
                 two = await client.post("/api/v1/demo/products/prd1/analysis")

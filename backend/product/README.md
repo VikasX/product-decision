@@ -1,8 +1,9 @@
 # Saved product catalog
 
 Demo Mode reads only datasets explicitly listed in `catalog.json`. A folder of
-screenshots alone does not enable a category or product. The headphone screenshots
-are retained but not enabled or analyzed by this release.
+screenshots alone does not enable a category or product. LED Lights contains Gesto
+(`prd1`); Headphones contains boAt Rockerz 411 (`prd2`, saved in `headphone/prd1`).
+Product IDs are unique across categories, even when their folder names match.
 
 ## Add a product
 
