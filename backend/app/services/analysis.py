@@ -143,6 +143,11 @@ class AnalysisService:
                     "The attempt is counted against the budget. No automatic retry was made."
                 )
         else:
+            if not reviews and not product.customers_say:
+                result.summary = (
+                    "Amazon review evidence was unavailable to the server. "
+                    "No paid AI analysis was requested."
+                )
             result.coverage.limitations.append(
                 "Analysis needs at least three written reviews or a usable Amazon summary "
                 "with the full rating distribution."

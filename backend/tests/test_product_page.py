@@ -85,6 +85,57 @@ def test_missing_summary_and_unrelated_text_are_not_guessed():
     assert listing.customers_say is None and listing.feedback_topics == []
 
 
+def test_new_product_widget_summary_aspect_labels_and_review_title():
+    # Reduced markup matching the public FLYNGO product widget, not a live API test.
+    html = '''<div data-testid="overall-summary">Unrelated recommendation</div>
+    <div id="customerReviews">
+      <div data-testid="overall-summary">Customers appreciate the colors but report
+      mixed reliability and app connectivity.</div>
+      <div data-testid="aspect-list">
+        <div role="tab" aria-label="Positive aspect, quality, 79 mentions">Quality(79)</div>
+        <div role="tab" aria-label="Mixed aspect, reliability, 34 mentions">Reliability(34)</div>
+        <div role="tab">No usable sentiment</div>
+      </div>
+      <div data-hook="review" id="RTEST123">
+        <h5 data-hook="reviewTitle">Problems with mobile app connection</h5>
+        <i data-hook="review-star-rating">1 out of 5 stars</i>
+        <div data-hook="reviewRichContentContainer"><p>The app does not connect.</p></div>
+      </div>
+    </div>'''
+    listing = product()
+    _, reviews = parse_page(html, listing)
+    assert listing.customers_say.startswith("Customers appreciate")
+    assert len(listing.feedback_topics) == 2
+    reliability, quality = listing.feedback_topics
+    assert reliability.name == "reliability" and reliability.sentiment == "mixed"
+    assert reliability.mention_count == 34 and reliability.negative_count is None
+    assert quality.sentiment == "positive" and quality.mention_count == 79
+    assert reviews[0].title == "Problems with mobile app connection"
+    assert reviews[0].stars == 1 and reviews[0].text == "The app does not connect."
+
+
+def test_partial_listing_reports_server_collection_failure_without_paid_call():
+    html = '<span id="productTitle">Partial product listing</span>'
+    listing = product()
+    original = httpx.AsyncClient
+    with patch(
+        "app.integrations.amazon.httpx.AsyncClient",
+        side_effect=lambda **kw: original(
+            **kw, transport=httpx.MockTransport(lambda request: httpx.Response(200, text=html))
+        ),
+    ):
+        collected = asyncio.run(collect_reviews(listing, settings()))
+    assert any("retrieved HTML" in line for line in collected[2])
+    with (
+        patch("app.services.analysis.collect_reviews", AsyncMock(return_value=collected)),
+        patch("httpx.AsyncClient.post", AsyncMock()) as post,
+    ):
+        result = asyncio.run(AnalysisService(settings(openai_api_key="test")).analyze(listing.url))
+    assert "unavailable to the server" in result.summary
+    assert "No paid AI analysis" in result.summary
+    post.assert_not_awaited()
+
+
 def test_compact_input_bounds_reviews_and_keeps_negative_evidence():
     listing, _ = data()
     reviews = [

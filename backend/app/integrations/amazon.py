@@ -125,16 +125,28 @@ def parse_customer_feedback(soup: BeautifulSoup, product: Product) -> None:
         summary = section.select_one("[data-hook='product-summary'], .a-spacing-small .a-size-base")
         if summary:
             product.customers_say = normalize_text(summary.get_text(" ", strip=True))[:1800] or None
+    # Amazon's newer product-review widget uses test IDs instead of the legacy hooks.
+    summary = soup.select_one("#customerReviews [data-testid='overall-summary']")
+    if summary:
+        product.customers_say = normalize_text(summary.get_text(" ", strip=True))[:1800] or None
     topics = []
     seen = set()
     for element in soup.select(
         "[data-hook='cr-insights-widget-aspects'] [data-csa-c-item-id], "
-        "#cr-product-insights-cards [data-csa-c-item-id]"
+        "#cr-product-insights-cards [data-csa-c-item-id], "
+        "#customerReviews [data-testid='aspect-list'] [role='tab']"
     ):
         name_element = element.select_one("[data-hook='cr-insights-widget-aspects-title']")
-        if not name_element:
+        aspect_label = re.fullmatch(
+            r"(Positive|Negative|Mixed) aspect, (.+), ([\d,]+) mentions?",
+            str(element.get("aria-label", "")),
+            re.I,
+        )
+        if not name_element and not aspect_label:
             continue
-        name = normalize_text(name_element.get_text(" ", strip=True))[:80]
+        name = normalize_text(
+            name_element.get_text(" ", strip=True) if name_element else aspect_label.group(2)
+        )[:80]
         if not name or name.casefold() in seen:
             continue
         seen.add(name.casefold())
@@ -142,6 +154,8 @@ def parse_customer_feedback(soup: BeautifulSoup, product: Product) -> None:
         indicator = str(element.get("data-csa-c-item-id", "")).lower()
         explicit = str(element.get("data-sentiment", "")).lower()
         sentiment = explicit if explicit in {"positive", "negative", "mixed"} else None
+        if aspect_label:
+            sentiment = aspect_label.group(1).lower()
         if sentiment is None:
             for value in ("mixed", "negative", "positive"):
                 if re.search(rf"(?:^|[_ -]){value}(?:$|[_ -])", indicator):
@@ -197,7 +211,7 @@ def parse_page(html: str, product: Product) -> tuple[str | None, list[Review]]:
         date_element = element.select_one('[data-hook="review-date"]')
         date = normalize_text(date_element.get_text(" ", strip=True)) if date_element else None
         variant = element.select_one('[data-hook="format-strip"]')
-        title = element.select_one('[data-hook="review-title"]')
+        title = element.select_one('[data-hook="review-title"], [data-hook="reviewTitle"]')
         title_text = normalize_text(title.get_text(" ", strip=True)) if title else None
         if title_text:
             title_text = (
@@ -335,6 +349,12 @@ async def collect_reviews(
     except (httpx.HTTPError, ValueError, TimeoutError):
         limitations.append("Product page could not be retrieved within collection limits.")
     selected = select_page_reviews(reviews, max_reviews)
+    if not selected and not product.customers_say and not product.rating_distribution:
+        limitations.append(
+            "Amazon did not supply review evidence in the retrieved HTML. "
+            "A product title, price or average rating alone does not establish review access; "
+            "the browser page may contain more data than the server response."
+        )
     if not product.customers_say:
         limitations.append("Amazon's Customers say summary was unavailable.")
     if len(product.rating_distribution) < 5:

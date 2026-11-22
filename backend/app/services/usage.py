@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from app.core.config import Settings
 from app.schemas.analysis import AnalysisResponse, Usage
 
-PROMPT_VERSION = "review-v5-product-page"
+PROMPT_VERSION = "review-v6-product-widget"
 NANODOLLARS = 1_000_000_000
 # USD per token expressed as integer nanodollars. Reviewed 2026-11-22.
 MODEL_PRICES = {

@@ -4,6 +4,15 @@ Updated November 22, 2026. Backend and UI live in separate repositories, both on
 
 ## Current product-page simplification
 
+- FLYNGO investigation: an ordinary HTTP GET returned a 3,793-byte CAPTCHA page,
+  while the browser product page exposed 8 reviews, 262 ratings and all 5 histogram
+  buckets. The original production HTML was not retained, so its missing sections
+  cannot be reconstructed. Server/browser access differs; this is not an AI quota error.
+- Added support for the observed newer `overall-summary` / `aspect-list` widget
+  and `reviewTitle` hook. Partial/blocked evidence now explicitly states that no
+  paid analysis was requested. Cache version: review-v6-product-widget. These
+  changes do not circumvent Amazon restrictions or guarantee Vercel review access.
+
 - The active collector requests only the product listing, no filtered/recent/paginated
   review pages and no browser fallback. It retains up to 8 unique accessible written
   reviews and available overall ratings, Customers say text and feedback topics/counts.
