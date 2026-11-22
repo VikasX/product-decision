@@ -101,6 +101,10 @@ async def collect_reviews(product: Product) -> tuple[Product, list[Review], list
                     if normalized not in seen_text and len(reviews) < MAX_REVIEWS:
                         reviews[review.id] = review
                         seen_text.add(normalized)
+            except httpx.HTTPStatusError as exc:
+                limitations.append(
+                    f"{label.capitalize()}: Amazon returned HTTP {exc.response.status_code}."
+                )
             except (httpx.HTTPError, ValueError) as exc:
                 message = str(exc) if isinstance(exc, ValueError) else "Amazon request failed"
                 message = f"{label.capitalize()}: {message}."
