@@ -62,6 +62,60 @@ The model is deprecated but currently available. There are no automatic retries 
 fallbacks to another model. At least three written reviews are required for a call.
 The result includes source excerpts and validated review references.
 
+## Phase 1 refinement
+
+Collection reads the listing first, then prioritises 1-star and 2-star text before
+4-star and 5-star comparison pages and recent reviews. Observed pagination links
+are followed only within the same Amazon.in ASIN and the page budget. Review IDs
+and normalized body text deduplicate repeated reviews. Variant and raw date text
+are retained, with ISO dates added only when the format can be parsed reliably.
+
+When present in product-scoped markup, the parser reads the overall rating, total
+rating count and displayed star percentages. Missing values stay unavailable.
+Rating percentages describe Amazon's listing, while sample counts describe only
+collected written reviews. Counts of ratings are not counts of written reviews.
+
+AMAZON_MAX_REVIEWS defaults to 30 and AMAZON_MAX_PAGES to 6. Each request has a
+10-second timeout, with at most one retry for transport failures or HTTP
+500/502/503/504. The overall collection deadline is 90 seconds. Sign-in redirects,
+CAPTCHAs and access-denied responses are not retried. Once Amazon restricts the
+review route, sibling filters are skipped and reported as unavailable. Body text
+is bounded to 4,000 characters per review. Local Chrome fallback remains bounded;
+Vercel continues using HTTP collection.
+
+Previous live runs established that recent/filtered pages can redirect to sign-in,
+return HTTP errors or present CAPTCHAs. These are source-access limitations. This
+refinement was tested with stored synthetic HTML and mocked responses, not fresh
+Amazon requests, so greater live coverage has not been established.
+
+Structured judgments now use worth_considering, proceed_with_caution,
+not_recommended or insufficient_evidence. Positive and negative findings include
+matching source excerpts. Recurring issues require at least two distinct supporting
+reviews and distinguish defects, missing features, usability, delivery, preferences
+and other concerns. Python calculates dates, star counts and supporting-review
+counts. Quotes and IDs are checked against the selected evidence before a result
+can be cached. These checks establish traceability, not the correctness of every
+interpretation.
+
+If collected evidence exceeds the input limit, Python selects a bounded subset
+prioritising low-star reviews while retaining positive comparison. The response
+keeps all collected reviews and reports the number actually analysed. GPT-5 nano,
+the 2,000 completion-token default, one-call policy and spending caps remain in use.
+The prompt version is now review-v3, so a product's first refined judgment needs a
+new guarded call. Old cache records remain readable and the budget ledger persists.
+
+The response adds product rating metadata, review titles and ISO dates,
+positive_findings, negative_findings, recurring_issues and sample_statistics.
+The existing reasons field is retained for compatibility.
+
+### One controlled live test
+
+After deployment and with Atlas access available, submit one Amazon.in product
+URL once. Check the listing rating metadata, collected/analyzed counts, data-access
+limitations and excerpts behind each finding. Expect a More Evidence Needed result
+if Amazon restricts access. Do not repeatedly retry a failed paid judgment. A
+verified result is cached for 24 hours. No live test was run for this refinement.
+
 ## Usage protection
 
 The default application limits are $0.02 per day, $0.10 lifetime and 20 paid attempts

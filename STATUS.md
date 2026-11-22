@@ -2,6 +2,16 @@
 
 Updated November 22, 2026. Both Vercel deployments are connected. After moving the backend to Mumbai, a hosted analysis of B0CD1BHXPZ completed using 13 real reviews. Amazon access remains variable and protected review pages can require sign-in. Atlas access is currently temporary.
 
+## Phase 1 refinement
+
+- Added product overall rating, total rating count and displayed 5-star to 1-star percentages when available. Review records now include titles and reliably parsed ISO dates alongside original text, dates, variants and source references.
+- Prioritised 1/2-star text before 4/5-star comparison, with bounded observed pagination, configurable collection limits, one transient retry and a 90-second overall deadline. Restricted routes are skipped after sign-in, CAPTCHA or denied-access responses. Missing data remains explicit.
+- Added four verdicts, positive/negative findings, classified recurring issues and Python sample statistics. Findings require matching quotes and valid IDs. Recurring issues require two distinct source reviews. Strong negative recommendations require recurring product evidence, rather than delivery or preference complaints alone.
+- Preserved GPT-5 nano, spending limits, one paid attempt per analysis, persistent cache and ledger. A bounded balanced subset fits the input limit when needed. Cache prompt version review-v3 invalidates older judgments without resetting spending totals, and legacy payloads remain readable.
+- Refined the existing result section with rating bars, evidence sections, sample counts/date range, accessible review references, unavailable states and cache information. The homepage and navigation are retained.
+- Validation used synthetic stored HTML, mocked provider/LLM responses and a loopback fixture API. Backend has 66 passing tests plus Ruff checks, including the normal API route and cache reuse. UI has 13 passing response-validation tests plus lint, TypeScript and production-build checks. Desktop/narrow-screen, missing data, legacy cache, malformed responses and expandable reference behavior were verified locally.
+- No Amazon or OpenAI requests were made for refinement validation. Actual live coverage and the new model output remain unverified. See backend/README.md for one controlled live-test procedure and collection defaults.
+
 ## Repositories
 
 - [Backend](https://github.com/VikasX/product-decision) uses FastAPI, MongoDB for deployed analysis state and usage limits, and SQLite for local analysis state.
@@ -29,7 +39,7 @@ Updated November 22, 2026. Both Vercel deployments are connected. After moving t
 
 ## Validation completed
 
-- Backend has 36 passing tests plus Ruff lint and formatting checks. Tests cover persistent caching, budget enforcement before network calls, concurrent duplicate requests, atomic reservations, invalid citations and outputs, credential failure handling and midnight India budget reset. Deployment tests cover import without storage initialisation, Vercel state selection, shared MongoDB conditional budget updates and fail-closed storage errors. Diagnostics tests confirm that database credentials and exception text do not appear in connection-failure logs.
+- Backend has 66 passing tests plus Ruff lint and formatting checks. Tests cover collection parsing and access limits, source quote/verdict validation, persistent caching, budget enforcement before network calls, concurrent duplicate requests, atomic reservations, credential failure handling and midnight India budget reset. Deployment tests cover import without storage initialisation, Vercel state selection, shared MongoDB conditional budget updates and fail-closed storage errors. Diagnostics tests confirm that database credentials and exception text do not appear in connection-failure logs.
 - Real Atlas verification passed against temporary collections inside the configured database, covering concurrent reservations, India day rollover, shared cache, lease ownership and credential-failure sharing. The exact QA collections were removed. No OpenAI requests were made for this deployment verification.
 - UI lint and production build passed.
 - A live run for ASIN `B0D5Q7RWF6` collected and analysed eight real reviews, returning an uncertain judgment with source references.

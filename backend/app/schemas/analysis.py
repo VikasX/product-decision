@@ -1,8 +1,16 @@
 import re
-from typing import Literal
+from datetime import date as Date
+from typing import Annotated, Literal
 from urllib.parse import urlsplit
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+Verdict = Literal[
+    "worth_considering", "proceed_with_caution", "not_recommended", "insufficient_evidence"
+]
+IssueCategory = Literal[
+    "product_defect", "delivery", "subjective_preference", "missing_feature", "usability", "other"
+]
 
 
 class AnalysisRequest(BaseModel):
@@ -25,19 +33,34 @@ class AnalysisRequest(BaseModel):
         return f"https://www.amazon.in/dp/{match.group(1).upper()}"
 
 
+class RatingBucket(BaseModel):
+    stars: Literal[1, 2, 3, 4, 5]
+    percentage: float | None = Field(default=None, ge=0, le=100)
+
+
 class Product(BaseModel):
     asin: str
     title: str
     url: str
+    overall_rating: float | None = Field(default=None, ge=1, le=5)
+    rating_count: int | None = Field(default=None, ge=0)
+    rating_distribution: list[RatingBucket] = Field(default_factory=list, max_length=5)
 
 
 class Review(BaseModel):
     id: str
     text: str
-    stars: float | None = None
+    stars: float | None = Field(default=None, ge=1, le=5)
     date: str | None = None
     variant: str | None = None
     source_url: str
+    title: str | None = None
+    date_iso: str | None = None
+
+    @field_validator("date_iso")
+    @classmethod
+    def validate_date_iso(cls, value):
+        return Date.fromisoformat(value).isoformat() if value is not None else None
 
 
 class Reason(BaseModel):
@@ -46,11 +69,43 @@ class Reason(BaseModel):
     review_ids: list[str] = Field(min_length=1, max_length=10)
 
 
+class EvidenceQuote(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    review_id: str = Field(min_length=1)
+    quote: str = Field(min_length=1, max_length=240)
+
+
+class Finding(Reason):
+    evidence: list[EvidenceQuote] = Field(min_length=1, max_length=3)
+
+
+class IssueFinding(Finding):
+    category: IssueCategory
+
+
+class RecurringIssue(IssueFinding):
+    mention_count: int = Field(ge=2)
+
+
 class Judgment(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    verdict: Literal["buy", "skip", "insufficient_evidence"]
+    verdict: Verdict
     summary: str = Field(min_length=1, max_length=2000)
-    reasons: list[Reason] = Field(min_length=1, max_length=5)
+    positive_findings: list[Finding] = Field(max_length=3)
+    negative_findings: list[Finding] = Field(max_length=3)
+    recurring_issues: list[IssueFinding] = Field(max_length=3)
+
+
+class SampleStatistics(BaseModel):
+    by_star: dict[str, Annotated[int, Field(ge=0)]] = Field(
+        default_factory=lambda: {str(star): 0 for star in range(1, 6)}
+    )
+    negative_count: int = Field(default=0, ge=0)
+    positive_count: int = Field(default=0, ge=0)
+    neutral_count: int = Field(default=0, ge=0)
+    unrated_count: int = Field(default=0, ge=0)
+    oldest_review_date: str | None = None
+    newest_review_date: str | None = None
 
 
 class Coverage(BaseModel):
@@ -70,10 +125,20 @@ class Usage(BaseModel):
 class AnalysisResponse(BaseModel):
     status: Literal["completed", "insufficient_evidence"]
     product: Product
-    verdict: Literal["buy", "skip", "insufficient_evidence"]
+    verdict: Verdict
     summary: str
     reasons: list[Reason]
     reviews: list[Review]
     coverage: Coverage
     cached: bool = False
     usage: Usage | None = None
+    positive_findings: list[Finding] = Field(default_factory=list)
+    negative_findings: list[Finding] = Field(default_factory=list)
+    recurring_issues: list[RecurringIssue] = Field(default_factory=list)
+    sample_statistics: SampleStatistics = Field(default_factory=SampleStatistics)
+
+    @field_validator("verdict", mode="before")
+    @classmethod
+    def migrate_legacy_verdict(cls, value):
+        # Old cache entries stay readable; new model judgments use the strict four-value enum.
+        return {"buy": "worth_considering", "skip": "not_recommended"}.get(value, value)

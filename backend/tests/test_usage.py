@@ -1,4 +1,5 @@
 import asyncio
+import json
 from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import AsyncMock, patch
 
@@ -22,16 +23,29 @@ def config(**kwargs):
 def evidence():
     product = Product(asin="B0D5Q7RWF6", title="LED", url="https://www.amazon.in/dp/B0D5Q7RWF6")
     reviews = [
-        Review(id=f"R{index}", text="Glue fails", stars=1, source_url=product.url)
+        Review(id=f"R{index}", text=f"Glue fails on unit {index}", stars=1, source_url=product.url)
         for index in range(3)
     ]
     return product, reviews
 
 
 def response(content=None, status=200):
-    content = content or (
-        '{"verdict":"skip","summary":"Repeated adhesive complaints in this limited sample.",'
-        '"reasons":[{"text":"Weak adhesive","review_ids":["R0","R1"]}]}'
+    content = content or json.dumps(
+        {
+            "verdict": "proceed_with_caution",
+            "summary": "Repeated adhesive complaints in this limited sample.",
+            "positive_findings": [],
+            "negative_findings": [
+                {
+                    "text": "Weak adhesive",
+                    "review_ids": ["R0", "R1"],
+                    "evidence": [
+                        {"review_id": item, "quote": "Glue fails"} for item in ["R0", "R1"]
+                    ],
+                }
+            ],
+            "recurring_issues": [],
+        }
     )
     return httpx.Response(
         status,
@@ -107,9 +121,14 @@ def test_auth_failure_blocks_other_products_until_key_changes():
 
 def test_verified_uncertain_verdict_cached_across_service_restart_even_when_budget_zero():
     product, reviews = evidence()
-    uncertain = (
-        '{"verdict":"insufficient_evidence","summary":"Need more reviews.",'
-        '"reasons":[{"text":"Limited sample","review_ids":["R0"]}]}'
+    uncertain = json.dumps(
+        {
+            "verdict": "insufficient_evidence",
+            "summary": "Need more reviews.",
+            "positive_findings": [],
+            "negative_findings": [],
+            "recurring_issues": [],
+        }
     )
     with (
         patch(

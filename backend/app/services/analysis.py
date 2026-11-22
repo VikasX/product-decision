@@ -5,9 +5,10 @@ import uuid
 import httpx
 
 from app.core.config import Settings
-from app.integrations.amazon import collect_reviews
-from app.integrations.llm import AttemptCharge, analyze_reviews
-from app.schemas.analysis import AnalysisResponse, Coverage, Product
+from app.integrations.amazon import balanced_review_sample, collect_reviews
+from app.integrations.llm import AttemptCharge, analyze_reviews, prepare_request
+from app.schemas.analysis import AnalysisResponse, Coverage, Product, Reason, RecurringIssue, Review
+from app.services.review_evidence import sample_statistics
 from app.services.usage import (
     PROMPT_VERSION,
     CostProtectionError,
@@ -68,7 +69,7 @@ class AnalysisService:
 
     async def run_analysis(self, url: str, asin: str) -> tuple[AnalysisResponse, bool]:
         product, reviews, limitations = await collect_reviews(
-            Product(asin=asin, title=f"Amazon product {asin}", url=url)
+            Product(asin=asin, title=f"Amazon product {asin}", url=url), self.config
         )
         result = AnalysisResponse(
             status="insufficient_evidence",
@@ -78,12 +79,22 @@ class AnalysisService:
             reasons=[],
             reviews=reviews,
             coverage=Coverage(reviews_analyzed=0, limitations=limitations),
+            sample_statistics=sample_statistics(reviews),
         )
         charge = AttemptCharge()
         verified = False
-        if len(reviews) >= 3:
+        analysis_reviews = self.fit_review_sample(product, reviews)
+        if len(analysis_reviews) < len(reviews):
+            result.coverage.limitations.append(
+                f"AI input limits allow {len(analysis_reviews)} of {len(reviews)} "
+                "collected reviews "
+                "to be analysed. The subset prioritises low-star evidence and positive comparison."
+            )
+        if len(analysis_reviews) >= 3:
             try:
-                judgment = await analyze_reviews(self.config, product, reviews, charge, self.store)
+                judgment = await analyze_reviews(
+                    self.config, product, analysis_reviews, charge, self.store
+                )
                 result.verdict = judgment.verdict
                 result.status = (
                     "insufficient_evidence"
@@ -91,8 +102,21 @@ class AnalysisService:
                     else "completed"
                 )
                 result.summary = judgment.summary
-                result.reasons = judgment.reasons
-                result.coverage.reviews_analyzed = len(reviews)
+                result.positive_findings = judgment.positive_findings
+                result.negative_findings = judgment.negative_findings
+                result.recurring_issues = [
+                    RecurringIssue(**issue.model_dump(), mention_count=len(set(issue.review_ids)))
+                    for issue in judgment.recurring_issues
+                ]
+                result.reasons = [
+                    Reason(text=finding.text, review_ids=finding.review_ids)
+                    for finding in (
+                        judgment.negative_findings
+                        + judgment.positive_findings
+                        + judgment.recurring_issues
+                    )
+                ]
+                result.coverage.reviews_analyzed = len(analysis_reviews)
                 verified = True
             except CostProtectionError as exc:
                 result.summary = str(exc)
@@ -122,3 +146,15 @@ class AnalysisService:
             )
         result.usage = self.store.usage(reserved=charge.reserved)
         return result, verified
+
+    def fit_review_sample(self, product: Product, reviews: list[Review]) -> list[Review]:
+        if len(reviews) < 3:
+            return reviews
+        for count in range(len(reviews), 2, -1):
+            selected = balanced_review_sample(reviews, count)
+            try:
+                prepare_request(self.config, product, selected)
+                return selected
+            except CostProtectionError:
+                continue
+        return []

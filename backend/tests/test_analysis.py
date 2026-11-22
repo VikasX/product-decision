@@ -1,4 +1,5 @@
 import asyncio
+import json
 from unittest.mock import AsyncMock, patch
 
 import httpx
@@ -66,9 +67,22 @@ def test_rejects_invented_review_citations():
             "choices": [
                 {
                     "message": {
-                        "content": (
-                            '{"verdict":"skip","summary":"Bad colours","reasons":'
-                            '[{"text":"Colour failures","review_ids":["invented"]}]}'
+                        "content": json.dumps(
+                            {
+                                "verdict": "proceed_with_caution",
+                                "summary": "Bad colours",
+                                "positive_findings": [],
+                                "recurring_issues": [],
+                                "negative_findings": [
+                                    {
+                                        "text": "Colour failures",
+                                        "review_ids": ["invented"],
+                                        "evidence": [
+                                            {"review_id": "invented", "quote": "Only blue works"}
+                                        ],
+                                    }
+                                ],
+                            }
                         )
                     }
                 }
@@ -92,7 +106,7 @@ def test_openai_auth_failure_preserves_reviews_without_exposing_key():
     service = AnalysisService(Settings(_env_file=None, mongodb_uri="mongodb://localhost/"))
     product = Product(asin="B0D5Q7RWF6", title="LED", url="https://www.amazon.in/dp/B0D5Q7RWF6")
     reviews = [
-        Review(id=str(index), text="LED review", stars=3, source_url=product.url)
+        Review(id=str(index), text=f"LED review {index}", stars=3, source_url=product.url)
         for index in range(3)
     ]
     error = httpx.HTTPStatusError(
