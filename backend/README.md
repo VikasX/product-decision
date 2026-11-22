@@ -2,6 +2,32 @@
 
 FastAPI with async PyMongo and MongoDB. Requires Python 3.12+ with pip and venv, plus a local MongoDB server or MongoDB Atlas cluster.
 
+## Saved-product Demo Mode (current public experience)
+
+The frontend now selects saved products rather than submitting live Amazon URLs.
+Datasets and original screenshots live in `backend/product`; see `product/README.md`
+for the catalog format, verification notes and how to add `prd2`, `prd3`, etc.
+Only the verified Gesto dataset is enabled; other screenshot folders are not listed.
+
+- `GET /api/v1/demo/categories`
+- `GET /api/v1/demo/categories/{category_id}/products`
+- `GET /api/v1/demo/products/{product_id}`
+- `GET /api/v1/demo/products/{product_id}/image`
+- `POST /api/v1/demo/products/{product_id}/analysis?workflow=httpx`
+
+The analysis POST loads Pydantic-validated local evidence and uses the unchanged
+HTTP nano adapter, output/source validation, shared store and spending guards.
+`workflow=langchain` uses the existing adapter with the existing local Lab access
+check. Demo Mode never calls Amazon. Cache keys isolate product ID, version, content
+hash, workflow, model and prompt version. Existing URL endpoints remain available.
+Vercel includes `product/**` in the function bundle; local auto mode continues using
+SQLite while Vercel keeps shared MongoDB caching/budget enforcement.
+
+No full review IDs, stars or dates are visible in Gesto's topic screenshots. Partial
+excerpts are inspectable separately; compact model input uses the Amazon summary and
+topic descriptions/counts, without inventing direct citations. No verdict is stored
+in the dataset. Development tests mock both LLM adapters and make no paid requests.
+
 ## Setup (PowerShell)
 
 From the repository root:

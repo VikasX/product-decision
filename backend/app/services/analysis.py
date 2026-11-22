@@ -22,6 +22,10 @@ class AnalysisService:
     # An empty suffix identifies the normal HTTP workflow; the subclass supplies a different suffix.
     cache_namespace = ""
 
+    def cache_key(self, asin: str) -> str:
+        # Keep live workflow keys unchanged; saved datasets override this boundary.
+        return f"amazon.in:{asin}:{self.config.openai_model}:{PROMPT_VERSION}{self.cache_namespace}"
+
     # Python calls this when creating the service. Tests can supply a fake store to avoid real databases.
     def __init__(self, config: Settings, *, store=None):
         # Keep the validated settings available to later collection and model methods.
@@ -34,7 +38,7 @@ class AnalysisService:
         # The request validator already removed tracking parameters, so the final path piece is the product ID.
         asin = url.rsplit("/", 1)[-1]
         # Combine product, model, evidence version and workflow so unrelated reports never share a cache entry.
-        key = f"amazon.in:{asin}:{self.config.openai_model}:{PROMPT_VERSION}{self.cache_namespace}"
+        key = self.cache_key(asin)
         # Credential-specific failures do not block recovery after a key is replaced.
         failure_key = f"{key}:failure:{credential_fingerprint(self.config)}"
         # Generate a unique worker ID; it proves that this request owns its temporary processing lease.

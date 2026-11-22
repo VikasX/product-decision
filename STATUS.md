@@ -2,6 +2,25 @@
 
 Updated November 22, 2026. Backend and UI live in separate repositories, both on main.
 
+## Saved-product Demo Mode (local implementation)
+
+- Home page now browses the category/product catalog and explicitly analyzes a saved
+  dataset. The main demo path never invokes Amazon scraping. Existing URL endpoints,
+  HTTPX/SDK integrations, MongoDB/SQLite stores and caps remain available unchanged.
+- `backend/product/catalog.json` enables only `led/prd1/dataset.json` (Gesto). All
+  nine source screenshots were inspected. Topic counts are explicit, not estimates;
+  eight partial topic snippets have no full-review IDs/dates/stars, so reviews stay empty.
+- The original product folder moved under backend for Vercel bundling. Headphone
+  screenshot files are retained but have no enabled dataset/category in this release.
+- Shared cache orchestration now has one default-preserving key hook. Demo keys
+  contain ID/version/content hash/model/prompt/workflow; data and live judgments cannot mix.
+- New targeted checks: five demo backend tests plus 31 existing adapter/product-page
+  tests pass (36 total). Four demo frontend tests plus 23 existing report/adapter tests
+  pass (27 total); TypeScript, changed-file lint and production build pass. Browser
+  verified real catalog/selection/evidence inspection and both themes, without Analyze.
+- Paid native model output and deployed bundling are not live-verified; no paid calls,
+  production deployment or spending-limit changes were made for this implementation.
+
 ## Current product-page simplification
 
 - FLYNGO investigation: an ordinary HTTP GET returned a 3,793-byte CAPTCHA page,

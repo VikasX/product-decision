@@ -1,0 +1,11 @@
+{
+  "categories": [
+    {
+      "id": "led",
+      "name": "LED Lights",
+      "datasets": [
+        "led/prd1/dataset.json"
+      ]
+    }
+  ]
+}

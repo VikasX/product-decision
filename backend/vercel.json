@@ -4,6 +4,7 @@
   "functions": {
     "app/main.py": {
       "maxDuration": 300,
+      "includeFiles": "product/**",
       "excludeFiles": "{.venv/**,venv/**,.data/**,.env*,tests/**,.pytest_cache/**,.ruff_cache/**,**/__pycache__/**,*.log}"
     }
   }
