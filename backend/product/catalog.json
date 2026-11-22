@@ -4,9 +4,7 @@
       "id": "led",
       "name": "LED Lights",
       "datasets": [
-        "led/prd1/dataset.json",
-        "led/prd2/dataset.json",
-        "headphone/prd1/dataset.json"
+        "led/prd1/dataset.json"
       ]
     }
   ]
