@@ -105,6 +105,7 @@ is declared in pyproject.toml. Importing it does not initialise storage or requi
 .env. Runtime clients and required configuration initialise during application startup.
 The function allows 300 seconds, and local environments, state files and tests are excluded
 from the deployment bundle through vercel.json.
+The function runs in Mumbai (`bom1`), near the Atlas cluster and Amazon India.
 
 Set these exact environment variable names in Vercel's project settings
 
