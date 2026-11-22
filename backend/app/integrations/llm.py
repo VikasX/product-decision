@@ -10,19 +10,27 @@ from app.services.review_evidence import compact_evidence, normalize_text
 from app.services.usage import MODEL_PRICES, CostProtectionError, create_usage_store
 
 
+# This decorator supplies the small object constructor for our per-attempt cost tracker.
 @dataclass
+# Carry reserved cost back to response assembly even when the request or validation fails.
 class AttemptCharge:
+    # Store this attempt estimated maximum cost as integer nanodollars; zero means nothing reserved yet.
     reserved: int = 0
 
 
+# Config + source evidence in; strict OpenAI payload and conservative nanodollar cost bound out.
 def prepare_request(config: Settings, product: Product, reviews: list[Review]) -> tuple[dict, int]:
+    # Look up allowed input/output token prices so we can check spending before transmission.
     prices = MODEL_PRICES.get(config.openai_model)
+    # An unknown model price would make the budget calculation unsafe, so stop before calling OpenAI.
     if prices is None:
         raise CostProtectionError("AI model pricing is unknown. Review the model configuration.")
+    # Source content is untrusted data; instructions demand source-backed findings, not invented claims.
     payload = {
         "model": config.openai_model,
         "max_completion_tokens": config.openai_max_output_tokens,
         "reasoning_effort": "minimal",
+        # Send fixed system instructions separately from compact source data in the user message.
         "messages": [
             {
                 "role": "system",
@@ -47,17 +55,20 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
             },
             {
                 "role": "user",
+                # Serialize the compact evidence dictionary as JSON while preserving readable Unicode text.
                 "content": json.dumps(
                     compact_evidence(product, reviews, config.analysis_evidence_max_bytes),
                     ensure_ascii=False,
                 ),
             },
         ],
+        # Ask OpenAI for strict JSON matching Judgment; this is a format constraint, not proof of source truth.
         "response_format": {
             "type": "json_schema",
             "json_schema": {
                 "name": "product_judgment",
                 "strict": True,
+                # Generate the model-output schema from the same Pydantic class that later validates the response.
                 "schema": Judgment.model_json_schema(),
             },
         },
@@ -65,13 +76,18 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
     # Byte-level text tokens cannot exceed UTF-8 bytes. Count the entire serialized
     # request (including schema) and reserve another 8192 tokens for protocol framing.
     # Ignore input-cache discounts so the reservation stays conservative.
+    # Use serialized UTF-8 bytes plus extra framing as a conservative token allowance, not an exact tokenizer count.
     input_bound = len(json.dumps(payload, ensure_ascii=False).encode("utf-8")) + 8192
+    # Reject a prompt that exceeds our input allowance before reserving money or making a request.
     if input_bound > config.openai_max_input_tokens:
         raise CostProtectionError("Review evidence exceeds the configured AI input size limit.")
+    # Multiply input/output allowances by their nanodollar prices to reserve a maximum estimated cost.
     reserved = input_bound * prices[0] + config.openai_max_output_tokens * prices[1]
+    # Return the request dictionary and its cost estimate; this preparation step makes no paid call.
     return payload, reserved
 
 
+# HTTPX implementation: reserve once, send one OpenAI request, return a validated Judgment.
 async def analyze_reviews(
     config: Settings,
     product: Product,
@@ -79,37 +95,55 @@ async def analyze_reviews(
     charge: AttemptCharge | None = None,
     store=None,
 ) -> Judgment:
+    # Missing credentials are a local configuration issue, so stop without sending a request.
     if not config.openai_api_key:
         raise CostProtectionError("Configure the OpenAI API key before running AI analysis.")
+    # Prepare exactly the payload whose conservative cost will be reserved below.
     payload, amount = prepare_request(config, product, reviews)
+    # A context manager tracks cleanup resources, including a temporary store if none was supplied.
     with ExitStack() as resources:
+        # Direct adapter callers can omit the store; service callers normally reuse their existing one.
         if store is None:
             store = resources.enter_context(closing(create_usage_store(config)))
+        # Avoid repeatedly trying a credential that recently received an authentication rejection.
         store.reject_bad_credential()
+        # Reserve before transmission so concurrent requests cannot spend past the app caps.
         store.reserve(amount)
+        # Update the optional shared tracker so the service can report the reservation even on failure.
         if charge is not None:
             charge.reserved = amount
         # One request, no SDK retries, no automatic model fallback.
+        # Give the one model request a 45-second HTTP timeout and close its client afterward.
         async with httpx.AsyncClient(timeout=45) as client:
+            # Send the request and wait for OpenAI; there is no repair call or model retry after this.
             response = await client.post(
                 "https://api.openai.com/v1/chat/completions",
+                # Attach the server-side key only to the OpenAI request; it never enters the frontend report.
                 headers={"Authorization": f"Bearer {config.openai_api_key.get_secret_value()}"},
                 json=payload,
             )
+            # Remember a rejected key briefly so later requests do not repeatedly attempt it.
             if response.status_code == 401:
                 store.record_auth_failure()
+            # Raise on a provider HTTP error before reading its body as a successful model response.
             response.raise_for_status()
+            # Schema validation checks shape; validate_evidence below checks actual source support.
             judgment = Judgment.model_validate_json(
                 response.json()["choices"][0]["message"]["content"]
             )
+    # After Pydantic shape validation, verify that the model cited evidence we actually supplied.
     validate_evidence(judgment, reviews, product)
+    # Return the supported typed judgment; service code adds counts, source data and usage metadata.
     return judgment
 
 
+# Judgment + supplied sources in; raise if citations, quotes or recurrence claims are unsupported.
 def validate_evidence(
     judgment: Judgment, reviews: list[Review], product: Product | None = None
 ) -> None:
+    # Index normalized review text by ID for fast case-insensitive citation checks.
     sources = {review.id: normalize_text(review.text).casefold() for review in reviews}
+    # Apply the same direct-review validation to positive, negative, recurring and reliability findings.
     findings = (
         judgment.positive_findings
         + judgment.negative_findings
@@ -122,25 +156,39 @@ def validate_evidence(
         and not judgment.amazon_findings
     ):
         raise ValueError("A recommendation requires supported findings")
+    # Inspect every claim that is supposed to be supported by direct written reviews.
     for finding in findings:
+        # A set lets us check uniqueness and whether every claimed review ID exists.
         cited = set(finding.review_ids)
+        # Collect the IDs attached to quotes; these must match the declared citation IDs.
         quoted = {evidence.review_id for evidence in finding.evidence}
+        # Reject duplicate IDs, missing source IDs or disagreement between citations and quotes.
         if len(cited) != len(finding.review_ids) or not cited <= sources.keys() or cited != quoted:
             raise ValueError("Analysis contained unverified review references")
+        # Check each supporting quote, not only the list of review IDs.
         for evidence in finding.evidence:
+            # Normalize spacing/case before checking whether this exact excerpt occurs in the source.
             quote = normalize_text(evidence.quote).casefold()
+            # An empty quote or text missing from its cited review cannot support a finding.
             if not quote or quote not in sources[evidence.review_id]:
                 raise ValueError("Analysis contained an unverified review quote")
+    # Amazon AI findings cite summary/topic text separately from direct-review IDs.
     for finding in judgment.amazon_findings:
+        # Summary/topic findings need product evidence available for their own source checks.
         if product is None:
             raise ValueError("Amazon evidence requires the supplied product source")
+        # Summary findings must not masquerade as topic findings with an invented topic name.
         if finding.source == "customers_say":
             source = product.customers_say if finding.topic is None else None
         else:
+            # Find the exact supplied topic name; next returns None when no matching topic exists.
             topic = next((t for t in product.feedback_topics if t.name == finding.topic), None)
+            # Prefer actual topic text; a named topic with explicit sentiment can serve as limited source evidence.
             source = (topic.text or topic.name) if topic else None
+            # A bare topic name with no text or sentiment is not enough to validate a finding.
             if topic and not topic.text and topic.sentiment is None:
                 source = None
+            # The model may not reverse a topic sentiment explicitly supplied by Amazon.
             if topic and topic.sentiment and topic.sentiment != finding.sentiment:
                 raise ValueError("Amazon topic sentiment does not match its source")
         if (
@@ -149,6 +197,7 @@ def validate_evidence(
             or normalize_text(finding.quote).casefold() not in normalize_text(source).casefold()
         ):
             raise ValueError("Analysis contained unverified Amazon source evidence")
+    # Calling an issue recurring requires two distinct direct reviews, not a repeated citation.
     if any(len(set(issue.review_ids)) < 2 for issue in judgment.recurring_issues):
         raise ValueError("A recurring issue requires at least two unique review references")
     if (
