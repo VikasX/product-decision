@@ -1,6 +1,7 @@
 import json
 import logging
 from contextlib import ExitStack, closing
+from copy import deepcopy
 from dataclasses import dataclass
 
 import httpx
@@ -118,6 +119,51 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
     # An unknown model price would make the budget calculation unsafe, so stop before calling OpenAI.
     if prices is None:
         raise CostProtectionError("AI model pricing is unknown. Review the model configuration.")
+    evidence = compact_evidence(product, reviews, config.analysis_evidence_max_bytes)
+    # Output source labels differ from the input JSON keys. Supply copyable citation
+    # triples so the model cannot confuse a topic label with a summary source or quote.
+    citations = []
+    if product.customers_say and normalize_text(product.customers_say):
+        citations.append(
+            {"source": "customers_say", "topic": None, "quote": product.customers_say[:240]}
+        )
+    for topic in product.feedback_topics:
+        source = topic.text or (topic.name if topic.sentiment else None)
+        if source and normalize_text(source):
+            citations.append({"source": "topic", "topic": topic.name, "quote": source[:240]})
+    evidence["allowed_amazon_citations"] = citations
+    schema = Judgment.model_json_schema()
+    if not reviews:
+        # Prompt instructions alone cannot prevent invented review IDs. Constrain
+        # generation to the evidence types actually available for this request.
+        for field in (
+            "positive_findings", "negative_findings", "reliability_findings", "recurring_issues"
+        ):
+            schema["properties"][field]["maxItems"] = 0
+        if citations:
+            choices = []
+            topics = {topic.name: topic for topic in product.feedback_topics}
+            for citation in citations:
+                choice = deepcopy(schema["$defs"]["AmazonFinding"])
+                for field, value in citation.items():
+                    choice["properties"][field] = {
+                        "type": "null" if value is None else "string", "enum": [value]
+                    }
+                topic = topics.get(citation["topic"])
+                if topic and topic.sentiment in {"positive", "negative"}:
+                    choice["properties"]["sentiment"]["enum"] = [topic.sentiment]
+                choices.append(choice)
+            # Each branch binds the source, topic and quote together. Independent
+            # enums would still allow a real quote to be attached to the wrong source.
+            schema["properties"]["amazon_findings"]["items"] = {"anyOf": choices}
+        else:
+            schema["properties"]["amazon_findings"]["maxItems"] = 0
+    # Citation guidance is part of the evidence budget, not an unbounded extra prompt.
+    if (
+        len(json.dumps(evidence, ensure_ascii=False).encode("utf-8"))
+        > config.analysis_evidence_max_bytes
+    ):
+        raise CostProtectionError("Product evidence exceeds the compact input size limit.")
     # Source content is untrusted data; instructions demand source-backed findings, not invented claims.
     payload = {
         "model": config.openai_model,
@@ -141,7 +187,12 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
                     "must cite supplied review IDs and exact body quotes. Recurring issues require "
                     "two distinct written reviews. For summary/topic evidence use amazon_findings "
                     "with source customers_say (topic=null) or topic (exact topic name), sentiment "
-                    "and an exact quote from that source; never invent review IDs for it. Keep "
+                    "and an exact quote from that source; never invent review IDs for it. "
+                    "For each amazon_findings entry, copy source, topic and quote together from "
+                    "one allowed_amazon_citations entry in the supplied JSON. Do not rename "
+                    "topics, replace null with a topic, paraphrase or combine quotes, or use "
+                    "amazon_ai_summary/amazon_feedback_topics as output source identifiers. "
+                    "Write your own supported finding text and sentiment separately. Keep "
                     "review-only lists empty if unsupported. Max two concise findings per section, "
                     "three Amazon findings total. Explain limitations in summary and key_takeaway."
                 ),
@@ -150,7 +201,7 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
                 "role": "user",
                 # Serialize the compact evidence dictionary as JSON while preserving readable Unicode text.
                 "content": json.dumps(
-                    compact_evidence(product, reviews, config.analysis_evidence_max_bytes),
+                    evidence,
                     ensure_ascii=False,
                 ),
             },
@@ -162,7 +213,7 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
                 "name": "product_judgment",
                 "strict": True,
                 # Generate the model-output schema from the same Pydantic class that later validates the response.
-                "schema": Judgment.model_json_schema(),
+                "schema": schema,
             },
         },
     }

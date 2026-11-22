@@ -1,0 +1,188 @@
+{
+  "id": "prd1",
+  "version": 1,
+  "category_id": "led",
+  "source": "user_screenshots",
+  "image_file": "led/prd1/Screenshot 2026-11-22 205149.png",
+  "product": {
+    "asin": "B0D5Q7RWF6",
+    "url": "https://www.amazon.in/dp/B0D5Q7RWF6",
+    "title": "Gesto 5V USB Led Strip Light – Music Sync RGB Multicolor Background Lighting for TV PC Laptop Bias Lighting Gaming Room | TV Backlight Bluetooth App. and Remote Controlled (5 Meter for 49-85\" TV’s)",
+    "price_text": "₹399",
+    "overall_rating": 3.4,
+    "rating_count": 374,
+    "rating_distribution": [
+      {
+        "stars": 5,
+        "percentage": 44
+      },
+      {
+        "stars": 4,
+        "percentage": 12
+      },
+      {
+        "stars": 3,
+        "percentage": 12
+      },
+      {
+        "stars": 2,
+        "percentage": 6
+      },
+      {
+        "stars": 1,
+        "percentage": 26
+      }
+    ],
+    "specifications": [
+      {
+        "label": "Style",
+        "value": "Bohemian"
+      },
+      {
+        "label": "Length",
+        "value": "5 metres"
+      },
+      {
+        "label": "Power",
+        "value": "5V USB"
+      }
+    ],
+    "customers_say": "Customers find the LED strip light gives premium looks and ambience for TV rooms, with good brightness and color options. However, the product receives mixed feedback about its quality, value for money, and reliability - while some say it turns out better than expected and is worth the price, others report receiving faulty products and issues with blue LEDs not working. Moreover, the Bluetooth connectivity is problematic, with multiple customers reporting issues with the remote control and app functionality. Additionally, the adhesive quality is poor, with customers noting it won't stick to TVs.",
+    "feedback_topics": [
+      {
+        "name": "Appearance",
+        "sentiment": "positive",
+        "mention_count": 12,
+        "positive_count": 9,
+        "negative_count": 3,
+        "text": "Customers appreciate the appearance of the LED strip light, saying it gives a premium look and ambience to the TV room, with one customer noting it creates a cozy atmosphere."
+      },
+      {
+        "name": "Quality",
+        "sentiment": "mixed",
+        "mention_count": 79,
+        "positive_count": 38,
+        "negative_count": 41,
+        "text": "Customers have mixed opinions about the string light's quality, with some finding it better than expected while others report receiving faulty products."
+      },
+      {
+        "name": "Value for money",
+        "sentiment": "mixed",
+        "mention_count": 37,
+        "positive_count": 24,
+        "negative_count": 13,
+        "text": "Customers have mixed opinions about the string light's value for money, with some finding it worth the price and considering it the best RGB light at that price point, while others say it's a waste of time."
+      },
+      {
+        "name": "Reliability",
+        "sentiment": "mixed",
+        "mention_count": 25,
+        "positive_count": 8,
+        "negative_count": 17,
+        "text": "Customers have mixed experiences with the string light's reliability, with some reporting it works perfectly fine while others mention issues with the app not working and only the blue LED functioning properly."
+      },
+      {
+        "name": "Brightness",
+        "sentiment": "mixed",
+        "mention_count": 20,
+        "positive_count": 10,
+        "negative_count": 10,
+        "text": "Customers have mixed opinions about the brightness of the string light, with some finding it good while others report it being very low."
+      },
+      {
+        "name": "Color options",
+        "sentiment": "mixed",
+        "mention_count": 15,
+        "positive_count": 8,
+        "negative_count": 7,
+        "text": "Customers have mixed opinions about the LED strip's color options, with some appreciating the bright colors and availability of all colors, while others report missing colors like pink and yellow."
+      },
+      {
+        "name": "Bluetooth connectivity",
+        "sentiment": "negative",
+        "mention_count": 24,
+        "positive_count": 6,
+        "negative_count": 18,
+        "text": "Customers report issues with the Bluetooth connectivity of the string light, including problems with the remote control and app functionality."
+      },
+      {
+        "name": "Adhesive",
+        "sentiment": "negative",
+        "mention_count": 20,
+        "positive_count": 4,
+        "negative_count": 16,
+        "text": "Customers report issues with the string light's adhesive, noting that it is really bad and won't stick to their TVs."
+      }
+    ]
+  },
+  "reviews": [],
+  "topic_excerpts": [
+    {
+      "topic": "Appearance",
+      "text": "Easy to install and setup colors, gives premium looks and ambience for the TV room.",
+      "source_file": "led/prd1/Screenshot 2026-11-22 205241.png",
+      "partial": true
+    },
+    {
+      "topic": "Quality",
+      "text": "Not good.Dosent sync with video only audio.",
+      "source_file": "led/prd1/Screenshot 2026-11-22 205247.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "Good purchase. Colors are bright and length as described. Easy to install.",
+      "source_file": "led/prd1/Screenshot 2026-11-22 205254.png",
+      "partial": true
+    },
+    {
+      "topic": "Reliability",
+      "text": "Nothing in this works properly. Please don't waste your money. Light is not bright, no app functions, even the led sticker is not good.",
+      "source_file": "led/prd1/Screenshot 2026-11-22 205300.png",
+      "partial": true
+    },
+    {
+      "topic": "Brightness",
+      "text": "brightness is not good",
+      "source_file": "led/prd1/Screenshot 2026-11-22 205304.png",
+      "partial": true
+    },
+    {
+      "topic": "Color options",
+      "text": "No pink light available, remote is a hit and miss, app does not work either..value wise a ok deal",
+      "source_file": "led/prd1/Screenshot 2026-11-22 205312.png",
+      "partial": true
+    },
+    {
+      "topic": "Bluetooth connectivity",
+      "text": "It does not work with Sound of TV. It just work with sound of mobile phone.. If you planning to use with TV sound then don't buy it",
+      "source_file": "led/prd1/Screenshot 2026-11-22 205316.png",
+      "partial": true
+    },
+    {
+      "topic": "Adhesive",
+      "text": "Very poor adhesive, neither the adhesive tape cover comes out easily nor does it stick properly to surface.",
+      "source_file": "led/prd1/Screenshot 2026-11-22 205321.png",
+      "partial": true
+    }
+  ],
+  "source_files": [
+    "led/prd1/Screenshot 2026-11-22 205149.png",
+    "led/prd1/Screenshot 2026-11-22 205241.png",
+    "led/prd1/Screenshot 2026-11-22 205247.png",
+    "led/prd1/Screenshot 2026-11-22 205254.png",
+    "led/prd1/Screenshot 2026-11-22 205300.png",
+    "led/prd1/Screenshot 2026-11-22 205304.png",
+    "led/prd1/Screenshot 2026-11-22 205312.png",
+    "led/prd1/Screenshot 2026-11-22 205316.png",
+    "led/prd1/Screenshot 2026-11-22 205321.png"
+  ],
+  "limitations": [
+    "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+    "Price and ratings reflect the supplied screenshots and may have changed.",
+    "Product ASIN/URL uses the Gesto link supplied earlier in this conversation; the screenshots do not display the URL.",
+    "Amazon Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not product failure rates.",
+    "Only topic-panel review excerpts are visible. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+    "Topic excerpts are retained as partial screenshot evidence, not direct-review citations. They may overlap or refer to other variants."
+  ]
+}
