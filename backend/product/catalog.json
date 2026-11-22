@@ -3,9 +3,12 @@
     {
       "id": "led",
       "name": "LED Lights",
-      "datasets": [
-        "led/prd1/dataset.json"
-      ]
+      "datasets": ["led/prd1/dataset.json"]
+    },
+    {
+      "id": "headphone",
+      "name": "Headphones",
+      "datasets": ["headphone/prd1/dataset.json"]
     }
   ]
 }
