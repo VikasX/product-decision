@@ -1,6 +1,6 @@
 # Project status
 
-Updated November 22, 2026. The first local URL-to-analysis flow works. Broader review collection and recommendation quality still need validation.
+Updated November 22, 2026. The local URL-to-analysis flow works and the backend deploys on Vercel. Hosted analysis is blocked by Atlas network access. Broader review collection and recommendation quality still need validation.
 
 ## Repositories
 
@@ -29,12 +29,14 @@ Updated November 22, 2026. The first local URL-to-analysis flow works. Broader r
 
 ## Validation completed
 
-- Backend has 32 passing tests plus Ruff lint and formatting checks. Tests cover persistent caching, budget enforcement before network calls, concurrent duplicate requests, atomic reservations, invalid citations and outputs, credential failure handling and midnight India budget reset. Deployment tests cover import without storage initialisation, Vercel state selection, shared MongoDB conditional budget updates and fail-closed storage errors.
+- Backend has 36 passing tests plus Ruff lint and formatting checks. Tests cover persistent caching, budget enforcement before network calls, concurrent duplicate requests, atomic reservations, invalid citations and outputs, credential failure handling and midnight India budget reset. Deployment tests cover import without storage initialisation, Vercel state selection, shared MongoDB conditional budget updates and fail-closed storage errors. Diagnostics tests confirm that database credentials and exception text do not appear in connection-failure logs.
 - Real Atlas verification passed against temporary collections inside the configured database, covering concurrent reservations, India day rollover, shared cache, lease ownership and credential-failure sharing. The exact QA collections were removed. No OpenAI requests were made for this deployment verification.
 - UI lint and production build passed.
 - A live run for ASIN `B0D5Q7RWF6` collected and analysed eight real reviews, returning an uncertain judgment with source references.
 - Repeating the request through the UI returned the saved judgment with no new AI call. The ledger remained at one paid attempt with $0.0014562 reserved, a conservative estimate rather than actual billing.
 - Amazon sign-in was verified separately in the browser. Its authenticated session is separate from the backend collector.
+- Vercel deployed the backend successfully after the ASGI entrypoint fix. https://product-decision.vercel.app/api/v1/health returned 200. The database health endpoint returned 503. Atlas currently permits only the local IP address, and its access rules remain unchanged. No OpenAI calls were made during deployment checks.
+- The UI Production environment now sets NEXT_PUBLIC_API_BASE_URL to https://product-decision.vercel.app. A Git-triggered rebuild was started to apply it.
 
 ## Remaining work
 
@@ -42,7 +44,7 @@ Updated November 22, 2026. The first local URL-to-analysis flow works. Broader r
 - Evaluate recommendations against manually reviewed products. Reference validation confirms that IDs exist, but does not prove every generated claim accurately interprets the source review.
 - Improve variant handling and balanced review sampling. Current accessible samples can be small and biased.
 - Add the bounded agent step that requests more evidence to resolve a specific uncertainty. The current implementation follows a fixed collection and analysis flow.
-- Verify the backend Vercel deployment after the entrypoint fix, then configure the frontend API URL and verify the hosted UI. ASGI export, lazy startup, shared MongoDB state, deployed CORS and function packaging are implemented. Hosted Amazon collection remains unverified and Chrome fallback is local-only. User authentication and public-access controls remain pending.
+- Configure a permitted network path from Vercel to Atlas before hosted analysis can run. ASGI export, lazy startup, shared MongoDB state, deployed CORS and function packaging are implemented. Hosted Amazon collection remains unverified and Chrome fallback is local-only. User authentication and public-access controls remain pending.
 - Review GPT-5 nano availability and pricing before changing the model. It is deprecated but was available during the live test. Cost limits use the documented prices and cover this app's tracked requests.
 
 ## Maintaining this record
