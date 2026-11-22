@@ -1,4 +1,5 @@
 import hashlib
+import logging
 import time
 from contextlib import contextmanager
 
@@ -7,6 +8,7 @@ from pymongo.errors import DuplicateKeyError, PyMongoError
 from pymongo.write_concern import WriteConcern
 
 from app.core.config import Settings
+from app.db.diagnostics import log_mongo_failure
 from app.schemas.analysis import AnalysisResponse, Usage
 from app.services.usage import (
     NANODOLLARS,
@@ -14,6 +16,8 @@ from app.services.usage import (
     StorageUnavailableError,
     credential_fingerprint,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class MongoUsageStore:
@@ -38,7 +42,8 @@ class MongoUsageStore:
     def operation(self):
         try:
             yield
-        except PyMongoError:
+        except PyMongoError as exc:
+            log_mongo_failure(logger, "usage_store", exc)
             raise StorageUnavailableError(
                 "Shared AI budget storage is unavailable. No new AI request can be made."
             ) from None
