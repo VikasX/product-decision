@@ -36,6 +36,8 @@ def product():
 
 
 def settings(**overrides):
+    # Existing integration tests exercise the explicitly private local generation mode.
+    overrides.setdefault("public_saved_reports_only", False)
     return Settings(_env_file=None, mongodb_uri="mongodb://localhost/", **overrides)
 
 

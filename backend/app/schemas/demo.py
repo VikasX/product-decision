@@ -80,6 +80,8 @@ class DemoCategory(BaseModel):
 
 
 class DemoProduct(BaseModel):
+    # Availability changes the action label, never whether this existing product is listed.
+    analysis_ready: bool = False
     # Small product-card response. Nullable price/rating/image fields stay unavailable instead of being invented.
     id: str
     category_id: str

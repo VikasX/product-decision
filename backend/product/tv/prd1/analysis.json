@@ -1,0 +1,196 @@
+{
+  "product_id": "prd6",
+  "dataset_version": 1,
+  "dataset_sha256": "f5a68acacbf7c9b2bba42ef1826853c369e3169401217054b5a6b80164d96960",
+  "model": "gpt-5-nano",
+  "workflow": "httpx",
+  "prompt_version": "review-v7-summary-validation",
+  "report": {
+    "status": "completed",
+    "product": {
+      "asin": "B0GTZ8BKN3",
+      "title": "LG 65-inch NU87 4K TV",
+      "url": "https://www.amazon.in/dp/B0GTZ8BKN3",
+      "overall_rating": 3.9,
+      "rating_count": 5585,
+      "rating_distribution": [
+        {
+          "stars": 5,
+          "percentage": 53.0
+        },
+        {
+          "stars": 4,
+          "percentage": 20.0
+        },
+        {
+          "stars": 3,
+          "percentage": 8.0
+        },
+        {
+          "stars": 2,
+          "percentage": 3.0
+        },
+        {
+          "stars": 1,
+          "percentage": 16.0
+        }
+      ],
+      "image_url": null,
+      "price_text": "₹68,990",
+      "specifications": [
+        {
+          "label": "Model",
+          "value": "65NU870BPLA"
+        },
+        {
+          "label": "Screen",
+          "value": "65 inches"
+        },
+        {
+          "label": "Resolution",
+          "value": "4K Ultra HD"
+        },
+        {
+          "label": "Refresh rate",
+          "value": "60 Hz"
+        },
+        {
+          "label": "Operating system",
+          "value": "webOS"
+        },
+        {
+          "label": "Series",
+          "value": "2026 NU87"
+        }
+      ],
+      "customers_say": "Customers find the TV's picture quality impressive, with stunning 4K content, and consider it one of the best in the market. The performance receives mixed feedback - while some are very happy with it, others report issues with the webOS being sluggish. Sound quality and value for money also get mixed reviews, with some praising the sound while others find it lacking, and some considering it good for the price while others disagree. Installation experiences are mixed, with some reporting smooth installations while others have installation support delays. The remote control receives negative feedback, with customers describing it as the basic type, and display issues include black spots and blank screens.",
+      "feedback_topics": [
+        {
+          "name": "Quality",
+          "sentiment": "positive",
+          "mention_count": 829,
+          "positive_count": 604,
+          "negative_count": 225,
+          "text": "Customers find the TV's quality excellent, with one customer noting its effective upscale algorithm for low-quality inputs."
+        },
+        {
+          "name": "Picture quality",
+          "sentiment": "positive",
+          "mention_count": 360,
+          "positive_count": 298,
+          "negative_count": 62,
+          "text": "Customers praise the TV's picture quality, particularly its impressive upscaling capabilities and stunning 4K content."
+        },
+        {
+          "name": "Value for money",
+          "sentiment": "mixed",
+          "mention_count": 345,
+          "positive_count": 229,
+          "negative_count": 116,
+          "text": "Customers have mixed opinions about the TV's value for money, with some finding it a very good product at this price, while others express dissatisfaction with their purchase."
+        },
+        {
+          "name": "Performance",
+          "sentiment": "mixed",
+          "mention_count": 236,
+          "positive_count": 82,
+          "negative_count": 154,
+          "text": "Customers have mixed experiences with the TV's performance, with some finding it satisfactory while others report issues with the webOS operating system being sluggish and having a very slow user interface."
+        },
+        {
+          "name": "Sound quality",
+          "sentiment": "mixed",
+          "mention_count": 219,
+          "positive_count": 143,
+          "negative_count": 76,
+          "text": "Customers have mixed opinions about the TV's sound quality, with some finding it awesome, while others report it is not as good as expected."
+        },
+        {
+          "name": "Installation",
+          "sentiment": "mixed",
+          "mention_count": 83,
+          "positive_count": 36,
+          "negative_count": 47,
+          "text": "Customers have mixed experiences with the TV's installation, with some finding it smooth and noting that the service is free, while others report issues with delayed support and missing mounting brackets."
+        },
+        {
+          "name": "Remote control",
+          "sentiment": "negative",
+          "mention_count": 191,
+          "positive_count": 19,
+          "negative_count": 172,
+          "text": "Customers are dissatisfied with the TV's remote control, describing it as basic and inconsistent, with one customer noting that it doesn't support all features."
+        },
+        {
+          "name": "Display",
+          "sentiment": "negative",
+          "mention_count": 63,
+          "positive_count": 4,
+          "negative_count": 59,
+          "text": "Customers report issues with the TV's display, including black spots, blank screens, and white patches."
+        }
+      ]
+    },
+    "verdict": "proceed_with_caution",
+    "summary": "The LG NU87 NU87 65-inch 4K TV has a solid overall rating (3.9/5 from 5,585+ reviews) with a majority positive sentiment on picture quality and upscaling, but notable negative feedback centers on the remote control, performance (webOS sluggishness), display issues, and mixed opinions on value for money and installation experiences. There is a dispersion of negative reviews across several areas, suggesting you should assess priorities (picture quality vs. usability and reliability) before purchasing. The evidence base includes a mix of long-standing complaints (remote, display) and more variable feedback (performance, value). No single defect dominates, but multiple distinct issues warrant caution, especially if you rely on webOS speed and a robust remote experience. The summary relies on untrusted user reviews; Amazon’s AI-generated summary and topic sentiments provide secondary context rather than a substitute for detailed review evidence. Missing evidence about long-term reliability and recurrence implies uncertainty for durability claims.",
+    "reasons": [],
+    "reviews": [],
+    "coverage": {
+      "reviews_analyzed": 0,
+      "limitations": [
+        "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+        "Price and ratings reflect the supplied screenshots and may have changed.",
+        "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+        "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+        "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+        "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+        "Seller specifications are recorded as claims, not independently verified measurements."
+      ]
+    },
+    "cached": true,
+    "usage": null,
+    "positive_findings": [],
+    "negative_findings": [],
+    "recurring_issues": [],
+    "sample_statistics": {
+      "by_star": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "negative_count": 0,
+      "positive_count": 0,
+      "neutral_count": 0,
+      "unrated_count": 0,
+      "oldest_review_date": null,
+      "newest_review_date": null
+    },
+    "reliability_findings": [],
+    "key_takeaway": "Strong picture quality and upscaling at a competitive price are balanced by persistent complaints about the remote, performance, and display quality. If using webOS smoothly and wanting a flawless display/remotes experience are priorities, consider alternatives or test in-store before committing.",
+    "amazon_findings": [
+      {
+        "text": "Customers find the TV's picture quality impressive, with stunning 4K content, and consider it one of the best in the market. The performance receives mixed feedback - while some are very happy with it, others report issues with the webOS being sluggish.",
+        "sentiment": "mixed",
+        "source": "customers_say",
+        "topic": null,
+        "quote": "Customers find the TV's picture quality impressive, with stunning 4K content, and consider it one of the best in the market. The performance receives mixed feedback - while some are very happy with it, others report issues with the webOS be"
+      },
+      {
+        "text": "Customers praise the TV's picture quality, particularly its impressive upscaling capabilities and stunning 4K content.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Picture quality",
+        "quote": "Customers praise the TV's picture quality, particularly its impressive upscaling capabilities and stunning 4K content."
+      },
+      {
+        "text": "Customers have mixed opinions about the TV's value for money, with some finding it a very good product at this price, while others express dissatisfaction with their purchase.",
+        "sentiment": "mixed",
+        "source": "topic",
+        "topic": "Value for money",
+        "quote": "Customers have mixed opinions about the TV's value for money, with some finding it a very good product at this price, while others express dissatisfaction with their purchase."
+      }
+    ]
+  }
+}

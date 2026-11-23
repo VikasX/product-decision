@@ -1,0 +1,168 @@
+{
+  "product_id": "prd4",
+  "dataset_version": 1,
+  "dataset_sha256": "4d56c55fed99039453867ce8f23c53d13f3cd50f33ad47d6f27c8b1a566ba735",
+  "model": "gpt-5-nano",
+  "workflow": "httpx",
+  "prompt_version": "review-v7-summary-validation",
+  "report": {
+    "status": "insufficient_evidence",
+    "product": {
+      "asin": "B0FZKZTXSN",
+      "title": "Dell 15 Core 3 Laptop",
+      "url": "https://www.amazon.in/dp/B0FZKZTXSN",
+      "overall_rating": 4.1,
+      "rating_count": 427,
+      "rating_distribution": [
+        {
+          "stars": 5,
+          "percentage": 62.0
+        },
+        {
+          "stars": 4,
+          "percentage": 17.0
+        },
+        {
+          "stars": 3,
+          "percentage": 8.0
+        },
+        {
+          "stars": 2,
+          "percentage": 1.0
+        },
+        {
+          "stars": 1,
+          "percentage": 12.0
+        }
+      ],
+      "image_url": null,
+      "price_text": "₹58,500",
+      "specifications": [
+        {
+          "label": "Processor",
+          "value": "Intel Core 3 100U"
+        },
+        {
+          "label": "RAM",
+          "value": "8 GB DDR4"
+        },
+        {
+          "label": "Storage",
+          "value": "512 GB SSD"
+        },
+        {
+          "label": "Display",
+          "value": "15.6-inch FHD 120 Hz"
+        },
+        {
+          "label": "Colour",
+          "value": "Carbon Black"
+        }
+      ],
+      "customers_say": "Customers find the laptop worth its price. However, the performance receives mixed feedback, with some saying it works perfectly while others report serious performance problems. Moreover, the battery life and screen quality are problematic, with multiple customers reporting poor battery backup and dead pixels on the screen.",
+      "feedback_topics": [
+        {
+          "name": "Value for money",
+          "sentiment": "positive",
+          "mention_count": 23,
+          "positive_count": 18,
+          "negative_count": 5,
+          "text": "Customers find the laptop worth its price."
+        },
+        {
+          "name": "Quality",
+          "sentiment": "mixed",
+          "mention_count": 67,
+          "positive_count": 45,
+          "negative_count": 22,
+          "text": "Customers have mixed opinions about the laptop's quality, with some finding it excellent and perfect for their needs, while others report receiving defective units and express dissatisfaction."
+        },
+        {
+          "name": "Performance",
+          "sentiment": "mixed",
+          "mention_count": 24,
+          "positive_count": 11,
+          "negative_count": 13,
+          "text": "Customers have mixed experiences with the laptop's performance, with some reporting it works perfectly fine while others mention serious problems and lagging issues."
+        },
+        {
+          "name": "Battery life",
+          "sentiment": "negative",
+          "mention_count": 12,
+          "positive_count": 1,
+          "negative_count": 11,
+          "text": "Customers report issues with the laptop's battery life, noting that it only lasts 2-3 hours and has poor performance."
+        },
+        {
+          "name": "Screen quality",
+          "sentiment": "negative",
+          "mention_count": 7,
+          "positive_count": 2,
+          "negative_count": 5,
+          "text": "Customers report issues with the laptop's display, including dead pixels and poor picture quality."
+        }
+      ]
+    },
+    "verdict": "insufficient_evidence",
+    "summary": "The Dell 15 Core 3 Laptop shows a solid overall rating (4.1 from 427) with a majority 5-star share (62%). However, there is notable mixed and negative feedback on performance, battery life, and screen quality. The available Amazon findings indicate concerns about performance lag, short battery life (2–3 hours), and dead pixels, which temper the otherwise favorable overall rating. The evidence base includes summary quotes from Amazon’s topic analyses and user reviews, but no individual written-review IDs are provided here. Limitations include reliance on aggregated sentiment without independent long-term reliability data or verified defect rates, and a lack of surfaced review IDs for precise sourcing.",
+    "reasons": [],
+    "reviews": [],
+    "coverage": {
+      "reviews_analyzed": 0,
+      "limitations": [
+        "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+        "Price and ratings reflect the supplied screenshots and may have changed.",
+        "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+        "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+        "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+        "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+        "Seller specifications are recorded as claims, not independently verified measurements."
+      ]
+    },
+    "cached": true,
+    "usage": null,
+    "positive_findings": [],
+    "negative_findings": [],
+    "recurring_issues": [],
+    "sample_statistics": {
+      "by_star": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "negative_count": 0,
+      "positive_count": 0,
+      "neutral_count": 0,
+      "unrated_count": 0,
+      "oldest_review_date": null,
+      "newest_review_date": null
+    },
+    "reliability_findings": [],
+    "key_takeaway": "Customers generally value the price-to-performance proposition, but several recurring negatives (performance lag, battery life, and screen defects) warrant cautious consideration before purchasing.",
+    "amazon_findings": [
+      {
+        "text": "Customers find the laptop worth its price. However, the performance receives mixed feedback, with some saying it works perfectly while others report serious performance problems. Moreover, the battery life and screen quality are problematic",
+        "sentiment": "mixed",
+        "source": "customers_say",
+        "topic": null,
+        "quote": "Customers find the laptop worth its price. However, the performance receives mixed feedback, with some saying it works perfectly while others report serious performance problems. Moreover, the battery life and screen quality are problematic"
+      },
+      {
+        "text": "Customers find the laptop worth its price.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Value for money",
+        "quote": "Customers find the laptop worth its price."
+      },
+      {
+        "text": "Customers have mixed opinions about the laptop's quality, with some finding it excellent and perfect for their needs, while others report receiving defective units and express dissatisfaction.",
+        "sentiment": "mixed",
+        "source": "topic",
+        "topic": "Quality",
+        "quote": "Customers have mixed opinions about the laptop's quality, with some finding it excellent and perfect for their needs, while others report receiving defective units and express dissatisfaction."
+      }
+    ]
+  }
+}

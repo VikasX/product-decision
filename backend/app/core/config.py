@@ -15,6 +15,8 @@ class CorsSettings(BaseSettings):
 
 # Typed startup configuration rejects unsupported models and invalid limits early.
 class Settings(CorsSettings):
+    # Public deployments serve permanent reports. Disable only for private local development.
+    public_saved_reports_only: bool = True
     # Database connection secret; SecretStr hides it in ordinary object representations.
     mongodb_uri: SecretStr
     # Choose which database holds app data and shared state when MongoDB storage is enabled.
@@ -59,6 +61,11 @@ class Settings(CorsSettings):
     analysis_evidence_max_bytes: int = Field(default=10000, ge=2000, le=20000)
 
     # Access this computed choice like a field; do not store a second value that could disagree.
+    @property
+    def saved_reports_mode(self) -> bool:
+        # A stale environment override cannot reopen paid endpoints on a public Vercel deployment.
+        return self.public_saved_reports_only or self.vercel
+
     @property
     def use_mongo_state(self) -> bool:
         # Vercel instances must share durable limits regardless of an old local override.

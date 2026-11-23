@@ -1,0 +1,212 @@
+{
+  "product_id": "prd2",
+  "dataset_version": 2,
+  "dataset_sha256": "c8157a85582bb01252e6db03cbc4f486f08bc10fc4860a3c1e0bd2dbb7a6b82c",
+  "model": "gpt-5-nano",
+  "workflow": "httpx",
+  "prompt_version": "review-v7-summary-validation",
+  "report": {
+    "status": "completed",
+    "product": {
+      "asin": "B0FC2W8WJM",
+      "title": "boAt Rockerz 411, 40Ms Low Latency, 40Hrs Battery, 40Mm Drivers, ENx Tech, App Support, Bluetooth Headphones, Wireless Over Ear Headphone with Mic (Bold Blue)",
+      "url": "https://www.amazon.in/dp/B0FC2W8WJM",
+      "overall_rating": 4.2,
+      "rating_count": 29548,
+      "rating_distribution": [
+        {
+          "stars": 5,
+          "percentage": 57.0
+        },
+        {
+          "stars": 4,
+          "percentage": 24.0
+        },
+        {
+          "stars": 3,
+          "percentage": 8.0
+        },
+        {
+          "stars": 2,
+          "percentage": 3.0
+        },
+        {
+          "stars": 1,
+          "percentage": 8.0
+        }
+      ],
+      "image_url": null,
+      "price_text": "₹1,499",
+      "specifications": [
+        {
+          "label": "Brand",
+          "value": "boAt"
+        },
+        {
+          "label": "Model",
+          "value": "Rockerz 411"
+        },
+        {
+          "label": "Colour",
+          "value": "Bold Blue"
+        },
+        {
+          "label": "Type",
+          "value": "Wireless over-ear headphones with mic"
+        },
+        {
+          "label": "Battery life (claimed)",
+          "value": "40 hours"
+        },
+        {
+          "label": "Low latency (claimed)",
+          "value": "40 ms"
+        },
+        {
+          "label": "Driver size",
+          "value": "40 mm"
+        },
+        {
+          "label": "Bluetooth",
+          "value": "Bluetooth v5.4"
+        },
+        {
+          "label": "Microphone technology",
+          "value": "ENx technology"
+        },
+        {
+          "label": "App support",
+          "value": "Yes"
+        }
+      ],
+      "customers_say": "Customers find these headphones to be a quality product with amazing sound quality and good battery life, considering them worth the price. The Bluetooth connectivity and performance receive mixed feedback - while some report stable connections, others experience connectivity issues, and some units stop working after one month of use. Comfort and noise cancellation also get mixed reviews, with some praising the premium feel while others find them uncomfortable, and while some appreciate the noise cancellation, others report poor performance in this area.",
+      "feedback_topics": [
+        {
+          "name": "Quality",
+          "sentiment": "positive",
+          "mention_count": 5134,
+          "positive_count": 4437,
+          "negative_count": 697,
+          "text": "Customers find these headphones to be of good quality."
+        },
+        {
+          "name": "Sound quality",
+          "sentiment": "positive",
+          "mention_count": 2774,
+          "positive_count": 2126,
+          "negative_count": 648,
+          "text": "Customers praise the headphones' sound quality, with one customer specifically mentioning the deep bass."
+        },
+        {
+          "name": "Value for money",
+          "sentiment": "positive",
+          "mention_count": 1425,
+          "positive_count": 1183,
+          "negative_count": 242,
+          "text": "Customers find the headphones worth the price."
+        },
+        {
+          "name": "Battery life",
+          "sentiment": "positive",
+          "mention_count": 955,
+          "positive_count": 745,
+          "negative_count": 210,
+          "text": "Customers are satisfied with the headphones' battery life, with one customer noting they can wear them for hours."
+        },
+        {
+          "name": "Bluetooth connectivity",
+          "sentiment": "mixed",
+          "mention_count": 884,
+          "positive_count": 523,
+          "negative_count": 361,
+          "text": "Customers have mixed experiences with the Bluetooth connectivity of these headphones, with some reporting good connectivity and amazing range, while others experience connection issues."
+        },
+        {
+          "name": "Comfort",
+          "sentiment": "mixed",
+          "mention_count": 804,
+          "positive_count": 264,
+          "negative_count": 540,
+          "text": "Customers have mixed opinions about the headphones' comfort, with some praising the premium feel and soft cushions, while others find them uncomfortable, particularly noting pain in the ears after extended use."
+        },
+        {
+          "name": "Performance",
+          "sentiment": "mixed",
+          "mention_count": 505,
+          "positive_count": 256,
+          "negative_count": 249,
+          "text": "Customers have mixed experiences with the headphones' performance, with some finding them really impressive while others report that they stop working after one month of use, particularly noting issues with the mic failing after two months and wires breaking after seven months."
+        },
+        {
+          "name": "Noise cancellation",
+          "sentiment": "mixed",
+          "mention_count": 408,
+          "positive_count": 202,
+          "negative_count": 206,
+          "text": "Customers have mixed experiences with the headphones' noise cancellation, with some finding it better than expected while others report it's not good."
+        }
+      ]
+    },
+    "verdict": "proceed_with_caution",
+    "summary": "The BoAt Rockerz 411 shows solid overall ratings (4.2/5 from ~29.5k reviews) and broad positive sentiment on quality, sound, battery life, and value. However, the Amazon findings highlight repeated mixed or negative experiences around Bluetooth connectivity, comfort, performance reliability (mic failures, wires breaking, units stopping after a month), and mixed/noise-cancellation performance. The breadth of mixed negatives across core areas suggests potential quality/design variability and some durability concerns. No evidence of long-term reliability can be inferred; missing or recency-related issues are possible. Use with caution if you need consistent Bluetooth stability and long-term durability.",
+    "reasons": [],
+    "reviews": [],
+    "coverage": {
+      "reviews_analyzed": 0,
+      "limitations": [
+        "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+        "Price and ratings reflect the supplied screenshots and may have changed.",
+        "Product ASIN and canonical Amazon URL were supplied by the user separately from the screenshots.",
+        "Amazon Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not product failure rates.",
+        "Visible review excerpts are incomplete or truncated in screenshot topic panels. Full review IDs, dates, star ratings, and complete context are unavailable; no identifiable full written reviews were collected.",
+        "Topic excerpts may overlap between topics, and may refer to different product variants.",
+        "Product specifications and claimed performance are seller-provided, not independently verified."
+      ]
+    },
+    "cached": true,
+    "usage": null,
+    "positive_findings": [],
+    "negative_findings": [],
+    "recurring_issues": [],
+    "sample_statistics": {
+      "by_star": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "negative_count": 0,
+      "positive_count": 0,
+      "neutral_count": 0,
+      "unrated_count": 0,
+      "oldest_review_date": null,
+      "newest_review_date": null
+    },
+    "reliability_findings": [],
+    "key_takeaway": "Overall impression is favorable for most users, but notable recurring concerns about connectivity stability, comfort over long sessions, and durability (mic/wires) warrant caution and further confirmation on recent lots or variants before heavy reliance.",
+    "amazon_findings": [
+      {
+        "text": "Customers find these headphones to be a quality product with amazing sound quality and good battery life, considering them worth the price. The Bluetooth connectivity and performance receive mixed feedback - while some report stable connections, others experience connectivity issues, and some units stop working after one month of use.",
+        "sentiment": "mixed",
+        "source": "customers_say",
+        "topic": null,
+        "quote": "Customers find these headphones to be a quality product with amazing sound quality and good battery life, considering them worth the price. The Bluetooth connectivity and performance receive mixed feedback - while some report stable connect"
+      },
+      {
+        "text": "Customers find these headphones to be of good quality.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Quality",
+        "quote": "Customers find these headphones to be of good quality."
+      },
+      {
+        "text": "Customers praise the headphones' sound quality, with one customer specifically mentioning the deep bass.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Sound quality",
+        "quote": "Customers praise the headphones' sound quality, with one customer specifically mentioning the deep bass."
+      }
+    ]
+  }
+}

@@ -1,12 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.schemas.analysis import AnalysisRequest, AnalysisResponse
+from app.api.routes.analysis import require_private_analysis
 
 router = APIRouter()
 
 
 # Backend access checks are independent of NEXT_PUBLIC_DEV_MODE, which only hides UI.
 def require_local_lab(request: Request) -> None:
+    require_private_analysis(request)
     # Read the same startup configuration used by the normal analysis service.
     config = request.app.state.analysis_service.config
     # Disabled means the experimental route should not be available, even if somebody calls it directly.

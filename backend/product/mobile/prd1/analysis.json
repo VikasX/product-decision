@@ -1,0 +1,196 @@
+{
+  "product_id": "prd3",
+  "dataset_version": 1,
+  "dataset_sha256": "0313908f4fcc176baf16d8d020d9608dc630f80511da883152d5399c7243d520",
+  "model": "gpt-5-nano",
+  "workflow": "httpx",
+  "prompt_version": "review-v7-summary-validation",
+  "report": {
+    "status": "completed",
+    "product": {
+      "asin": "B0H1WY466V",
+      "title": "Samsung Galaxy A56 5G",
+      "url": "https://www.amazon.in/dp/B0H1WY466V",
+      "overall_rating": 4.4,
+      "rating_count": 1473,
+      "rating_distribution": [
+        {
+          "stars": 5,
+          "percentage": 65.0
+        },
+        {
+          "stars": 4,
+          "percentage": 22.0
+        },
+        {
+          "stars": 3,
+          "percentage": 4.0
+        },
+        {
+          "stars": 2,
+          "percentage": 2.0
+        },
+        {
+          "stars": 1,
+          "percentage": 7.0
+        }
+      ],
+      "image_url": null,
+      "price_text": "₹45,999",
+      "specifications": [
+        {
+          "label": "Colour",
+          "value": "Awesome Violet Glow"
+        },
+        {
+          "label": "RAM",
+          "value": "8 GB"
+        },
+        {
+          "label": "Storage",
+          "value": "256 GB"
+        },
+        {
+          "label": "Display",
+          "value": "sAMOLED"
+        },
+        {
+          "label": "Battery",
+          "value": "5000 mAh"
+        },
+        {
+          "label": "Camera",
+          "value": "50 MP"
+        }
+      ],
+      "customers_say": "Customers find this smartphone to be the best in its segment, offering good value for money with decent camera capabilities that can take amazing photos. The display receives positive feedback for its gorgeous appearance, and customers appreciate its smooth, lag-free performance. The battery life receives mixed reviews - while some say it easily lasts through an entire day, others report it drains very quickly. Additionally, customers report extreme heating issues with the device.",
+      "feedback_topics": [
+        {
+          "name": "Quality",
+          "sentiment": "positive",
+          "mention_count": 277,
+          "positive_count": 240,
+          "negative_count": 37,
+          "text": "Customers praise the phone's quality, describing it as the best smartphone in its segment."
+        },
+        {
+          "name": "Value for money",
+          "sentiment": "positive",
+          "mention_count": 105,
+          "positive_count": 80,
+          "negative_count": 25,
+          "text": "Customers find the phone worth its price, describing it as a must-buy."
+        },
+        {
+          "name": "Camera quality",
+          "sentiment": "positive",
+          "mention_count": 73,
+          "positive_count": 53,
+          "negative_count": 20,
+          "text": "Customers praise the phone's camera quality, noting that it can take amazing photos, with one customer highlighting its sharpness."
+        },
+        {
+          "name": "Performance",
+          "sentiment": "positive",
+          "mention_count": 52,
+          "positive_count": 38,
+          "negative_count": 14,
+          "text": "Customers find the phone performs smoothly and is lag-free, with one customer noting it handles basic tasks well."
+        },
+        {
+          "name": "Display quality",
+          "sentiment": "positive",
+          "mention_count": 39,
+          "positive_count": 33,
+          "negative_count": 6,
+          "text": "Customers praise the phone's display, describing it as gorgeous and crisp with good picture quality."
+        },
+        {
+          "name": "Appearance",
+          "sentiment": "positive",
+          "mention_count": 35,
+          "positive_count": 35,
+          "negative_count": 0,
+          "text": "Customers appreciate the phone's appearance, noting its good look and premium design."
+        },
+        {
+          "name": "Battery life",
+          "sentiment": "mixed",
+          "mention_count": 69,
+          "positive_count": 38,
+          "negative_count": 31,
+          "text": "Customers have mixed experiences with the phone's battery life, with some reporting it lasts up to 1.5 days on a single charge while others find it drains quickly."
+        },
+        {
+          "name": "Heat",
+          "sentiment": "mixed",
+          "mention_count": 26,
+          "positive_count": 8,
+          "negative_count": 18,
+          "text": "Customers report extreme heating issues with the phone, noting that it becomes pretty hot to touch."
+        }
+      ]
+    },
+    "verdict": "proceed_with_caution",
+    "summary": "The Samsung Galaxy A56 5G shows strong overall ratings (4.4 from 1,473 reviews) with consistently positive remarks on quality, value, camera, performance, display, and appearance. Notable caveats include mixed battery life experiences and reported heating issues, which appear in a minority of reviews but are repeatedly mentioned in topic-level feedback. No written reviews are provided, so evidence relies on aggregate ratings and topic summaries. Missing long-term reliability signals and recurrence patterns limit confidence to cautious endorsement, especially for power users sensitive to heat and battery drain.",
+    "reasons": [],
+    "reviews": [],
+    "coverage": {
+      "reviews_analyzed": 0,
+      "limitations": [
+        "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+        "Price and ratings reflect the supplied screenshots and may have changed.",
+        "Product identity uses the URL supplied in url.txt; the short display title retains the model, while RAM, storage and colour are recorded in specifications.",
+        "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not product failure rates.",
+        "Only partial topic-panel excerpts are supplied. Review IDs, dates, star ratings and complete context are unavailable; these are not identifiable full written reviews.",
+        "Excerpts can overlap or refer to other variants. Claims about OS versions, performance and charging are retained as reported words, not independently verified facts.",
+        "Product specifications and claimed performance are seller-provided, not independently verified."
+      ]
+    },
+    "cached": true,
+    "usage": null,
+    "positive_findings": [],
+    "negative_findings": [],
+    "recurring_issues": [],
+    "sample_statistics": {
+      "by_star": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "negative_count": 0,
+      "positive_count": 0,
+      "neutral_count": 0,
+      "unrated_count": 0,
+      "oldest_review_date": null,
+      "newest_review_date": null
+    },
+    "reliability_findings": [],
+    "key_takeaway": "Strong overall sentiment with several frequently mentioned strengths (quality, value, camera, performance, display, appearance). Watch for battery-life inconsistency and heating issues; these are highlighted in topic feedback but lack granular review IDs in this dataset.",
+    "amazon_findings": [
+      {
+        "text": "Customers find this smartphone to be the best in its segment, offering good value for money with decent camera capabilities that can take amazing photos. The display receives positive feedback for its gorgeous appearance, and customers appr",
+        "sentiment": "positive",
+        "source": "customers_say",
+        "topic": null,
+        "quote": "Customers find this smartphone to be the best in its segment, offering good value for money with decent camera capabilities that can take amazing photos. The display receives positive feedback for its gorgeous appearance, and customers appr"
+      },
+      {
+        "text": "Customers praise the phone's quality, describing it as the best smartphone in its segment.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Quality",
+        "quote": "Customers praise the phone's quality, describing it as the best smartphone in its segment."
+      },
+      {
+        "text": "Customers find the phone worth its price, describing it as a must-buy.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Value for money",
+        "quote": "Customers find the phone worth its price, describing it as a must-buy."
+      }
+    ]
+  }
+}

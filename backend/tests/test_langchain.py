@@ -248,7 +248,8 @@ def test_langchain_analyzes_summary_without_written_reviews(wire):
     [
         (False, "127.0.0.1", False, 404),
         (True, "203.0.113.2", False, 403),
-        (True, "127.0.0.1", True, 403),
+        # Vercel now hides all generation routes, regardless of a local Lab flag.
+        (True, "127.0.0.1", True, 404),
     ],
 )
 def test_lab_access_is_independent_of_frontend_flags_and_spoofed_headers(

@@ -1,0 +1,192 @@
+{
+  "product_id": "prd7",
+  "dataset_version": 1,
+  "dataset_sha256": "3d6cbdad27d73e26479564fc6b47a0547945a4bba73360a0ab2d138c57ed5273",
+  "model": "gpt-5-nano",
+  "workflow": "httpx",
+  "prompt_version": "review-v7-summary-validation",
+  "report": {
+    "status": "completed",
+    "product": {
+      "asin": "B0FTQ5Q7BZ",
+      "title": "One94Store Smart RGB Strip",
+      "url": "https://www.amazon.in/dp/B0FTQ5Q7BZ",
+      "overall_rating": 3.9,
+      "rating_count": 1554,
+      "rating_distribution": [
+        {
+          "stars": 5,
+          "percentage": 56.0
+        },
+        {
+          "stars": 4,
+          "percentage": 16.0
+        },
+        {
+          "stars": 3,
+          "percentage": 9.0
+        },
+        {
+          "stars": 2,
+          "percentage": 4.0
+        },
+        {
+          "stars": 1,
+          "percentage": 15.0
+        }
+      ],
+      "image_url": null,
+      "price_text": "₹599",
+      "specifications": [
+        {
+          "label": "Length",
+          "value": "5 metres"
+        },
+        {
+          "label": "Control",
+          "value": "App and remote"
+        },
+        {
+          "label": "Colour",
+          "value": "Multicolour"
+        },
+        {
+          "label": "Light source",
+          "value": "LED"
+        },
+        {
+          "label": "Power",
+          "value": "Corded Electric"
+        }
+      ],
+      "customers_say": "Customers find the LED strip lights to be of top quality and appreciate how they transform room vibes, with one customer noting they can individually adjust brightness for each color. However, the reliability is concerning as some units stop working within a month. Moreover, the connectivity receives mixed feedback - while the remote works well, many customers report issues connecting to the mobile app. Additionally, the brightness, color options, and durability also get mixed reviews, with some customers finding them good while others report low brightness and color inconsistencies throughout the tube. The value for money receives mixed opinions, with some finding it worth the price while others consider it not worth buying.",
+      "feedback_topics": [
+        {
+          "name": "Quality",
+          "sentiment": "positive",
+          "mention_count": 265,
+          "positive_count": 201,
+          "negative_count": 64,
+          "text": "Customers find the LED strip lights to be of top quality."
+        },
+        {
+          "name": "Appearance",
+          "sentiment": "positive",
+          "mention_count": 37,
+          "positive_count": 31,
+          "negative_count": 6,
+          "text": "Customers love the appearance of the LED strip light, describing it as premium and mesmerizing, with one customer noting how it transforms the vibe of a room."
+        },
+        {
+          "name": "Value for money",
+          "sentiment": "mixed",
+          "mention_count": 103,
+          "positive_count": 55,
+          "negative_count": 48,
+          "text": "Customers have mixed opinions about the string light's value for money, with some finding it worth the price while others feel it's not worth buying."
+        },
+        {
+          "name": "Connectivity",
+          "sentiment": "mixed",
+          "mention_count": 43,
+          "positive_count": 14,
+          "negative_count": 29,
+          "text": "Customers have mixed experiences with the LED strip light's connectivity: while some report it works well with both the remote and mobile app, others mention issues with Bluetooth pairing and mobile app connection."
+        },
+        {
+          "name": "Brightness",
+          "sentiment": "mixed",
+          "mention_count": 38,
+          "positive_count": 19,
+          "negative_count": 19,
+          "text": "Customers have mixed opinions about the string light's brightness, with some finding it good while others report it being too low."
+        },
+        {
+          "name": "Color options",
+          "sentiment": "mixed",
+          "mention_count": 35,
+          "positive_count": 23,
+          "negative_count": 12,
+          "text": "Customers have mixed opinions about the color options of the LED strip light, with some finding the colors good and offering variety, while others report that the colors are not consistent throughout the tube."
+        },
+        {
+          "name": "Reliability",
+          "sentiment": "negative",
+          "mention_count": 111,
+          "positive_count": 25,
+          "negative_count": 86,
+          "text": "Customers report significant reliability issues with the LED strip light, with multiple units stopping working within a month of use."
+        },
+        {
+          "name": "Durability",
+          "sentiment": "negative",
+          "mention_count": 33,
+          "positive_count": 7,
+          "negative_count": 26,
+          "text": "Customers report durability issues with the LED strip light, noting that it breaks at multiple spots and the cables are brittle."
+        }
+      ]
+    },
+    "verdict": "proceed_with_caution",
+    "summary": "The One94Store Smart RGB Strip has a solid overall rating (3.9 from 1,554 reviews) with a majority giving 4–5 stars, but a substantial portion (especially 1–3 star reviews) flag reliability and durability concerns. Positive mentions highlight quality and appearance, while negative feedback centers on reliability, durability, and mixed connectivity/brightness/color consistency. The data suggest good initial impression (look and feel) but meaningful drawbacks in long-term performance and app reliability, warranting cautious consideration and closer inspection of user recency and variant-specific behavior.",
+    "reasons": [],
+    "reviews": [],
+    "coverage": {
+      "reviews_analyzed": 0,
+      "limitations": [
+        "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+        "Price and ratings reflect the supplied screenshots and may have changed.",
+        "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+        "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+        "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+        "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+        "Seller specifications are recorded as claims, not independently verified measurements."
+      ]
+    },
+    "cached": true,
+    "usage": null,
+    "positive_findings": [],
+    "negative_findings": [],
+    "recurring_issues": [],
+    "sample_statistics": {
+      "by_star": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "negative_count": 0,
+      "positive_count": 0,
+      "neutral_count": 0,
+      "unrated_count": 0,
+      "oldest_review_date": null,
+      "newest_review_date": null
+    },
+    "reliability_findings": [],
+    "key_takeaway": "Strong initial appeal (appearance and perceived quality) contrasts with notable reliability and durability issues reported by a sizable subset of buyers. Potential buyers should evaluate recent units/variants and be prepared for connectivity and brightness inconsistencies.",
+    "amazon_findings": [
+      {
+        "text": "Customers find the LED strip lights to be of top quality and appreciate how they transform room vibes, with one customer noting they can individually adjust brightness for each color.",
+        "sentiment": "positive",
+        "source": "customers_say",
+        "topic": null,
+        "quote": "Customers find the LED strip lights to be of top quality and appreciate how they transform room vibes, with one customer noting they can individually adjust brightness for each color. However, the reliability is concerning as some units sto"
+      },
+      {
+        "text": "Customers find the LED strip lights to be of top quality.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Quality",
+        "quote": "Customers find the LED strip lights to be of top quality."
+      },
+      {
+        "text": "Customers love the appearance of the LED strip light, describing it as premium and mesmerizing, with one customer noting how it transforms the vibe of a room.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Appearance",
+        "quote": "Customers love the appearance of the LED strip light, describing it as premium and mesmerizing, with one customer noting how it transforms the vibe of a room."
+      }
+    ]
+  }
+}

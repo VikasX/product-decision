@@ -28,6 +28,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         # Load typed environment settings once during startup, rather than once per request.
         config = settings or Settings()
+        app.state.config = config
         # Apply the configured log level before creating the application services.
         logging.basicConfig(level=config.log_level)
         # Create one async MongoDB client whose connection pool is reused by database routes.
@@ -36,9 +37,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.database = client[config.mongodb_database]
         try:
             # The normal endpoint uses this HTTP-based service, including its cache and budget store.
-            app.state.analysis_service = AnalysisService(config)
+            if not config.saved_reports_mode:
+                app.state.analysis_service = AnalysisService(config)
             # Import the optional adapter only for an enabled local Lab; share its budget store.
-            if config.langchain_lab_enabled and not config.vercel:
+            if config.langchain_lab_enabled and not config.saved_reports_mode:
                 from app.services.langchain_analysis import LangChainAnalysisService
 
                 # Give the Lab its own service while sharing the existing spending ledger.

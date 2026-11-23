@@ -1,0 +1,196 @@
+{
+  "product_id": "prd5",
+  "dataset_version": 1,
+  "dataset_sha256": "693a69c36040f1da980c32cf0a11b07b48b455eb87c0b40e3c38983ffc32b027",
+  "model": "gpt-5-nano",
+  "workflow": "httpx",
+  "prompt_version": "review-v7-summary-validation",
+  "report": {
+    "status": "completed",
+    "product": {
+      "asin": "B0FDLB7BQZ",
+      "title": "Primebook 2 Neo",
+      "url": "https://www.amazon.in/dp/B0FDLB7BQZ",
+      "overall_rating": 4.2,
+      "rating_count": 599,
+      "rating_distribution": [
+        {
+          "stars": 5,
+          "percentage": 67.0
+        },
+        {
+          "stars": 4,
+          "percentage": 15.0
+        },
+        {
+          "stars": 3,
+          "percentage": 5.0
+        },
+        {
+          "stars": 2,
+          "percentage": 3.0
+        },
+        {
+          "stars": 1,
+          "percentage": 10.0
+        }
+      ],
+      "image_url": null,
+      "price_text": "₹25,990",
+      "specifications": [
+        {
+          "label": "RAM",
+          "value": "8 GB"
+        },
+        {
+          "label": "Storage",
+          "value": "128 GB"
+        },
+        {
+          "label": "Processor",
+          "value": "MediaTek Helio G99"
+        },
+        {
+          "label": "Display",
+          "value": "11.6-inch HD IPS"
+        },
+        {
+          "label": "Operating system",
+          "value": "Android 15 / PrimeOS 3.0"
+        },
+        {
+          "label": "Colour",
+          "value": "Gray"
+        }
+      ],
+      "customers_say": "Customers find this Android laptop performs well without lag and is particularly useful for students and homework, with one noting it handles day-to-day tasks very well. They appreciate its lightweight design, excellent battery life, and user-friendly interface, with one mentioning it can work for 6 hours+ after full charge. Customers consider it good value for money and praise its speed, with one highlighting its powerful MediaTek Helio G99 processor.",
+      "feedback_topics": [
+        {
+          "name": "Quality",
+          "sentiment": "positive",
+          "mention_count": 286,
+          "positive_count": 260,
+          "negative_count": 26,
+          "text": "Customers find the laptop to be of good quality, with one customer specifically noting its suitability for daily use."
+        },
+        {
+          "name": "Value for money",
+          "sentiment": "positive",
+          "mention_count": 142,
+          "positive_count": 127,
+          "negative_count": 15,
+          "text": "Customers find the laptop offers good value for money, describing it as a student-friendly budget option."
+        },
+        {
+          "name": "Performance",
+          "sentiment": "positive",
+          "mention_count": 121,
+          "positive_count": 101,
+          "negative_count": 20,
+          "text": "Customers are satisfied with the laptop's performance, noting it works well without lag and handles day-to-day tasks effectively."
+        },
+        {
+          "name": "Basic use",
+          "sentiment": "positive",
+          "mention_count": 75,
+          "positive_count": 70,
+          "negative_count": 5,
+          "text": "Customers find the laptop useful for various purposes, including students, office work, and homework."
+        },
+        {
+          "name": "Battery life",
+          "sentiment": "positive",
+          "mention_count": 51,
+          "positive_count": 45,
+          "negative_count": 6,
+          "text": "Customers are satisfied with the laptop's battery life, noting its excellent performance and good durability, with one customer mentioning it can work for 6 hours or more after a full charge."
+        },
+        {
+          "name": "User-friendly",
+          "sentiment": "positive",
+          "mention_count": 47,
+          "positive_count": 46,
+          "negative_count": 1,
+          "text": "Customers find the laptop user-friendly and easy to set up, with one customer noting that mobile apps can be installed and used effortlessly, and another mentioning that the Android-based PrimeOS is intuitive."
+        },
+        {
+          "name": "Weight",
+          "sentiment": "positive",
+          "mention_count": 30,
+          "positive_count": 30,
+          "negative_count": 0,
+          "text": "Customers appreciate the laptop's lightweight design, with one customer noting it \"punches well above its weight.\""
+        },
+        {
+          "name": "Speed",
+          "sentiment": "positive",
+          "mention_count": 29,
+          "positive_count": 28,
+          "negative_count": 1,
+          "text": "Customers find the laptop's speed impressive and efficient, with one customer highlighting its powerful MediaTek Helio G99 processor."
+        }
+      ]
+    },
+    "verdict": "proceed_with_caution",
+    "summary": "The Primebook 2 Neo has a solid overall rating (4.2 from 599 reviews) and a majority of positive sentiments focused on performance, value, battery life, and user-friendliness. However, there is a non-trivial minority reporting lower satisfaction (including 10% 1-star and some 2–3 star feedback) that could indicate occasional reliability or preference gaps. The provided amazon_findings reiterate positive themes across Quality, Value for money, Performance, Basic use, Battery life, User-friendly, Weight, and Speed, with quotes illustrating strengths. Since the evidence is aggregated from customer feedback and there are no specific long-term reliability signals, the verdict should be cautious but favorable for typical use cases. Limitations include reliance on subjectively reported experiences, potential recency bias, and lack of explicit defect patterns or failure rates in the supplied reviews. A usable summary plus histogram helps support a cautious verdict with room for improvement, particularly around consistency of performance under varied workloads and long-term durability.",
+    "reasons": [],
+    "reviews": [],
+    "coverage": {
+      "reviews_analyzed": 0,
+      "limitations": [
+        "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+        "Price and ratings reflect the supplied screenshots and may have changed.",
+        "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+        "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+        "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+        "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+        "Seller specifications are recorded as claims, not independently verified measurements."
+      ]
+    },
+    "cached": true,
+    "usage": null,
+    "positive_findings": [],
+    "negative_findings": [],
+    "recurring_issues": [],
+    "sample_statistics": {
+      "by_star": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "negative_count": 0,
+      "positive_count": 0,
+      "neutral_count": 0,
+      "unrated_count": 0,
+      "oldest_review_date": null,
+      "newest_review_date": null
+    },
+    "reliability_findings": [],
+    "key_takeaway": "Strong mid-range Android laptop option with good value and performance for daily tasks; most users are satisfied, but a subset reports issues that require cautious expectations about long-term reliability and consistency.",
+    "amazon_findings": [
+      {
+        "text": "Customers find this Android laptop performs well without lag and is particularly useful for students and homework, with one noting it handles day-to-day tasks very well. They appreciate its lightweight design, excellent battery life, and us",
+        "sentiment": "positive",
+        "source": "customers_say",
+        "topic": null,
+        "quote": "Customers find this Android laptop performs well without lag and is particularly useful for students and homework, with one noting it handles day-to-day tasks very well. They appreciate its lightweight design, excellent battery life, and us"
+      },
+      {
+        "text": "Customers find the laptop to be of good quality, with one customer specifically noting its suitability for daily use.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Quality",
+        "quote": "Customers find the laptop to be of good quality, with one customer specifically noting its suitability for daily use."
+      },
+      {
+        "text": "Customers find the laptop offers good value for money, describing it as a student-friendly budget option.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Value for money",
+        "quote": "Customers find the laptop offers good value for money, describing it as a student-friendly budget option."
+      }
+    ]
+  }
+}

@@ -184,9 +184,26 @@ class AnalysisService:
                 result.coverage.limitations.append("No new AI request was made.")
             # OpenAI HTTP errors are separate from Amazon evidence collection failures.
             except httpx.HTTPStatusError as exc:
+                # Log only known diagnostic labels, never the provider's free-form message,
+                # request body, review text or Authorization header.
+                try:
+                    error = exc.response.json().get("error", {})
+                    code = error.get("code") or error.get("type")
+                    parameter = error.get("param")
+                except (ValueError, AttributeError, TypeError):
+                    code = parameter = None
+                safe_code = code if isinstance(code, str) and code in {
+                    "invalid_json_schema", "invalid_request_error", "context_length_exceeded",
+                    "unsupported_value", "unsupported_parameter", "model_not_found",
+                    "rate_limit_exceeded", "insufficient_quota",
+                } else "unknown"
+                safe_parameter = parameter if isinstance(parameter, str) and parameter in {
+                    "response_format", "response_format.json_schema", "max_completion_tokens",
+                    "model", "messages", "reasoning_effort", "temperature",
+                } else "unknown"
                 logger.warning(
-                    "LLM request failed exception=HTTPStatusError http_status=%s",
-                    exc.response.status_code,
+                    "LLM request failed exception=HTTPStatusError http_status=%s provider_code=%s parameter=%s",
+                    exc.response.status_code, safe_code, safe_parameter,
                 )
                 # Translate common provider status codes into safe, understandable troubleshooting messages.
                 messages = {

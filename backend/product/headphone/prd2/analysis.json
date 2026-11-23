@@ -1,0 +1,192 @@
+{
+  "product_id": "prd8",
+  "dataset_version": 1,
+  "dataset_sha256": "5af80643195240cc483eca894b094735b856ddc4337f17243a5866d224b948c9",
+  "model": "gpt-5-nano",
+  "workflow": "httpx",
+  "prompt_version": "review-v7-summary-validation",
+  "report": {
+    "status": "completed",
+    "product": {
+      "asin": "B0DK979YJ7",
+      "title": "Noise Master Buds",
+      "url": "https://www.amazon.in/dp/B0DK979YJ7",
+      "overall_rating": 3.7,
+      "rating_count": 1738,
+      "rating_distribution": [
+        {
+          "stars": 5,
+          "percentage": 53.0
+        },
+        {
+          "stars": 4,
+          "percentage": 13.0
+        },
+        {
+          "stars": 3,
+          "percentage": 7.0
+        },
+        {
+          "stars": 2,
+          "percentage": 4.0
+        },
+        {
+          "stars": 1,
+          "percentage": 23.0
+        }
+      ],
+      "image_url": null,
+      "price_text": "₹5,985",
+      "specifications": [
+        {
+          "label": "Colour",
+          "value": "Onyx Black"
+        },
+        {
+          "label": "Form factor",
+          "value": "True Wireless"
+        },
+        {
+          "label": "Ear placement",
+          "value": "In Ear"
+        },
+        {
+          "label": "ANC",
+          "value": "Up to 49 dB (claimed)"
+        },
+        {
+          "label": "Playtime",
+          "value": "44 hours (claimed)"
+        }
+      ],
+      "customers_say": "Customers find the earbuds comfortable, noting they can wear them for hours without discomfort, and appreciate their sound quality, with one mentioning they can hear clearly even outside. The design receives positive feedback, with one customer highlighting the sleek pocket-sized case with light bar. However, customers disagree on the battery life, with some reporting it lasts up to 4 hours while others say it drains in 2 to 2.5 hours. Moreover, the noise cancellation and reliability receive mixed reviews, with some praising the noise cancellation while others report poor performance, and some units stopping working immediately. The value for money is also debated, with some finding the sound quality unbelievable while others consider it overpriced.",
+      "feedback_topics": [
+        {
+          "name": "Sound quality",
+          "sentiment": "positive",
+          "mention_count": 492,
+          "positive_count": 370,
+          "negative_count": 122,
+          "text": "Customers praise the sound quality of these earbuds, noting their clarity and ability to hear clearly even outdoors, with one customer highlighting their well-balanced audio characteristics."
+        },
+        {
+          "name": "Design",
+          "sentiment": "positive",
+          "mention_count": 115,
+          "positive_count": 104,
+          "negative_count": 11,
+          "text": "Customers appreciate the design of these earbuds, noting their premium appearance and nice shape, with one customer specifically mentioning that the left piece goes to the left ear."
+        },
+        {
+          "name": "Comfort",
+          "sentiment": "positive",
+          "mention_count": 110,
+          "positive_count": 80,
+          "negative_count": 30,
+          "text": "Customers find the earbuds comfortable, noting they can wear them for hours without discomfort and appreciate the premium music headset feel."
+        },
+        {
+          "name": "Quality",
+          "sentiment": "mixed",
+          "mention_count": 543,
+          "positive_count": 335,
+          "negative_count": 208,
+          "text": "Customers have mixed opinions about the earbuds' quality, with some finding them the best they've used while others note that they don't meet Bose standards."
+        },
+        {
+          "name": "Value for money",
+          "sentiment": "mixed",
+          "mention_count": 291,
+          "positive_count": 128,
+          "negative_count": 163,
+          "text": "Customers have mixed opinions about the headphones' value for money, with some finding them worth the price and praising the sound quality, while others consider them overpriced."
+        },
+        {
+          "name": "Noise cancellation",
+          "sentiment": "mixed",
+          "mention_count": 161,
+          "positive_count": 112,
+          "negative_count": 49,
+          "text": "Customers have mixed opinions about the noise cancellation feature of these earbuds, with some finding it quite good while others report poor performance."
+        },
+        {
+          "name": "Battery life",
+          "sentiment": "mixed",
+          "mention_count": 131,
+          "positive_count": 82,
+          "negative_count": 49,
+          "text": "Customers have mixed experiences with the earbuds' battery life, with some finding it impressive and long-lasting, while others report serious issues, noting that the battery drains completely in 2 to 2.5 hours of use."
+        },
+        {
+          "name": "Reliability",
+          "sentiment": "mixed",
+          "mention_count": 126,
+          "positive_count": 51,
+          "negative_count": 75,
+          "text": "Customers have mixed experiences with the earbuds' reliability, with some finding them impressively reliable and thoroughly impressed with their performance, while others report that the right earbud stops working immediately and the ANC feature doesn't function properly."
+        }
+      ]
+    },
+    "verdict": "proceed_with_caution",
+    "summary": "Noise Master Buds have a solid average rating with a sizable share of 1-3 star reviews pulling the overall score down to 3.7 from 1738 ratings. Positive notes highlight comfort, sound quality, and design. However, significant negative signals center on battery life variability, mixed or poor reliability, and mixed performance of noise cancellation. The available evidence suggests notable variability between units and experiences, making reliable long-term performance uncertain for some buyers. The Amazon-provided AI summary indicates several recurring concerns (battery life, reliability, noise cancellation, and value for money) that align with the written feedback. Limited evidence about long-term durability and consistency prevents a strong recommendation without further validation across more recent units or batches.",
+    "reasons": [],
+    "reviews": [],
+    "coverage": {
+      "reviews_analyzed": 0,
+      "limitations": [
+        "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+        "Price and ratings reflect the supplied screenshots and may have changed.",
+        "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+        "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+        "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+        "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+        "Seller specifications are recorded as claims, not independently verified measurements."
+      ]
+    },
+    "cached": true,
+    "usage": null,
+    "positive_findings": [],
+    "negative_findings": [],
+    "recurring_issues": [],
+    "sample_statistics": {
+      "by_star": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "negative_count": 0,
+      "positive_count": 0,
+      "neutral_count": 0,
+      "unrated_count": 0,
+      "oldest_review_date": null,
+      "newest_review_date": null
+    },
+    "reliability_findings": [],
+    "key_takeaway": "Customers generally value comfort and sound quality, but experiences diverge on battery life, reliability, and noise cancellation. Potential buyers should weigh the importance of battery performance and consistent reliability before purchasing, especially at the current price point.",
+    "amazon_findings": [
+      {
+        "text": "Customers find the earbuds comfortable, noting they can wear them for hours without discomfort, and appreciate their sound quality, with one mentioning they can hear clearly even outside. The design receives positive feedback, with one customer highlighting the sleek pocket-sized case with light bar.",
+        "sentiment": "positive",
+        "source": "customers_say",
+        "topic": null,
+        "quote": "Customers find the earbuds comfortable, noting they can wear them for hours without discomfort, and appreciate their sound quality, with one mentioning they can hear clearly even outside. The design receives positive feedback, with one cust"
+      },
+      {
+        "text": "Customers praise the sound quality of these earbuds, noting their clarity and ability to hear clearly even outdoors, with one customer highlighting their well-balanced audio characteristics.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Sound quality",
+        "quote": "Customers praise the sound quality of these earbuds, noting their clarity and ability to hear clearly even outdoors, with one customer highlighting their well-balanced audio characteristics."
+      },
+      {
+        "text": "Customers appreciate the design of these earbuds, noting their premium appearance and nice shape, with one customer specifically mentioning that the left piece goes to the left ear.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Design",
+        "quote": "Customers appreciate the design of these earbuds, noting their premium appearance and nice shape, with one customer specifically mentioning that the left piece goes to the left ear."
+      }
+    ]
+  }
+}

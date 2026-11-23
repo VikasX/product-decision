@@ -85,3 +85,56 @@ Product photo sources:
 - Sixteen readable partial excerpts retain their source screenshot names. They are not identifiable full reviews and do not supply review stars or dates.
 - The details screenshot inconsistently shows Ice Blue in the title/photo and Burgundy Red in its colour label. The supplied ASIN also identifies Burgundy Red. The dataset records this limitation and omits a verified colour specification.
 - Original captures are preserved outside Git in D:/code/amazon/source-evidence/mobile/prd2. No paid analysis was used to prepare this dataset.
+
+## Public saved-report workflow
+
+Each product keeps its source evidence in `dataset.json` and its completed model report in
+an adjacent `analysis.json`. The report envelope records the product ID, dataset version,
+full evidence hash, GPT-5 nano model, prompt version and HTTPX/LangChain workflow.
+Publication revalidates the original judgment and source citations. Budget/account totals
+are removed from the public report. Reports have no cache expiry.
+
+`PUBLIC_SAVED_REPORTS_ONLY=true` is the default. Vercel always uses this mode, even if an
+old environment override says false. All manifest products remain in category/product
+listings. A validated report sets `analysis_ready=true`; other products offer **View Details**
+using their actual saved summary/topics, with no fabricated AI verdict or model call.
+Missing, invalid or stale reports are unpublished; public GET
+requests and legacy demo POST requests cannot generate a replacement. The browser uses
+GET `/api/v1/demo/products/{id}/analysis` and displays **View Analysis**.
+The original URL HTTPX/LangChain implementations remain available privately; their HTTP
+routes require explicitly disabled saved-only mode and a direct loopback connection.
+The public page does not render generation controls, including the developer Lab.
+
+Run these commands from `backend/` with its virtual environment activated:
+
+```powershell
+# Free: export matching existing cache entries, including expired genuine results.
+python scripts/publish_demo_reports.py
+# Free: inspect/export shared MongoDB cache entries instead.
+python scripts/publish_demo_reports.py --source mongodb
+# PAID: explicitly generate a missing report privately, then save it.
+python scripts/publish_demo_reports.py prd4 --generate
+# The second existing adapter remains available for private generation.
+python scripts/publish_demo_reports.py prd4 --workflow langchain --generate
+```
+
+Exit code 1 means some requested products could not be published; it does not mean that
+the command retried or fabricated a report. Without `--generate`, neither OpenAI adapter
+is called. Generation preserves existing spending caps and makes no automatic retries.
+Add new source evidence/photo and its manifest entry as before, then publish its completed
+report with this command to enable View Analysis. Commit the matching
+dataset and analysis files together. Updating evidence requires republishing; do not edit
+an AI report by hand or relabel an unrelated report as a match.
+
+Initial permanent reports were exported from matching local cache entries for prd3
+(Samsung), prd8 (Noise) and prd9 (OnePlus), with no new paid calls. A later explicitly
+approved private generation run saved prd1, prd7 and prd2, plus a genuine uncertain verdict
+for prd4. Uncertainty is retained as the model's verdict rather than treated as a failed
+request. The daily cap initially stopped prd5 and prd6. After explicit approval for private
+generation, LG's report was saved successfully. Primebook's strict response schema was
+rejected because a source quote contained an embedded double quote in an enum literal.
+Those source words remain unchanged in the prompt; affected fields use their original
+bounded string schema and still pass the same exact-source validator after parsing.
+The corrected Primebook request succeeded and its report is now saved too. All nine
+products have validated permanent reports. The configured daily limit remains $0.02;
+temporary approved overrides were process-local and were not written to environment files.

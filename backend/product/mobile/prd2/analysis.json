@@ -1,0 +1,197 @@
+{
+  "product_id": "prd9",
+  "dataset_version": 1,
+  "dataset_sha256": "dd12e603e674bc640a231e53d3ffea550dc2209800ca14869ab40b61847caa50",
+  "model": "gpt-5-nano",
+  "workflow": "httpx",
+  "prompt_version": "review-v7-summary-validation",
+  "report": {
+    "status": "completed",
+    "product": {
+      "asin": "B0H7S6LT9P",
+      "title": "OnePlus N6x",
+      "url": "https://www.amazon.in/dp/B0H7S6LT9P",
+      "overall_rating": 3.6,
+      "rating_count": 531,
+      "rating_distribution": [
+        {
+          "stars": 5,
+          "percentage": 48.0
+        },
+        {
+          "stars": 4,
+          "percentage": 17.0
+        },
+        {
+          "stars": 3,
+          "percentage": 7.0
+        },
+        {
+          "stars": 2,
+          "percentage": 5.0
+        },
+        {
+          "stars": 1,
+          "percentage": 23.0
+        }
+      ],
+      "image_url": null,
+      "price_text": "₹22,999",
+      "specifications": [
+        {
+          "label": "RAM",
+          "value": "4 GB"
+        },
+        {
+          "label": "Storage",
+          "value": "128 GB"
+        },
+        {
+          "label": "Operating system",
+          "value": "OxygenOS 16"
+        },
+        {
+          "label": "Battery",
+          "value": "7000 mAh"
+        },
+        {
+          "label": "Display refresh rate",
+          "value": "120 Hz"
+        },
+        {
+          "label": "CPU speed",
+          "value": "2.4 GHz"
+        }
+      ],
+      "customers_say": "Customers find the phone's appearance appealing. However, the phone receives mixed feedback about its quality and display, with some finding it great while others consider it poor. Moreover, the phone's performance is slow, taking 2.5-3 hours to charge fully, and customers report unexpected operational issues. Additionally, the camera quality is poor, and customers consider it not worth the money.",
+      "feedback_topics": [
+        {
+          "name": "Appearance",
+          "sentiment": "positive",
+          "mention_count": 6,
+          "positive_count": 5,
+          "negative_count": 1,
+          "text": "Customers like the phone's appearance, with one noting it looks like a premium device."
+        },
+        {
+          "name": "Quality",
+          "sentiment": "mixed",
+          "mention_count": 111,
+          "positive_count": 59,
+          "negative_count": 52,
+          "text": "Customers have mixed opinions about the phone's quality, with some describing it as the best in its segment and highly recommended, while others find it to be of poor quality."
+        },
+        {
+          "name": "Display quality",
+          "sentiment": "mixed",
+          "mention_count": 7,
+          "positive_count": 3,
+          "negative_count": 4,
+          "text": "Customers have mixed opinions about the display quality of the phone, with one customer noting it is 720p and another mentioning poor smoothness."
+        },
+        {
+          "name": "Value for money",
+          "sentiment": "negative",
+          "mention_count": 50,
+          "positive_count": 13,
+          "negative_count": 37,
+          "text": "Customers find the phone not worth the money."
+        },
+        {
+          "name": "Camera quality",
+          "sentiment": "negative",
+          "mention_count": 38,
+          "positive_count": 2,
+          "negative_count": 36,
+          "text": "Customers are dissatisfied with the phone's camera quality, reporting poor picture clarity and performance."
+        },
+        {
+          "name": "Reliability",
+          "sentiment": "negative",
+          "mention_count": 27,
+          "positive_count": 4,
+          "negative_count": 23,
+          "text": "Customers report reliability issues with the phone, noting that it starts hanging from day one and has performance problems."
+        },
+        {
+          "name": "Performance",
+          "sentiment": "negative",
+          "mention_count": 25,
+          "positive_count": 6,
+          "negative_count": 19,
+          "text": "Customers report that the phone is very slow, taking time to process even basic actions."
+        },
+        {
+          "name": "Battery life",
+          "sentiment": "negative",
+          "mention_count": 21,
+          "positive_count": 5,
+          "negative_count": 16,
+          "text": "Customers report issues with the phone's battery life, noting that it takes a lot of time to charge and is capped at a slow 15W wired charging speed."
+        }
+      ]
+    },
+    "verdict": "proceed_with_caution",
+    "summary": "The OnePlus N6x shows a moderate overall rating (3.6/5 from 531 reviews) with a substantial share of low ratings (23% 1-star). The Amazon-sourced findings indicate mixed perceptions on quality and display, frequent concerns about performance and reliability, and negative views on value for money and camera quality. Most positive sentiment centers on appearance, while multiple reviews flag slow performance, charging speed, and reliability issues. There is no provided written-review text in this payload to quote directly, so all theme-level observations are drawn from the allowed amazon_findings entries. The mix of positives (appearance) and negatives (quality, performance, battery, camera) suggests cautious consideration, especially for buyers prioritizing speed, camera, and long-term reliability. The provided amazon_ai_summary corroborates mixed quality, slow performance, and poor camera/value signals, which aligns with the topic-focused negatives. Limitations include reliance on topic aggregations and the absence of individual review IDs or long-term reliability data. A usable summary plus histogram may support a cautious verdict with few or no reviews.",
+    "reasons": [],
+    "reviews": [],
+    "coverage": {
+      "reviews_analyzed": 0,
+      "limitations": [
+        "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+        "Price and ratings reflect the supplied screenshots and may have changed.",
+        "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+        "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+        "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+        "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+        "Seller specifications are recorded as claims, not independently verified measurements.",
+        "The details screenshot title/image show Ice Blue, while its colour label and supplied ASIN identify Burgundy Red. Colour is therefore not asserted as a verified specification; the standalone photo depicts the supplied ASIN colour."
+      ]
+    },
+    "cached": true,
+    "usage": null,
+    "positive_findings": [],
+    "negative_findings": [],
+    "recurring_issues": [],
+    "sample_statistics": {
+      "by_star": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "negative_count": 0,
+      "positive_count": 0,
+      "neutral_count": 0,
+      "unrated_count": 0,
+      "oldest_review_date": null,
+      "newest_review_date": null
+    },
+    "reliability_findings": [],
+    "key_takeaway": "Appearance is the strongest positive signal; however, substantial negative feedback exists for quality, performance, battery, camera, and value. Buyers should weigh the appeal of the design against reports of slow performance, reliability problems, and poor camera/value perceptions. Given the mixed reviews, this model warrants careful consideration for users who need snappy performance and dependable camera quality.",
+    "amazon_findings": [
+      {
+        "text": "Customers find the phone's appearance appealing. However, the phone receives mixed feedback about its quality and display, with some finding it great while others consider it poor. Moreover, the phone's performance is slow, taking 2.5-3 hours to charge fully, and customers report unexpected operational issues. Additionally, the camera quality is poor, and customers consider it not worth the money.",
+        "sentiment": "mixed",
+        "source": "customers_say",
+        "topic": null,
+        "quote": "Customers find the phone's appearance appealing. However, the phone receives mixed feedback about its quality and display, with some finding it great while others consider it poor. Moreover, the phone's performance is slow, taking 2.5-3 hou"
+      },
+      {
+        "text": "Customers like the phone's appearance, with one noting it looks like a premium device.",
+        "sentiment": "positive",
+        "source": "topic",
+        "topic": "Appearance",
+        "quote": "Customers like the phone's appearance, with one noting it looks like a premium device."
+      },
+      {
+        "text": "Customers have mixed opinions about the phone's quality, with some describing it as the best in its segment and highly recommended, while others find it to be of poor quality.",
+        "sentiment": "mixed",
+        "source": "topic",
+        "topic": "Quality",
+        "quote": "Customers have mixed opinions about the phone's quality, with some describing it as the best in its segment and highly recommended, while others find it to be of poor quality."
+      }
+    ]
+  }
+}

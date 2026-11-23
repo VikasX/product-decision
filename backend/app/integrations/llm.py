@@ -1,7 +1,7 @@
 import json
+from copy import deepcopy
 import logging
 from contextlib import ExitStack, closing
-from copy import deepcopy
 from dataclasses import dataclass
 
 import httpx
@@ -157,25 +157,25 @@ def prepare_request(config: Settings, product: Product, reviews: list[Review]) -
         ):
             schema["properties"][field]["maxItems"] = 0
         if citations:
-            # Each anyOf branch represents one real source/quote pairing the provider is allowed to generate.
+            # Bind each source/topic/quote triple together wherever the provider accepts
+            # its literal. Backend evidence validation remains mandatory for every result.
             choices = []
-            # Index topics by their exact saved label so explicit sentiment restrictions stay attached to that topic.
             topics = {topic.name: topic for topic in product.feedback_topics}
             for citation in citations:
-                # Copy before narrowing fields so one citation cannot overwrite the next branch or base schema.
                 choice = deepcopy(schema["$defs"]["AmazonFinding"])
                 for field, value in citation.items():
+                    # OpenAI rejects embedded double quotes in strict-schema string
+                    # literals. Keep the original bounded string field for these values,
+                    # preserve the exact words in the prompt, and check them after parsing.
+                    if isinstance(value, str) and '"' in value:
+                        continue
                     choice["properties"][field] = {
                         "type": "null" if value is None else "string", "enum": [value]
                     }
-                # Summary citations have topic=null; named topics can carry an explicit positive/negative label.
                 topic = topics.get(citation["topic"])
                 if topic and topic.sentiment in {"positive", "negative"}:
                     choice["properties"]["sentiment"]["enum"] = [topic.sentiment]
-                # Mixed topics remain eligible for a supported positive or negative claim, checked against its quote.
                 choices.append(choice)
-            # Each branch binds the source, topic and quote together. Independent
-            # enums would still allow a real quote to be attached to the wrong source.
             schema["properties"]["amazon_findings"]["items"] = {"anyOf": choices}
         else:
             schema["properties"]["amazon_findings"]["maxItems"] = 0
