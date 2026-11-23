@@ -30,7 +30,7 @@ class DemoDataset(BaseModel):
     category_id: str = Field(pattern=r"^[a-z0-9-]+$")
     # Saved screenshots are the only accepted source type for this demo dataset format.
     source: Literal["user_screenshots"] = "user_screenshots"
-    # Optional relative PNG path for the product card; null means no supplied image.
+    # Optional relative product-photo path for the card; null means no supplied image.
     image_file: str | None = None
     # Reuse the existing product schema so the demo and live workflows produce compatible reports.
     product: Product

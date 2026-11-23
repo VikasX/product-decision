@@ -8,7 +8,8 @@ Product IDs are unique across categories, even when their folder names match.
 ## Add a product
 
 1. Create `category-id/prd2/` (then `prd3`, etc.; product IDs must be globally unique).
-2. Save the original screenshots and a `dataset.json`, following `led/prd1/dataset.json`.
+2. Prepare a `dataset.json`, following `led/prd1/dataset.json`. Keep original screenshots
+   outside the repository; their filenames remain in the JSON as source provenance.
 3. Set `id`, `category_id`, `version`, product metadata, source filenames and limitations.
    Use a confirmed canonical Amazon URL/ASIN. Unknown optional values stay null.
 4. Include full written reviews only when text, source identity and metadata can be
@@ -36,8 +37,8 @@ Vercel always uses the existing shared MongoDB store; local auto mode retains SQ
 - The eight topic descriptions and excerpts retain their screenshot filename.
   Excerpts have no identifiable review IDs/dates/stars and are not treated as full reviews.
 - Gesto ASIN/URL comes from the user's earlier supplied link, not visible screenshot text.
-- The catalog image endpoint serves the original details screenshot; the UI shows
-  its product-image region with CSS, leaving the original screenshot unchanged.
+- Raw screenshots are not bundled. Each enabled dataset points to a small local
+  `product.jpg` for its card. Source filenames identify original captures kept outside this repo.
 
 The existing `product` folder was moved inside `backend` so Vercel can bundle it.
 No live scraping, automatic paid verification, hardcoded verdict or alternate model

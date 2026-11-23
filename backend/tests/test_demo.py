@@ -46,8 +46,9 @@ def test_verified_dataset_only_lists_real_products_and_explicit_counts():
     headphones = catalog.get("prd2")
     assert headphones.product.asin == "B0FC2W8WJM"
     assert headphones.product.url == "https://www.amazon.in/dp/B0FC2W8WJM"
-    assert all(catalog.safe_path(source).is_file() for source in headphones.source_files)
+    assert headphones.source_files  # Original screenshot names remain as provenance, not bundled files.
     assert catalog.safe_path(headphones.image_file).is_file()
+    assert catalog.products("headphone")[0].image_path == "/api/v1/demo/products/prd2/image"
     assert sum(bucket.percentage for bucket in headphones.product.rating_distribution) == 100
     assert not dataset.reviews and len(dataset.topic_excerpts) == 8
     assert dataset.product.rating_count == 374
@@ -60,8 +61,10 @@ def test_verified_dataset_only_lists_real_products_and_explicit_counts():
     }
     adhesive = next(t for t in dataset.product.feedback_topics if t.name == "Adhesive")
     assert (adhesive.mention_count, adhesive.positive_count, adhesive.negative_count) == (20, 4, 16)
-    assert all((PRODUCT_ROOT / source).is_file() for source in dataset.source_files)
+    assert dataset.source_files
     assert catalog.safe_path(dataset.image_file).is_file()
+    assert catalog.products("led")[0].image_path == "/api/v1/demo/products/prd1/image"
+    assert not list(PRODUCT_ROOT.rglob("Screenshot *.png"))
     with pytest.raises(ValueError):
         catalog.safe_path("../../.env")
 
@@ -96,7 +99,7 @@ def test_demo_endpoints_do_not_scrape_and_cache_real_mocked_model_analysis(wire)
                 ] == "prd1"
                 assert (await client.get("/api/v1/demo/products/prd1")).json()["reviews"] == []
                 image = await client.get("/api/v1/demo/products/prd1/image")
-                assert image.status_code == 200 and image.headers["content-type"] == "image/png"
+                assert image.status_code == 200 and image.headers["content-type"] == "image/jpeg"
                 assert (await client.get("/api/v1/demo/products/missing")).status_code == 404
                 headphones = await client.get("/api/v1/demo/categories/headphone/products")
                 assert headphones.status_code == 200 and headphones.json()[0]["id"] == "prd2"
@@ -139,7 +142,7 @@ def test_dataset_version_content_and_workflow_have_independent_caches(wire):
         chain = DemoAnalysisService(config, store=store, dataset=dataset, workflow="langchain")
         assert (await chain.analyze(dataset.product.url)).amazon_findings
         assert (await chain.analyze(dataset.product.url)).cached
-        newer = dataset.model_copy(deep=True, update={"version": 2})
+        newer = dataset.model_copy(deep=True, update={"version": dataset.version + 1})
         changed = dataset.model_copy(deep=True)
         changed.product.price_text = "Updated screenshot price"
         assert (

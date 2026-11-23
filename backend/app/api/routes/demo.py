@@ -46,15 +46,15 @@ async def dataset(product_id: str):
     return dataset_or_404(product_id)
 
 
-# Serve the saved screenshot through the API so the browser never needs a local disk path.
+# Serve the local product photo through the API so browsing does not depend on Amazon or raw screenshots.
 @router.get("/products/{product_id}/image")
 async def image(product_id: str):
     saved = dataset_or_404(product_id)
     # Missing optional images get a clear 404 rather than an attempt to open an invalid filename.
     if not saved.image_file:
         raise HTTPException(status_code=404, detail="Product image unavailable.")
-    # FileResponse sends the PNG bytes; safe_path ensures the referenced file stays inside product/.
-    return FileResponse(catalog.safe_path(saved.image_file), media_type="image/png")
+    # FileResponse infers JPEG/PNG from the filename; safe_path keeps the asset inside product/.
+    return FileResponse(catalog.safe_path(saved.image_file))
 
 
 # POST marks the explicit analysis action. workflow is a validated query parameter, defaulting to HTTPX.
