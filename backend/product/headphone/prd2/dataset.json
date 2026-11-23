@@ -1,0 +1,246 @@
+{
+  "id": "prd8",
+  "version": 1,
+  "category_id": "headphone",
+  "source": "user_screenshots",
+  "image_file": "headphone/prd2/product.jpg",
+  "product": {
+    "asin": "B0DK979YJ7",
+    "title": "Noise Master Buds",
+    "url": "https://www.amazon.in/dp/B0DK979YJ7",
+    "overall_rating": 3.7,
+    "rating_count": 1738,
+    "rating_distribution": [
+      {
+        "stars": 5,
+        "percentage": 53.0
+      },
+      {
+        "stars": 4,
+        "percentage": 13.0
+      },
+      {
+        "stars": 3,
+        "percentage": 7.0
+      },
+      {
+        "stars": 2,
+        "percentage": 4.0
+      },
+      {
+        "stars": 1,
+        "percentage": 23.0
+      }
+    ],
+    "image_url": null,
+    "price_text": "₹5,985",
+    "specifications": [
+      {
+        "label": "Colour",
+        "value": "Onyx Black"
+      },
+      {
+        "label": "Form factor",
+        "value": "True Wireless"
+      },
+      {
+        "label": "Ear placement",
+        "value": "In Ear"
+      },
+      {
+        "label": "ANC",
+        "value": "Up to 49 dB (claimed)"
+      },
+      {
+        "label": "Playtime",
+        "value": "44 hours (claimed)"
+      }
+    ],
+    "customers_say": "Customers find the earbuds comfortable, noting they can wear them for hours without discomfort, and appreciate their sound quality, with one mentioning they can hear clearly even outside. The design receives positive feedback, with one customer highlighting the sleek pocket-sized case with light bar. However, customers disagree on the battery life, with some reporting it lasts up to 4 hours while others say it drains in 2 to 2.5 hours. Moreover, the noise cancellation and reliability receive mixed reviews, with some praising the noise cancellation while others report poor performance, and some units stopping working immediately. The value for money is also debated, with some finding the sound quality unbelievable while others consider it overpriced.",
+    "feedback_topics": [
+      {
+        "name": "Sound quality",
+        "sentiment": "positive",
+        "mention_count": 492,
+        "positive_count": 370,
+        "negative_count": 122,
+        "text": "Customers praise the sound quality of these earbuds, noting their clarity and ability to hear clearly even outdoors, with one customer highlighting their well-balanced audio characteristics."
+      },
+      {
+        "name": "Design",
+        "sentiment": "positive",
+        "mention_count": 115,
+        "positive_count": 104,
+        "negative_count": 11,
+        "text": "Customers appreciate the design of these earbuds, noting their premium appearance and nice shape, with one customer specifically mentioning that the left piece goes to the left ear."
+      },
+      {
+        "name": "Comfort",
+        "sentiment": "positive",
+        "mention_count": 110,
+        "positive_count": 80,
+        "negative_count": 30,
+        "text": "Customers find the earbuds comfortable, noting they can wear them for hours without discomfort and appreciate the premium music headset feel."
+      },
+      {
+        "name": "Quality",
+        "sentiment": "mixed",
+        "mention_count": 543,
+        "positive_count": 335,
+        "negative_count": 208,
+        "text": "Customers have mixed opinions about the earbuds' quality, with some finding them the best they've used while others note that they don't meet Bose standards."
+      },
+      {
+        "name": "Value for money",
+        "sentiment": "mixed",
+        "mention_count": 291,
+        "positive_count": 128,
+        "negative_count": 163,
+        "text": "Customers have mixed opinions about the headphones' value for money, with some finding them worth the price and praising the sound quality, while others consider them overpriced."
+      },
+      {
+        "name": "Noise cancellation",
+        "sentiment": "mixed",
+        "mention_count": 161,
+        "positive_count": 112,
+        "negative_count": 49,
+        "text": "Customers have mixed opinions about the noise cancellation feature of these earbuds, with some finding it quite good while others report poor performance."
+      },
+      {
+        "name": "Battery life",
+        "sentiment": "mixed",
+        "mention_count": 131,
+        "positive_count": 82,
+        "negative_count": 49,
+        "text": "Customers have mixed experiences with the earbuds' battery life, with some finding it impressive and long-lasting, while others report serious issues, noting that the battery drains completely in 2 to 2.5 hours of use."
+      },
+      {
+        "name": "Reliability",
+        "sentiment": "mixed",
+        "mention_count": 126,
+        "positive_count": 51,
+        "negative_count": 75,
+        "text": "Customers have mixed experiences with the earbuds' reliability, with some finding them impressively reliable and thoroughly impressed with their performance, while others report that the right earbud stops working immediately and the ANC feature doesn't function properly."
+      }
+    ]
+  },
+  "reviews": [],
+  "topic_excerpts": [
+    {
+      "topic": "Sound quality",
+      "text": "Awesome earbuds! Great sound, strong bass, and excellent noise cancellation. Spatial audio works perfectly. Totally loved it!",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200254.png",
+      "partial": true
+    },
+    {
+      "topic": "Sound quality",
+      "text": "just a hyped up product. poor fitment and poor sound quality. good marketing strategy though with bose brand name and pre order etc....",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200254.png",
+      "partial": true
+    },
+    {
+      "topic": "Design",
+      "text": "...The earbuds fit snugly in my ears, and the design is sleek and stylish. I've used them for workouts, commutes, and just relaxing at home....",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200259.png",
+      "partial": true
+    },
+    {
+      "topic": "Design",
+      "text": "Stylish design Love the design and comfort Fir perfectly in my ears",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200259.png",
+      "partial": true
+    },
+    {
+      "topic": "Comfort",
+      "text": "Excellent sound no pain after long usage comfortable and noise cancellation excellent. My grandmother 65 even she felt comfortable with this ....",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200303.png",
+      "partial": true
+    },
+    {
+      "topic": "Comfort",
+      "text": "Very bad experience...they told collaboration with Bose but not getting 1% of that... suggested not to bye...am disappointed.also it hurts my ears...",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200303.png",
+      "partial": true
+    },
+    {
+      "topic": "Quality",
+      "text": "Good product with decent sound quality and battery backup.",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200307.png",
+      "partial": true
+    },
+    {
+      "topic": "Quality",
+      "text": "Good but doesn't stand to Bose reputation.",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200307.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "Using these for a month now. Not worth the price. Plastic build, feels very cheap. Sound quality is average.",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200311.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "...Value for money with great discounts and fast charging. Only drawback: no Dolby Audio tech....",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200311.png",
+      "partial": true
+    },
+    {
+      "topic": "Noise cancellation",
+      "text": "Great earbuds for my iPhone! Easy pairing, excellent noise cancellation, and amazing sound quality with clear highs and deep bass",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200316.png",
+      "partial": true
+    },
+    {
+      "topic": "Noise cancellation",
+      "text": "There is no noise cancellation in this model",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200316.png",
+      "partial": true
+    },
+    {
+      "topic": "Battery life",
+      "text": "Battery issue",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200320.png",
+      "partial": true
+    },
+    {
+      "topic": "Battery life",
+      "text": "...Battery life is impressive, lasting several hours on a single charge, and the case provides convenient extra charges on the go....",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200320.png",
+      "partial": true
+    },
+    {
+      "topic": "Reliability",
+      "text": "Build Quality is subpar, within month left side stopped working. Try to connect customer support, they make it so difficult to even connect",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200324.png",
+      "partial": true
+    },
+    {
+      "topic": "Reliability",
+      "text": "No ANC at all, ANC is not working, so much background noice, call quality is super pathetic",
+      "source_file": "headphone/prd2/Screenshot 2026-11-23 200324.png",
+      "partial": true
+    }
+  ],
+  "source_files": [
+    "headphone/prd2/Screenshot 2026-11-23 200242.png",
+    "headphone/prd2/Screenshot 2026-11-23 200254.png",
+    "headphone/prd2/Screenshot 2026-11-23 200259.png",
+    "headphone/prd2/Screenshot 2026-11-23 200303.png",
+    "headphone/prd2/Screenshot 2026-11-23 200307.png",
+    "headphone/prd2/Screenshot 2026-11-23 200311.png",
+    "headphone/prd2/Screenshot 2026-11-23 200316.png",
+    "headphone/prd2/Screenshot 2026-11-23 200320.png",
+    "headphone/prd2/Screenshot 2026-11-23 200324.png"
+  ],
+  "limitations": [
+    "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+    "Price and ratings reflect the supplied screenshots and may have changed.",
+    "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+    "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+    "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+    "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+    "Seller specifications are recorded as claims, not independently verified measurements."
+  ]
+}

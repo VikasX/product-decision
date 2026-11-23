@@ -3,12 +3,41 @@
     {
       "id": "led",
       "name": "LED Lights",
-      "datasets": ["led/prd1/dataset.json"]
+      "datasets": [
+        "led/prd1/dataset.json",
+        "led/prd2/dataset.json"
+      ]
     },
     {
       "id": "headphone",
       "name": "Headphones",
-      "datasets": ["headphone/prd1/dataset.json"]
+      "datasets": [
+        "headphone/prd1/dataset.json",
+        "headphone/prd2/dataset.json"
+      ]
+    },
+    {
+      "id": "mobile",
+      "name": "Mobiles",
+      "datasets": [
+        "mobile/prd1/dataset.json",
+        "mobile/prd2/dataset.json"
+      ]
+    },
+    {
+      "id": "laptop",
+      "name": "Laptops",
+      "datasets": [
+        "laptop/prd1/dataset.json",
+        "laptop/prd2/dataset.json"
+      ]
+    },
+    {
+      "id": "tv",
+      "name": "Televisions",
+      "datasets": [
+        "tv/prd1/dataset.json"
+      ]
     }
   ]
 }

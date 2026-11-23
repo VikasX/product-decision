@@ -1,0 +1,346 @@
+{
+  "id": "prd3",
+  "version": 1,
+  "category_id": "mobile",
+  "source": "user_screenshots",
+  "image_file": "mobile/prd1/product.jpg",
+  "product": {
+    "asin": "B0H1WY466V",
+    "title": "Samsung Galaxy A56 5G",
+    "url": "https://www.amazon.in/dp/B0H1WY466V",
+    "overall_rating": 4.4,
+    "rating_count": 1473,
+    "rating_distribution": [
+      {
+        "stars": 5,
+        "percentage": 65.0
+      },
+      {
+        "stars": 4,
+        "percentage": 22.0
+      },
+      {
+        "stars": 3,
+        "percentage": 4.0
+      },
+      {
+        "stars": 2,
+        "percentage": 2.0
+      },
+      {
+        "stars": 1,
+        "percentage": 7.0
+      }
+    ],
+    "image_url": null,
+    "price_text": "₹45,999",
+    "specifications": [
+      {
+        "label": "Colour",
+        "value": "Awesome Violet Glow"
+      },
+      {
+        "label": "RAM",
+        "value": "8 GB"
+      },
+      {
+        "label": "Storage",
+        "value": "256 GB"
+      },
+      {
+        "label": "Display",
+        "value": "sAMOLED"
+      },
+      {
+        "label": "Battery",
+        "value": "5000 mAh"
+      },
+      {
+        "label": "Camera",
+        "value": "50 MP"
+      }
+    ],
+    "customers_say": "Customers find this smartphone to be the best in its segment, offering good value for money with decent camera capabilities that can take amazing photos. The display receives positive feedback for its gorgeous appearance, and customers appreciate its smooth, lag-free performance. The battery life receives mixed reviews - while some say it easily lasts through an entire day, others report it drains very quickly. Additionally, customers report extreme heating issues with the device.",
+    "feedback_topics": [
+      {
+        "name": "Quality",
+        "sentiment": "positive",
+        "mention_count": 277,
+        "positive_count": 240,
+        "negative_count": 37,
+        "text": "Customers praise the phone's quality, describing it as the best smartphone in its segment."
+      },
+      {
+        "name": "Value for money",
+        "sentiment": "positive",
+        "mention_count": 105,
+        "positive_count": 80,
+        "negative_count": 25,
+        "text": "Customers find the phone worth its price, describing it as a must-buy."
+      },
+      {
+        "name": "Camera quality",
+        "sentiment": "positive",
+        "mention_count": 73,
+        "positive_count": 53,
+        "negative_count": 20,
+        "text": "Customers praise the phone's camera quality, noting that it can take amazing photos, with one customer highlighting its sharpness."
+      },
+      {
+        "name": "Performance",
+        "sentiment": "positive",
+        "mention_count": 52,
+        "positive_count": 38,
+        "negative_count": 14,
+        "text": "Customers find the phone performs smoothly and is lag-free, with one customer noting it handles basic tasks well."
+      },
+      {
+        "name": "Display quality",
+        "sentiment": "positive",
+        "mention_count": 39,
+        "positive_count": 33,
+        "negative_count": 6,
+        "text": "Customers praise the phone's display, describing it as gorgeous and crisp with good picture quality."
+      },
+      {
+        "name": "Appearance",
+        "sentiment": "positive",
+        "mention_count": 35,
+        "positive_count": 35,
+        "negative_count": 0,
+        "text": "Customers appreciate the phone's appearance, noting its good look and premium design."
+      },
+      {
+        "name": "Battery life",
+        "sentiment": "mixed",
+        "mention_count": 69,
+        "positive_count": 38,
+        "negative_count": 31,
+        "text": "Customers have mixed experiences with the phone's battery life, with some reporting it lasts up to 1.5 days on a single charge while others find it drains quickly."
+      },
+      {
+        "name": "Heat",
+        "sentiment": "mixed",
+        "mention_count": 26,
+        "positive_count": 8,
+        "negative_count": 18,
+        "text": "Customers report extreme heating issues with the phone, noting that it becomes pretty hot to touch."
+      }
+    ]
+  },
+  "reviews": [],
+  "topic_excerpts": [
+    {
+      "topic": "Quality",
+      "text": "Good. Working fine.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193948.png",
+      "partial": true
+    },
+    {
+      "topic": "Quality",
+      "text": "Good phone, battery performance also good, phone performance also good for day to day usage, camera is also nice, i find little lag while unlocking...",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193948.png",
+      "partial": true
+    },
+    {
+      "topic": "Quality",
+      "text": "Review after 1 week of use Display: Excellent. The 120Hz refresh rate makes the interface feel smooth and responsive....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193948.png",
+      "partial": true
+    },
+    {
+      "topic": "Quality",
+      "text": "Nice phone, i got this for 36000. Samsung never disappoints.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193948.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "...The weight is not too heavy, the network is very fast. It is value for money but the battery life is not so big not so small.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193953.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "Build quality is good, feels premium. Camera is good. Overall a good purchase and still relevant in 2026. Sound quality is good, screen is good.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193953.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "Good deal and the product arrived safe and sound and brand new.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193953.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "...Mobile heating issue is there. Also battery drains very quickly. Waste of money. Don't buy this product.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193953.png",
+      "partial": true
+    },
+    {
+      "topic": "Camera quality",
+      "text": "Camera is good Battery life is also good Picture quality is also good But phone gets heated from start which is a drawback....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193958.png",
+      "partial": true
+    },
+    {
+      "topic": "Camera quality",
+      "text": "Value for money , good camera, nice build quality, metallic frame & long battery life",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193958.png",
+      "partial": true
+    },
+    {
+      "topic": "Camera quality",
+      "text": "Good all round phone, Camera can be better",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193958.png",
+      "partial": true
+    },
+    {
+      "topic": "Camera quality",
+      "text": "...performance is good for day to day normal activities and camera is also good. Display is just bliss. Not a gaming phone.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 193958.png",
+      "partial": true
+    },
+    {
+      "topic": "Performance",
+      "text": "...Daylight and low-light are punchy and reliable, 4K@30 both sides. AI tools help a lot for Indian skin tones...",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194002.png",
+      "partial": true
+    },
+    {
+      "topic": "Performance",
+      "text": "...Fast charging and smooth performance. Totally worth the money. Samsung never disappoints! Excellent Phone Value for Money !...",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194002.png",
+      "partial": true
+    },
+    {
+      "topic": "Performance",
+      "text": "...Bettry charging time is more then 1.30hr . And performance very slow",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194002.png",
+      "partial": true
+    },
+    {
+      "topic": "Performance",
+      "text": "Don't buy the 8+128, go for the 8+256 GB. Otherwise performance is good for day to day normal activities and camera is also good....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194002.png",
+      "partial": true
+    },
+    {
+      "topic": "Display quality",
+      "text": "Very average phone with good display and ordinary camera.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194007.png",
+      "partial": true
+    },
+    {
+      "topic": "Display quality",
+      "text": "...Camera is really good at this price range. Speakers are really good and crisp. Samsung amoled display is really good....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194007.png",
+      "partial": true
+    },
+    {
+      "topic": "Display quality",
+      "text": "...The screen quality is stunning and very bright. The phone runs incredibly smoothly without any lag, making everyday use a breeze....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194007.png",
+      "partial": true
+    },
+    {
+      "topic": "Display quality",
+      "text": "Best built quality and smooth display",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194007.png",
+      "partial": true
+    },
+    {
+      "topic": "Appearance",
+      "text": "...The phone has a premium design, solid build quality, and an excellent display....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194011.png",
+      "partial": true
+    },
+    {
+      "topic": "Appearance",
+      "text": "This phone looks premium, its excellent weight management ensures comfort during extended use....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194011.png",
+      "partial": true
+    },
+    {
+      "topic": "Appearance",
+      "text": "...I can easily say that if you want a safe, polished, long-lasting , premium look phone for daily life uses, Samsung Galaxy A56 is the best smartphone...",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194011.png",
+      "partial": true
+    },
+    {
+      "topic": "Appearance",
+      "text": "...Good display, fast and good looking for my day to day needs like browsing mostly and storing and opening documents....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194011.png",
+      "partial": true
+    },
+    {
+      "topic": "Battery life",
+      "text": "...Performance is smooth and one Ui 9 is very well. Battery life is good!",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194016.png",
+      "partial": true
+    },
+    {
+      "topic": "Battery life",
+      "text": "For so much price battery gets drained in hours otherwise phone is good but no charger provided and battery not staying.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194016.png",
+      "partial": true
+    },
+    {
+      "topic": "Battery life",
+      "text": "A good Mobile from Samsung. Battery backup is good. The camera captures very good photos",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194016.png",
+      "partial": true
+    },
+    {
+      "topic": "Battery life",
+      "text": "Very bad product. Bettry charging time is more then 1.30hr . And performance very slow",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194016.png",
+      "partial": true
+    },
+    {
+      "topic": "Heat",
+      "text": "...While playing google play store simple task basic games battery generate too much heat. It si not compatible/unable to play mid range games even....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194021.png",
+      "partial": true
+    },
+    {
+      "topic": "Heat",
+      "text": "...However, only issue I faced was heating. Even while watching YouTube, it started heating up. And, I have already changed settings to reduce the heat....",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194021.png",
+      "partial": true
+    },
+    {
+      "topic": "Heat",
+      "text": "...Now it's running on Android 17. No heating issue when gaming. Within 1 Hour 80% charged.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194021.png",
+      "partial": true
+    },
+    {
+      "topic": "Heat",
+      "text": "...Picture quality is also good But phone gets heated from start which is a drawback. Over all a good phone.",
+      "source_file": "mobile/prd1/Screenshot 2026-11-23 194021.png",
+      "partial": true
+    }
+  ],
+  "source_files": [
+    "mobile/prd1/Screenshot 2026-11-23 193935.png",
+    "mobile/prd1/Screenshot 2026-11-23 193948.png",
+    "mobile/prd1/Screenshot 2026-11-23 193953.png",
+    "mobile/prd1/Screenshot 2026-11-23 193958.png",
+    "mobile/prd1/Screenshot 2026-11-23 194002.png",
+    "mobile/prd1/Screenshot 2026-11-23 194007.png",
+    "mobile/prd1/Screenshot 2026-11-23 194011.png",
+    "mobile/prd1/Screenshot 2026-11-23 194016.png",
+    "mobile/prd1/Screenshot 2026-11-23 194021.png"
+  ],
+  "limitations": [
+    "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+    "Price and ratings reflect the supplied screenshots and may have changed.",
+    "Product identity uses the URL supplied in url.txt; the short display title retains the model, while RAM, storage and colour are recorded in specifications.",
+    "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not product failure rates.",
+    "Only partial topic-panel excerpts are supplied. Review IDs, dates, star ratings and complete context are unavailable; these are not identifiable full written reviews.",
+    "Excerpts can overlap or refer to other variants. Claims about OS versions, performance and charging are retained as reported words, not independently verified facts.",
+    "Product specifications and claimed performance are seller-provided, not independently verified."
+  ]
+}

@@ -39,10 +39,10 @@ def supported_judgment():
 def test_verified_dataset_only_lists_real_products_and_explicit_counts():
     catalog = DemoCatalog()
     dataset = catalog.get("prd1")
-    assert [c.id for c in catalog.categories()] == ["led", "headphone"]
-    assert catalog.categories()[0].product_count == 1
-    assert len(catalog.products("led")) == 1
-    assert [p.id for p in catalog.products("headphone")] == ["prd2"]
+    assert [c.id for c in catalog.categories()] == ["led", "headphone", "mobile", "laptop", "tv"]
+    assert catalog.categories()[0].product_count == 2
+    assert len(catalog.products("led")) == 2
+    assert [p.id for p in catalog.products("headphone")] == ["prd2", "prd8"]
     headphones = catalog.get("prd2")
     assert headphones.product.asin == "B0FC2W8WJM"
     assert headphones.product.url == "https://www.amazon.in/dp/B0FC2W8WJM"
@@ -164,6 +164,60 @@ def test_dataset_version_content_and_workflow_have_independent_caches(wire):
     assert len(calls) == 2 and store.usage().paid_attempts_today == 2
 
 
+def test_mobile_dataset_analysis_and_cache_without_live_calls(wire):
+    calls, state = wire
+    catalog = DemoCatalog()
+    saved = catalog.get("prd3")
+    assert [p.id for p in catalog.products("mobile")] == ["prd3", "prd9"]
+    assert saved.product.title == "Samsung Galaxy A56 5G"
+    assert saved.product.asin == "B0H1WY466V"
+    assert saved.product.overall_rating == 4.4 and saved.product.rating_count == 1473
+    assert {b.stars: b.percentage for b in saved.product.rating_distribution} == {
+        5: 65, 4: 22, 3: 4, 2: 2, 1: 7,
+    }
+    assert not saved.reviews and len(saved.topic_excerpts) == 32
+    assert len(saved.source_files) == 9 and len(saved.product.feedback_topics) == 8
+    assert catalog.safe_path(saved.image_file).is_file()
+    heat = next(t for t in saved.product.feedback_topics if t.name == "Heat")
+    assert (heat.sentiment, heat.mention_count, heat.positive_count, heat.negative_count) == (
+        "mixed", 26, 8, 18,
+    )
+    judgment = supported_judgment().model_copy(deep=True)
+    judgment.amazon_findings = []
+    mock = judgment.model_dump()
+    mock["summary"] = "The supplied summary supports daily use, with reported heating concerns."
+    mock["amazon_findings"] = [{
+        "text": "Heating is a concern in the supplied topic feedback.",
+        "source": "topic", "topic": "Heat", "sentiment": "negative", "quote": heat.text,
+    }]
+    state["content"] = json.dumps(mock)
+    app = create_app(settings(openai_api_key="test"))
+
+    async def exercise():
+        async with app.router.lifespan_context(app):
+            async with httpx.AsyncClient(
+                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                products = await client.get("/api/v1/demo/categories/mobile/products")
+                assert products.status_code == 200 and products.json()[0]["id"] == "prd3"
+                assert (await client.get("/api/v1/demo/products/prd3")).status_code == 200
+                image = await client.get("/api/v1/demo/products/prd3/image")
+                assert image.status_code == 200 and image.headers["content-type"] == "image/jpeg"
+                assert not calls
+                first = await client.post("/api/v1/demo/products/prd3/analysis")
+                second = await client.post("/api/v1/demo/products/prd3/analysis")
+                assert first.status_code == second.status_code == 200
+                report = AnalysisResponse.model_validate(first.json())
+                assert report.product.asin == "B0H1WY466V" and not report.reviews
+                assert report.amazon_findings[0].topic == "Heat"
+                assert second.json()["cached"] and len(calls) == 1
+
+    with patch(
+        "app.services.analysis.collect_reviews", side_effect=AssertionError("Amazon called")
+    ):
+        asyncio.run(exercise())
+
+
 def test_demo_spending_guard_and_bad_citations_do_not_retry(wire):
     calls, state = wire
     dataset = DemoCatalog().get("prd1")
@@ -179,3 +233,60 @@ def test_demo_spending_guard_and_bad_citations_do_not_retry(wire):
     result = asyncio.run(service.analyze(dataset.product.url))
     assert len(calls) == 1 and result.status == "insufficient_evidence"
     assert not result.amazon_findings and service.store.usage().paid_attempts_today == 1
+
+
+@pytest.mark.parametrize("product_id,category,rating_count,positive", [
+    ("prd4", "laptop", 427, 79),
+    ("prd5", "laptop", 599, 82),
+    ("prd6", "tv", 5585, 73),
+    ("prd7", "led", 1554, 72),
+    ("prd8", "headphone", 1738, 66),
+    ("prd9", "mobile", 531, 65),
+])
+def test_new_saved_products_have_valid_evidence_and_cache_analysis(
+    wire, product_id, category, rating_count, positive
+):
+    calls, state = wire
+    catalog = DemoCatalog()
+    dataset = catalog.get(product_id)
+    assert dataset.category_id == category
+    assert dataset.product.rating_count == rating_count
+    percentages = {b.stars: b.percentage for b in dataset.product.rating_distribution}
+    assert sum(percentages.values()) == 100
+    assert percentages[4] + percentages[5] == positive
+    assert len(dataset.product.title) <= 35
+    assert not dataset.reviews and dataset.topic_excerpts
+    assert catalog.safe_path(dataset.image_file).is_file()
+    topic = next(t for t in dataset.product.feedback_topics if t.sentiment == "positive")
+    mock = supported_judgment().model_dump()
+    mock["summary"] = "The supplied topic summary supports this finding; other feedback remains relevant."
+    mock["amazon_findings"] = [{
+        "text": "Positive feedback is present in the supplied topic summary.",
+        "source": "topic", "topic": topic.name, "sentiment": "positive", "quote": topic.text[:240],
+    }]
+    state["content"] = json.dumps(mock)
+    app = create_app(settings(openai_api_key="test"))
+
+    async def exercise():
+        async with app.router.lifespan_context(app):
+            async with httpx.AsyncClient(
+                transport=httpx.ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                listing = await client.get(f"/api/v1/demo/categories/{category}/products")
+                assert listing.status_code == 200
+                assert product_id in {p["id"] for p in listing.json()}
+                evidence = await client.get(f"/api/v1/demo/products/{product_id}")
+                assert evidence.status_code == 200
+                image = await client.get(f"/api/v1/demo/products/{product_id}/image")
+                assert image.status_code == 200 and image.headers["content-type"] == "image/jpeg"
+                assert not calls
+                first = await client.post(f"/api/v1/demo/products/{product_id}/analysis")
+                second = await client.post(f"/api/v1/demo/products/{product_id}/analysis")
+                assert first.status_code == second.status_code == 200
+                report = AnalysisResponse.model_validate(first.json())
+                assert report.product.asin == dataset.product.asin
+                assert report.amazon_findings[0].topic == topic.name
+                assert second.json()["cached"] and len(calls) == 1
+
+    with patch("app.services.analysis.collect_reviews", side_effect=AssertionError("Amazon called")):
+        asyncio.run(exercise())

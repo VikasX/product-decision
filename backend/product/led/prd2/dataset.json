@@ -1,0 +1,246 @@
+{
+  "id": "prd7",
+  "version": 1,
+  "category_id": "led",
+  "source": "user_screenshots",
+  "image_file": "led/prd2/product.jpg",
+  "product": {
+    "asin": "B0FTQ5Q7BZ",
+    "title": "One94Store Smart RGB Strip",
+    "url": "https://www.amazon.in/dp/B0FTQ5Q7BZ",
+    "overall_rating": 3.9,
+    "rating_count": 1554,
+    "rating_distribution": [
+      {
+        "stars": 5,
+        "percentage": 56.0
+      },
+      {
+        "stars": 4,
+        "percentage": 16.0
+      },
+      {
+        "stars": 3,
+        "percentage": 9.0
+      },
+      {
+        "stars": 2,
+        "percentage": 4.0
+      },
+      {
+        "stars": 1,
+        "percentage": 15.0
+      }
+    ],
+    "image_url": null,
+    "price_text": "₹599",
+    "specifications": [
+      {
+        "label": "Length",
+        "value": "5 metres"
+      },
+      {
+        "label": "Control",
+        "value": "App and remote"
+      },
+      {
+        "label": "Colour",
+        "value": "Multicolour"
+      },
+      {
+        "label": "Light source",
+        "value": "LED"
+      },
+      {
+        "label": "Power",
+        "value": "Corded Electric"
+      }
+    ],
+    "customers_say": "Customers find the LED strip lights to be of top quality and appreciate how they transform room vibes, with one customer noting they can individually adjust brightness for each color. However, the reliability is concerning as some units stop working within a month. Moreover, the connectivity receives mixed feedback - while the remote works well, many customers report issues connecting to the mobile app. Additionally, the brightness, color options, and durability also get mixed reviews, with some customers finding them good while others report low brightness and color inconsistencies throughout the tube. The value for money receives mixed opinions, with some finding it worth the price while others consider it not worth buying.",
+    "feedback_topics": [
+      {
+        "name": "Quality",
+        "sentiment": "positive",
+        "mention_count": 265,
+        "positive_count": 201,
+        "negative_count": 64,
+        "text": "Customers find the LED strip lights to be of top quality."
+      },
+      {
+        "name": "Appearance",
+        "sentiment": "positive",
+        "mention_count": 37,
+        "positive_count": 31,
+        "negative_count": 6,
+        "text": "Customers love the appearance of the LED strip light, describing it as premium and mesmerizing, with one customer noting how it transforms the vibe of a room."
+      },
+      {
+        "name": "Value for money",
+        "sentiment": "mixed",
+        "mention_count": 103,
+        "positive_count": 55,
+        "negative_count": 48,
+        "text": "Customers have mixed opinions about the string light's value for money, with some finding it worth the price while others feel it's not worth buying."
+      },
+      {
+        "name": "Connectivity",
+        "sentiment": "mixed",
+        "mention_count": 43,
+        "positive_count": 14,
+        "negative_count": 29,
+        "text": "Customers have mixed experiences with the LED strip light's connectivity: while some report it works well with both the remote and mobile app, others mention issues with Bluetooth pairing and mobile app connection."
+      },
+      {
+        "name": "Brightness",
+        "sentiment": "mixed",
+        "mention_count": 38,
+        "positive_count": 19,
+        "negative_count": 19,
+        "text": "Customers have mixed opinions about the string light's brightness, with some finding it good while others report it being too low."
+      },
+      {
+        "name": "Color options",
+        "sentiment": "mixed",
+        "mention_count": 35,
+        "positive_count": 23,
+        "negative_count": 12,
+        "text": "Customers have mixed opinions about the color options of the LED strip light, with some finding the colors good and offering variety, while others report that the colors are not consistent throughout the tube."
+      },
+      {
+        "name": "Reliability",
+        "sentiment": "negative",
+        "mention_count": 111,
+        "positive_count": 25,
+        "negative_count": 86,
+        "text": "Customers report significant reliability issues with the LED strip light, with multiple units stopping working within a month of use."
+      },
+      {
+        "name": "Durability",
+        "sentiment": "negative",
+        "mention_count": 33,
+        "positive_count": 7,
+        "negative_count": 26,
+        "text": "Customers report durability issues with the LED strip light, noting that it breaks at multiple spots and the cables are brittle."
+      }
+    ]
+  },
+  "reviews": [],
+  "topic_excerpts": [
+    {
+      "topic": "Quality",
+      "text": "Good but stopped working after 2 days so got it replaced....",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200021.png",
+      "partial": true
+    },
+    {
+      "topic": "Quality",
+      "text": "Poor quality - middle of the lights stopped working after a few months. Would rather something of better quality.",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200021.png",
+      "partial": true
+    },
+    {
+      "topic": "Appearance",
+      "text": "The item looked good, but the adapter burnt out in 1 hour of use.",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200026.png",
+      "partial": true
+    },
+    {
+      "topic": "Appearance",
+      "text": "These lights look beautiful and mesmerizing, even the adapter looks premium....",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200026.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "Stopped working within 2 weeks, can't even return the product now. Waste of money. Installation was difficult as well....",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200030.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "...Strip Light Yellowish And Other Half Stops Working After Some Time, Do Not buy...",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200030.png",
+      "partial": true
+    },
+    {
+      "topic": "Connectivity",
+      "text": "Remote is missing, not delivered with the pack",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200034.png",
+      "partial": true
+    },
+    {
+      "topic": "Connectivity",
+      "text": "Very good product, smooth app, it connects quickly and great brightness as well, plus it is usb operated. I can use it with power bank",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200034.png",
+      "partial": true
+    },
+    {
+      "topic": "Brightness",
+      "text": "low brightness, overall good but dont think will work for year!",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200038.png",
+      "partial": true
+    },
+    {
+      "topic": "Brightness",
+      "text": "...Not very bright let's see how long it works",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200038.png",
+      "partial": true
+    },
+    {
+      "topic": "Color options",
+      "text": "Packaging was good but the quality is poor. The colours are not uniform throughout the light one section is brighter than the other.",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200042.png",
+      "partial": true
+    },
+    {
+      "topic": "Color options",
+      "text": "The light strip adds an amazing ambient glow to my setup. The colors look vibrant. It looks great behind my desk and monitor, especially at night....",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200042.png",
+      "partial": true
+    },
+    {
+      "topic": "Reliability",
+      "text": "Defective product without any remote and non functional product sent",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200046.png",
+      "partial": true
+    },
+    {
+      "topic": "Reliability",
+      "text": "When we tested it, it was working well. After careful installation behind the TV, half of it stopped working....",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200046.png",
+      "partial": true
+    },
+    {
+      "topic": "Durability",
+      "text": "Poor durability, not worth the money",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200050.png",
+      "partial": true
+    },
+    {
+      "topic": "Durability",
+      "text": "The item looked good, but the adapter burnt out in 1 hour of use.",
+      "source_file": "led/prd2/Screenshot 2026-11-23 200050.png",
+      "partial": true
+    }
+  ],
+  "source_files": [
+    "led/prd2/Screenshot 2026-11-23 200010.png",
+    "led/prd2/Screenshot 2026-11-23 200021.png",
+    "led/prd2/Screenshot 2026-11-23 200026.png",
+    "led/prd2/Screenshot 2026-11-23 200030.png",
+    "led/prd2/Screenshot 2026-11-23 200034.png",
+    "led/prd2/Screenshot 2026-11-23 200038.png",
+    "led/prd2/Screenshot 2026-11-23 200042.png",
+    "led/prd2/Screenshot 2026-11-23 200046.png",
+    "led/prd2/Screenshot 2026-11-23 200050.png"
+  ],
+  "limitations": [
+    "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+    "Price and ratings reflect the supplied screenshots and may have changed.",
+    "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+    "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+    "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+    "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+    "Seller specifications are recorded as claims, not independently verified measurements."
+  ]
+}

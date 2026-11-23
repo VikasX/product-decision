@@ -1,0 +1,250 @@
+{
+  "id": "prd6",
+  "version": 1,
+  "category_id": "tv",
+  "source": "user_screenshots",
+  "image_file": "tv/prd1/product.jpg",
+  "product": {
+    "asin": "B0GTZ8BKN3",
+    "title": "LG 65-inch NU87 4K TV",
+    "url": "https://www.amazon.in/dp/B0GTZ8BKN3",
+    "overall_rating": 3.9,
+    "rating_count": 5585,
+    "rating_distribution": [
+      {
+        "stars": 5,
+        "percentage": 53.0
+      },
+      {
+        "stars": 4,
+        "percentage": 20.0
+      },
+      {
+        "stars": 3,
+        "percentage": 8.0
+      },
+      {
+        "stars": 2,
+        "percentage": 3.0
+      },
+      {
+        "stars": 1,
+        "percentage": 16.0
+      }
+    ],
+    "image_url": null,
+    "price_text": "₹68,990",
+    "specifications": [
+      {
+        "label": "Model",
+        "value": "65NU870BPLA"
+      },
+      {
+        "label": "Screen",
+        "value": "65 inches"
+      },
+      {
+        "label": "Resolution",
+        "value": "4K Ultra HD"
+      },
+      {
+        "label": "Refresh rate",
+        "value": "60 Hz"
+      },
+      {
+        "label": "Operating system",
+        "value": "webOS"
+      },
+      {
+        "label": "Series",
+        "value": "2026 NU87"
+      }
+    ],
+    "customers_say": "Customers find the TV's picture quality impressive, with stunning 4K content, and consider it one of the best in the market. The performance receives mixed feedback - while some are very happy with it, others report issues with the webOS being sluggish. Sound quality and value for money also get mixed reviews, with some praising the sound while others find it lacking, and some considering it good for the price while others disagree. Installation experiences are mixed, with some reporting smooth installations while others have installation support delays. The remote control receives negative feedback, with customers describing it as the basic type, and display issues include black spots and blank screens.",
+    "feedback_topics": [
+      {
+        "name": "Quality",
+        "sentiment": "positive",
+        "mention_count": 829,
+        "positive_count": 604,
+        "negative_count": 225,
+        "text": "Customers find the TV's quality excellent, with one customer noting its effective upscale algorithm for low-quality inputs."
+      },
+      {
+        "name": "Picture quality",
+        "sentiment": "positive",
+        "mention_count": 360,
+        "positive_count": 298,
+        "negative_count": 62,
+        "text": "Customers praise the TV's picture quality, particularly its impressive upscaling capabilities and stunning 4K content."
+      },
+      {
+        "name": "Value for money",
+        "sentiment": "mixed",
+        "mention_count": 345,
+        "positive_count": 229,
+        "negative_count": 116,
+        "text": "Customers have mixed opinions about the TV's value for money, with some finding it a very good product at this price, while others express dissatisfaction with their purchase."
+      },
+      {
+        "name": "Performance",
+        "sentiment": "mixed",
+        "mention_count": 236,
+        "positive_count": 82,
+        "negative_count": 154,
+        "text": "Customers have mixed experiences with the TV's performance, with some finding it satisfactory while others report issues with the webOS operating system being sluggish and having a very slow user interface."
+      },
+      {
+        "name": "Sound quality",
+        "sentiment": "mixed",
+        "mention_count": 219,
+        "positive_count": 143,
+        "negative_count": 76,
+        "text": "Customers have mixed opinions about the TV's sound quality, with some finding it awesome, while others report it is not as good as expected."
+      },
+      {
+        "name": "Installation",
+        "sentiment": "mixed",
+        "mention_count": 83,
+        "positive_count": 36,
+        "negative_count": 47,
+        "text": "Customers have mixed experiences with the TV's installation, with some finding it smooth and noting that the service is free, while others report issues with delayed support and missing mounting brackets."
+      },
+      {
+        "name": "Remote control",
+        "sentiment": "negative",
+        "mention_count": 191,
+        "positive_count": 19,
+        "negative_count": 172,
+        "text": "Customers are dissatisfied with the TV's remote control, describing it as basic and inconsistent, with one customer noting that it doesn't support all features."
+      },
+      {
+        "name": "Display",
+        "sentiment": "negative",
+        "mention_count": 63,
+        "positive_count": 4,
+        "negative_count": 59,
+        "text": "Customers report issues with the TV's display, including black spots, blank screens, and white patches."
+      }
+    ]
+  },
+  "reviews": [],
+  "topic_excerpts": [
+    {
+      "topic": "Quality",
+      "text": "Good but only for daily use the tv changes the picture setting by itself",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194724.png",
+      "partial": true
+    },
+    {
+      "topic": "Quality",
+      "text": "Tv comes in good package but it's a dead tv ( defective product). Proper quality checks should be followed....",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194724.png",
+      "partial": true
+    },
+    {
+      "topic": "Picture quality",
+      "text": "Installation was very easy, good picture quality and value for money",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194730.png",
+      "partial": true
+    },
+    {
+      "topic": "Picture quality",
+      "text": "Picture quality is good. But the operating system that is webos is very sluggish at times. No magic remote is big disappointment....",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194730.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "Value for money, rich elegant slick looks with amazing picture quality.. but need slight improvement with 20W speaker Dolby Atmos sound quality..",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194734.png",
+      "partial": true
+    },
+    {
+      "topic": "Value for money",
+      "text": "Waste of money. instead go for hisense, Mi or Sony. Picture quality is too vibrant which gives strain to eyes. Upscaling not proper....",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194734.png",
+      "partial": true
+    },
+    {
+      "topic": "Performance",
+      "text": "...It is extremely slow and laggy. Navigating through apps feels like a chore, and the interface freezes constantly....",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194738.png",
+      "partial": true
+    },
+    {
+      "topic": "Performance",
+      "text": "...The panel is somewhat OK (average) But the UI is pathetic. Very slow. Quite buggy.",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194738.png",
+      "partial": true
+    },
+    {
+      "topic": "Sound quality",
+      "text": "Good picture and sound quality but installation is delayed than committed time lines",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194742.png",
+      "partial": true
+    },
+    {
+      "topic": "Sound quality",
+      "text": "Sound quality is not good. within a year screen got completely blackout. Not to suggest be a product",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194742.png",
+      "partial": true
+    },
+    {
+      "topic": "Installation",
+      "text": "No installation even after 4 days and no response from Amazon or LG customer support",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194747.png",
+      "partial": true
+    },
+    {
+      "topic": "Installation",
+      "text": "Could not be installed as TV is defective and could not be installed. Still waiting response from LG",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194747.png",
+      "partial": true
+    },
+    {
+      "topic": "Remote control",
+      "text": "Tv quality good but magic remote missing",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194750.png",
+      "partial": true
+    },
+    {
+      "topic": "Remote control",
+      "text": "No AI remote, Web OS sucks , better to go with Google TV. Voice commands not supported in remote.",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194750.png",
+      "partial": true
+    },
+    {
+      "topic": "Display",
+      "text": "Screen was blank. No display",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194754.png",
+      "partial": true
+    },
+    {
+      "topic": "Display",
+      "text": "Vertical line is appearing in the Tv I need replacement",
+      "source_file": "tv/prd1/Screenshot 2026-11-23 194754.png",
+      "partial": true
+    }
+  ],
+  "source_files": [
+    "tv/prd1/Screenshot 2026-11-23 194709.png",
+    "tv/prd1/Screenshot 2026-11-23 194724.png",
+    "tv/prd1/Screenshot 2026-11-23 194730.png",
+    "tv/prd1/Screenshot 2026-11-23 194734.png",
+    "tv/prd1/Screenshot 2026-11-23 194738.png",
+    "tv/prd1/Screenshot 2026-11-23 194742.png",
+    "tv/prd1/Screenshot 2026-11-23 194747.png",
+    "tv/prd1/Screenshot 2026-11-23 194750.png",
+    "tv/prd1/Screenshot 2026-11-23 194754.png"
+  ],
+  "limitations": [
+    "Saved screenshot dataset, manually transcribed; no live Amazon collection occurs in Demo Mode.",
+    "Price and ratings reflect the supplied screenshots and may have changed.",
+    "Canonical URL and ASIN come from the user-supplied url.txt. Product title is shortened for display; specifications preserve the observed variant.",
+    "Customers Say and topic descriptions are secondary, AI-generated evidence. Topic mention counts are not failure rates.",
+    "Only partial topic-panel excerpts are supplied. Full review IDs, dates, star ratings and complete context are unavailable; no identifiable full written reviews were collected.",
+    "Excerpts may overlap or refer to different variants. Reported lifespan, performance and defect claims are not independently verified.",
+    "Seller specifications are recorded as claims, not independently verified measurements."
+  ]
+}
